@@ -1,5 +1,6 @@
-from os.path import abspath, isdir
+from os.path import isdir
 from pathlib import Path
+from pprint import pprint as print
 from typing import List
 
 from prime_vx.shell.shell import resolvePath, runProgram
@@ -15,11 +16,11 @@ class GitHandler(VCSHandler_ABC):
             print("Invalid git repository. Please point path to a directory")
             quit(1)
 
-        self.gitPrefix: str = f"git --no-pager -C {self.path}"
+        self.cmdPrefix: str = f"git --no-pager -C {self.path}"
 
     def isRepository(self) -> bool:
         code: int = runProgram(
-            cmd=f"{self.gitPrefix} rev-parse --is-inside-work-tree"
+            cmd=f"{self.cmdPrefix} rev-parse --is-inside-work-tree"
         ).returncode
 
         if code == 0:
@@ -29,23 +30,45 @@ class GitHandler(VCSHandler_ABC):
 
     def getCommitHashes(self) -> List[str]:
         hashes: str = runProgram(
-            cmd=f"{self.gitPrefix} log --reverse --format='%H'"
+            cmd=f"{self.cmdPrefix} log --reverse --format='%H'"
         ).stdout.decode()
         hashList: List[str] = hashes.strip().replace("'", "").split(sep="\n")
         return hashList
 
     def checkoutCommit(self, commitHash: str) -> bool:
-        return True
+        code: int = runProgram(
+            cmd=f"{self.cmdPrefix} checkout --force {commitHash}"
+        ).returncode
 
-    def getCommitMetadata(self, commitHash: str) -> dict[str, str]:
-        return {}
+        if code == 0:
+            return True
+        else:
+            return False
 
+    def getCommitMetadata(self, commitHash: str) -> dict[str, str | List[str]]:
+        keys: List[str] = [
+            "commitHash",
+            "treeHash",
+            "parentHashes",
+            "authorName",
+            "authorEmail",
+            "authorDate",
+            "committerName",
+            "committerEmail",
+            "committerDate",
+            "gpgSignature",
+        ]
+        values: List[str] = (
+            runProgram(
+                cmd=f"{self.cmdPrefix} log {commitHash} -n 1 --format='%H,,%T,,%P,,%an,,%ae,,%at,,%cn,,%ce,,%ct,,%G?'"
+            )
+            .stdout.decode()
+            .strip()
+            .replace("'", "")
+            .split(sep=",,")
+        )
 
-p = Path("~/Documents/projects/scratch/numpy")
-gh: GitHandler = GitHandler(path=p)
+        metadata: dict[str, str | List[str]] = dict(zip(keys, values))
+        metadata["parentHashes"] = metadata["parentHashes"].split(sep=" ")
 
-print(resolvePath(path=p))
-
-print(gh.path)
-print(gh.isRepository())
-print(gh.getCommitHashes())
+        return metadata
