@@ -12,5 +12,5 @@ def runProgram(cmd: str) -> CompletedProcess[bytes]:
     return execution
 
 
-def resolvePaths(path: Path) -> Path:
+def resolvePath(path: Path) -> Path:
     return Path(abspath(path=expanduser(path=path)))
