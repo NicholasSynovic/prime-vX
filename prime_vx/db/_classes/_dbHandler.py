@@ -10,7 +10,7 @@ class DBHandler_Protocol(Protocol):
     """
     DBHandler_Protocol
 
-    Top level Protocol (a class for linters to ensure that variables andmethods are defined) for database handlers to enforce common variablesare defined in all implementations
+    Top level Protocol (a class for linters to ensure that variables andmethods are defined) for database handlers to enforce common variables that are defined in all implementations
     """
 
     path: Path

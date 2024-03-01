@@ -11,9 +11,9 @@ from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
 
 
-def collectData(handler: VCSHandler_ABC) -> DataFrame:
+def extractCommitMetadata(handler: VCSHandler_ABC) -> DataFrame:
     """
-    collectData
+    extractCommitMetadata
 
     Interface to a version control system (VCS) handler to collect information from the VCS about a repository
 
@@ -52,8 +52,8 @@ def main(namespace: Namespace) -> None:
             print("Invalid version control system")
             quit(1)
 
-    df: DataFrame = collectData(handler=vcsHandler)
+    metadataDF: DataFrame = extractCommitMetadata(handler=vcsHandler)
 
-    dbHandler: VCS_DB = VCS_DB(path=programInput[1][1][0])
-    dbHandler.createMetadata()
-    dbHandler.write(df=df)
+    metadataDBHandler: VCS_DB = VCS_DB(path=programInput[1][1][0])
+    metadataDBHandler.createMetadata()
+    metadataDBHandler.write(df=metadataDF)
