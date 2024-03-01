@@ -1,6 +1,9 @@
 from argparse import ArgumentParser, Namespace, _SubParsersAction
 from pathlib import Path
 from string import Template
+from typing import Any, List, Tuple
+
+from prime_vx.vcs.main import main as vcsMain
 
 PROG: str = "PRIME vX"
 TOP_LEVEL_DESCRIPTION: str = (
@@ -78,7 +81,17 @@ class CMDLineParser:
 
 def main() -> None:
     parser: CMDLineParser = CMDLineParser()
-    print(parser.namespace)
+
+    firstParameter: Tuple[str, Any] = parser.namespace._get_kwargs()[0]
+    parameterData: List[str] = firstParameter[0].split(sep=".")
+
+    match parameterData[0]:
+        case "vcs":
+            vcsMain(namespace=parser.namespace)
+
+        case _:
+            print("Invalid command line options")
+            quit(1)
 
 
 if __name__ == "__main__":
