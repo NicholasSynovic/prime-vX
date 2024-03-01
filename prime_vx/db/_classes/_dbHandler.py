@@ -11,7 +11,11 @@ class DBHandler_Protocol(Protocol):
     exists: bool
 
 
-class SQLiteHandler_ABC(DBHandler_Protocol, metaclass=ABCMeta):
+class SQLiteHandler_Protocol(DBHandler_Protocol, Protocol):
+    engine: Engine
+
+
+class SQLiteHandler_ABC(SQLiteHandler_Protocol, metaclass=ABCMeta):
     @abstractmethod
     def write(self, df: DataFrame, tableName: str, engine: Engine) -> None:
         ...
