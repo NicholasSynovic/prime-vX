@@ -9,7 +9,7 @@ from sqlalchemy.sql.base import ReadOnlyColumnCollection
 
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.shell.fs import isDirectory, isFile, resolvePath
-from prime_vx.vcs import VCS_METADATA_KEYS
+from prime_vx.vcs import VCS_METADATA_KEY_LIST
 
 
 class VCS_DB(SQLiteHandler_ABC):

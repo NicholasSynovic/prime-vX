@@ -12,6 +12,16 @@ from prime_vx.vcs.git import GitHandler
 
 
 def collectData(handler: VCSHandler_ABC) -> DataFrame:
+    """
+    collectData
+
+    Interface to a version control system (VCS) handler to collect information from the VCS about a repository
+
+    :param handler: An implementation of VCSHandler_ABC
+    :type handler: VCSHandler_ABC
+    :return: A DataFrame of the information of all commits
+    :rtype: DataFrame
+    """
     data: List[DataFrame] = []
 
     if handler.isRepository() is False:

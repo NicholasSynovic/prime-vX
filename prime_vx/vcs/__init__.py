@@ -1,6 +1,6 @@
 from typing import List
 
-VCS_METADATA_KEYS: List[str] = [
+VCS_METADATA_KEY_LIST: List[str] = [
     "commitHash",
     "treeHash",
     "parentHashes",
