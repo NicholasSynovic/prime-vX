@@ -1,10 +1,16 @@
 from pathlib import Path
+from typing import List
 
-from prime_vx.db._classes._dbHandler import DBHandler_ABC
+from pandas import DataFrame
+from progress.bar import Bar
+from sqlalchemy.engine import Engine
+from sqlalchemy.exc import IntegrityError
+
+from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.shell.shell import isDirectory, isFile, resolvePath
 
 
-class SQLiteHandler(DBHandler_ABC):
+class SQLiteHandler(SQLiteHandler_ABC):
     def __init__(self, path: Path) -> None:
         resolvedPath: Path = resolvePath(path=path)
 
@@ -21,18 +27,20 @@ class SQLiteHandler(DBHandler_ABC):
         else:
             self.exists = False
 
+    def write(self, df: DataFrame, tableName: str, engine: Engine) -> None:
+        dfPerRow: List[DataFrame] = [DataFrame(data=row).T for _, row in df.iterrows()]
 
-def writeToDB(df: DataFrame, dbTableName: str, dbEngine: Engine) -> None:
-    dfPerRow: List[DataFrame] = [DataFrame(data=row).T for _, row in df.iterrows()]
+        with Bar(f"Writing data to {self.path}...", max=len(dfPerRow)) as bar:
+            row: DataFrame
+            for row in dfPerRow:
+                try:
+                    row.to_sql(
+                        name=tableName,
+                        con=engine,
+                        index=False,
+                        if_exists="append",
+                    )
+                except IntegrityError:
+                    pass
 
-    with Bar("Writing data to database...", max=len(dfPerRow)) as bar:
-        row: DataFrame
-        for row in dfPerRow:
-            try:
-                row.to_sql(
-                    name=dbTableName, con=dbEngine, index=False, if_exists="append"
-                )
-            except IntegrityError:
-                pass
-
-            bar.next()
+                bar.next()
