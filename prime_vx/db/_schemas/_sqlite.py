@@ -7,9 +7,7 @@ from sqlalchemy.sql.base import ReadOnlyColumnCollection
 from prime_vx.vcs import VCS_METADATA_KEYS
 
 
-def vcsMetadataSchema(engine: Engine, vcsName: str) -> str:
-    tableName: str = f"{vcsName.lower()}_metadata"
-
+def vcsMetadataSchema(engine: Engine, tableName: str) -> str:
     metadata: MetaData = MetaData()
 
     table: Table = Table(
