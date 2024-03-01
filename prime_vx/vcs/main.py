@@ -1,7 +1,9 @@
 from argparse import Namespace
 from pathlib import Path
-from typing import Any, List, Tuple
+from typing import List, Tuple
 
+import pandas
+from pandas import DataFrame
 from progress.bar import Bar
 
 from prime_vx.vcs._vcsHandler import VCSHandler_ABC
@@ -9,7 +11,7 @@ from prime_vx.vcs.git import GitHandler
 
 
 def collectData(handler: VCSHandler_ABC) -> None:
-    data: List[dict[str, Any]] = []
+    data: List[DataFrame] = []
 
     if handler.isRepository() is False:
         print(f"Invalid repository path")
@@ -22,6 +24,9 @@ def collectData(handler: VCSHandler_ABC) -> None:
         for hash_ in hashes:
             data.append(handler.getCommitMetadata(commitHash=hash_))
             bar.next()
+
+    df: DataFrame = pandas.concat(objs=data, ignore_index=True)
+    print(df)
 
 
 def main(namespace: Namespace) -> None:

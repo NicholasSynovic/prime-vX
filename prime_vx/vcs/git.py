@@ -1,7 +1,8 @@
 from os.path import isdir
 from pathlib import Path
-from pprint import pprint as print
-from typing import List
+from typing import Any, List
+
+from pandas import DataFrame
 
 from prime_vx.shell.shell import resolvePath, runProgram
 from prime_vx.vcs._vcsHandler import VCSHandler_ABC
@@ -30,7 +31,7 @@ class GitHandler(VCSHandler_ABC):
 
     def getCommitHashes(self) -> List[str]:
         hashes: str = runProgram(
-            cmd=f"{self.cmdPrefix} log --reverse --format='%H'"
+            cmd=f"{self.cmdPrefix} log --all --reverse --format='%H'"
         ).stdout.decode()
         hashList: List[str] = hashes.strip().replace("'", "").split(sep="\n")
         return hashList
@@ -45,7 +46,7 @@ class GitHandler(VCSHandler_ABC):
         else:
             return False
 
-    def getCommitMetadata(self, commitHash: str) -> dict[str, str | List[str]]:
+    def getCommitMetadata(self, commitHash: str) -> DataFrame:
         keys: List[str] = [
             "commitHash",
             "treeHash",
@@ -56,11 +57,13 @@ class GitHandler(VCSHandler_ABC):
             "committerName",
             "committerEmail",
             "committerDate",
+            "refName",
+            "refNameSource",
             "gpgSignature",
         ]
         values: List[str] = (
             runProgram(
-                cmd=f"{self.cmdPrefix} log {commitHash} -n 1 --format='%H,,%T,,%P,,%an,,%ae,,%at,,%cn,,%ce,,%ct,,%G?'"
+                cmd=f"{self.cmdPrefix} log {commitHash} -n 1 --format='%H,,%T,,%P,,%an,,%ae,,%at,,%cn,,%ce,,%ct,,%d,,%S,,%G?'"
             )
             .stdout.decode()
             .strip()
@@ -68,7 +71,12 @@ class GitHandler(VCSHandler_ABC):
             .split(sep=",,")
         )
 
-        metadata: dict[str, str | List[str]] = dict(zip(keys, values))
+        metadata: dict[str, Any] = dict(zip(keys, values))
         metadata["parentHashes"] = metadata["parentHashes"].split(sep=" ")
 
-        return metadata
+        key: str
+        value: str
+        for key, value in metadata.items():
+            metadata[key] = [value]
+
+        return DataFrame(data=metadata)

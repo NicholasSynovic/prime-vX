@@ -2,6 +2,8 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from typing import Any, List, Protocol
 
+from pandas import DataFrame
+
 
 class VCSHandler_Protocol(Protocol):
     path: Path
@@ -21,5 +23,5 @@ class VCSHandler_ABC(VCSHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def getCommitMetadata(self, commitHash: str) -> dict[str, Any]:
+    def getCommitMetadata(self, commitHash: str) -> DataFrame:
         ...
