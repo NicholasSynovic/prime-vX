@@ -15,13 +15,18 @@ def vcsMetadataSchema(engine: Engine, vcsName: str) -> str:
     table: Table = Table(
         tableName,
         metadata,
-        Column("doi", String, primary_key=True),
-        Column("url", String),
-        Column("title", String),
-        Column("source", String),
-        Column("updated", Date),
-        Column("pdfFilepath", String),
-        Column("feedFilepath", String),
+        Column("commitHash", String, primary_key=True),
+        Column("treeHash", String),
+        Column("parentHash", String),
+        Column("authorName", String),
+        Column("authorEmail", String),
+        Column("authorDate", String),
+        Column("committerName", String),
+        Column("committerEmail", String),
+        Column("committerDate", String),
+        Column("refName", String),
+        Column("refNameSource", String),
+        Column("gpgSignature", String),
     )
 
     columnData: ReadOnlyColumnCollection[str, Column[Any]] = table.columns
