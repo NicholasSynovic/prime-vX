@@ -13,7 +13,23 @@ from prime_vx.vcs import VCS_METADATA_KEYS
 
 
 class VCS_DB(SQLiteHandler_ABC):
+    """
+    VCS_DB
+
+    Database handler specifically for handling version control system (VCS) metadata of repositories.
+    """
+
     def __init__(self, path: Path, tableName: str = "vcs_metadata") -> None:
+        """
+        __init__
+
+        Initalize class with specified parameters and connect to database at *path*.
+
+        :param path: Path to SQLite3 database
+        :type path: Path
+        :param tableName: Name of table to store data to, defaults to "vcs_metadata"
+        :type tableName: str, optional
+        """
         self.tableName: str = tableName
 
         resolvedPath: Path = resolvePath(path=path)
