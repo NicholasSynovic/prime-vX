@@ -6,11 +6,12 @@ import pandas
 from pandas import DataFrame
 from progress.bar import Bar
 
+from prime_vx.db.sqlite import VCS_DB
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
 
 
-def collectData(handler: VCSHandler_ABC) -> None:
+def collectData(handler: VCSHandler_ABC) -> DataFrame:
     data: List[DataFrame] = []
 
     if handler.isRepository() is False:
@@ -26,7 +27,8 @@ def collectData(handler: VCSHandler_ABC) -> None:
             bar.next()
 
     df: DataFrame = pandas.concat(objs=data, ignore_index=True)
-    print(df)
+
+    return df
 
 
 def main(namespace: Namespace) -> None:
@@ -40,4 +42,8 @@ def main(namespace: Namespace) -> None:
             print("Invalid version control system")
             quit(1)
 
-    collectData(handler=vcsHandler)
+    df: DataFrame = collectData(handler=vcsHandler)
+
+    dbHandler: VCS_DB = VCS_DB(path=programInput[1][1][0])
+    dbHandler.createMetadata()
+    dbHandler.write(df=df)

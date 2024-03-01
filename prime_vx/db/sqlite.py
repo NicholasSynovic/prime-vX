@@ -9,7 +9,7 @@ from sqlalchemy.engine.base import Engine
 from sqlalchemy.exc import IntegrityError
 
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
-from prime_vx.db._schemas._sqlite import vcsMetadataSchema
+from prime_vx.db._schemas._sqliteSchemas import vcsMetadataSchema
 from prime_vx.shell.shell import isDirectory, isFile, resolvePath
 
 
@@ -34,10 +34,10 @@ class VCS_DB(SQLiteHandler_ABC):
 
         self.engine = create_engine(url=f"sqlite:///{self.path}")
 
-    def createVCSMetadata(self) -> str:
-        return vcsMetadataSchema(engine=self.engine, tableName=self.tableName)
+    def createMetadata(self) -> None:
+        vcsMetadataSchema(engine=self.engine, tableName=self.tableName)
 
-    def write(self, df: DataFrame, engine: Engine) -> None:
+    def write(self, df: DataFrame) -> None:
         dfPerRow: List[DataFrame] = [DataFrame(data=row).T for _, row in df.iterrows()]
 
         with Bar(f"Writing data to {self.path}...", max=len(dfPerRow)) as bar:
@@ -46,7 +46,7 @@ class VCS_DB(SQLiteHandler_ABC):
                 try:
                     row.to_sql(
                         name=self.tableName,
-                        con=engine,
+                        con=self.engine,
                         index=False,
                         if_exists="append",
                     )

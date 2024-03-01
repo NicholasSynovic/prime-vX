@@ -60,10 +60,6 @@ class GitHandler(VCSHandler_ABC):
 
         metadata: dict[str, Any] = dict(zip(VCS_METADATA_KEYS, values))
 
-        # NOTE: Potential bug here. This key is hardcoded into the application.
-        # If the key ever changes, this will have to be updated
-        metadata["parentHashes"] = metadata["parentHashes"].split(sep=" ")
-
         key: str
         value: str
         for key, value in metadata.items():

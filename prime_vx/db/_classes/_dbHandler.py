@@ -19,3 +19,7 @@ class SQLiteHandler_ABC(SQLiteHandler_Protocol, metaclass=ABCMeta):
     @abstractmethod
     def write(self, df: DataFrame, tableName: str, engine: Engine) -> None:
         ...
+
+    @abstractmethod
+    def createMetadata(self) -> None:
+        ...
