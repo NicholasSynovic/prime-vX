@@ -6,7 +6,7 @@ import pandas
 from pandas import DataFrame
 from progress.bar import Bar
 
-from prime_vx.vcs._vcsHandler import VCSHandler_ABC
+from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
 
 

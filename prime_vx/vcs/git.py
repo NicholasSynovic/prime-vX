@@ -5,7 +5,7 @@ from typing import Any, List
 from pandas import DataFrame
 
 from prime_vx.shell.shell import resolvePath, runProgram
-from prime_vx.vcs._vcsHandler import VCSHandler_ABC
+from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 
 
 class GitHandler(VCSHandler_ABC):
