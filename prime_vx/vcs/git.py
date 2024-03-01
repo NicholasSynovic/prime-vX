@@ -5,6 +5,7 @@ from typing import Any, List
 from pandas import DataFrame
 
 from prime_vx.shell.shell import resolvePath, runProgram
+from prime_vx.vcs import VCS_METADATA_KEYS
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 
 
@@ -47,20 +48,6 @@ class GitHandler(VCSHandler_ABC):
             return False
 
     def getCommitMetadata(self, commitHash: str) -> DataFrame:
-        keys: List[str] = [
-            "commitHash",
-            "treeHash",
-            "parentHashes",
-            "authorName",
-            "authorEmail",
-            "authorDate",
-            "committerName",
-            "committerEmail",
-            "committerDate",
-            "refName",
-            "refNameSource",
-            "gpgSignature",
-        ]
         values: List[str] = (
             runProgram(
                 cmd=f"{self.cmdPrefix} log {commitHash} -n 1 --format='%H,,%T,,%P,,%an,,%ae,,%at,,%cn,,%ce,,%ct,,%d,,%S,,%G?'"
@@ -71,7 +58,10 @@ class GitHandler(VCSHandler_ABC):
             .split(sep=",,")
         )
 
-        metadata: dict[str, Any] = dict(zip(keys, values))
+        metadata: dict[str, Any] = dict(zip(VCS_METADATA_KEYS, values))
+
+        # NOTE: Potential bug here. This key is hardcoded into the application.
+        # If the key ever changes, this will have to be updated
         metadata["parentHashes"] = metadata["parentHashes"].split(sep=" ")
 
         key: str
