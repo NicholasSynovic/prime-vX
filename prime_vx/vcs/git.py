@@ -1,10 +1,10 @@
-from os.path import isdir
 from pathlib import Path
 from typing import Any, List
 
 from pandas import DataFrame
 
-from prime_vx.shell.shell import resolvePath, runProgram
+from prime_vx.shell.fs import isDirectory, resolvePath
+from prime_vx.shell.shell import runProgram
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 
@@ -27,7 +27,7 @@ class GitHandler(VCSHandler_ABC):
         """
         resolvedPath: Path = resolvePath(path=path)
 
-        if isdir(s=resolvedPath):
+        if isDirectory(path=resolvedPath):
             self.path = resolvedPath
         else:
             print("Invalid directory path. Please point path to a directory")

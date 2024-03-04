@@ -72,11 +72,11 @@ class VCS_DB(SQLiteHandler_ABC):
         columnData: ReadOnlyColumnCollection[str, Column[Any]] = table.columns
 
         # TODO: Move database table schema validation to data_model module
-        if [x.key for x in columnData] == VCS_METADATA_KEYS:
+        if [x.key for x in columnData] == VCS_METADATA_KEY_LIST:
             metadata.create_all(bind=self.engine)
         else:
             print(
-                "Invalid table schema. Table schema does not align with VCS_METADATA_KEYS"
+                "Invalid table schema. Table schema does not align with VCS_METADATA_KEYS_LIST"
             )
             quit()
 
