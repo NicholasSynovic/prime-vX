@@ -67,6 +67,8 @@ class VCS_DB(SQLiteHandler_ABC):
             Column("refName", String),
             Column("refNameSource", String),
             Column("gpgSignature", String),
+            Column("vcs", String),
+            Column("path", String),
         )
 
         columnData: ReadOnlyColumnCollection[str, Column[Any]] = table.columns

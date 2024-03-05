@@ -80,4 +80,7 @@ class GitHandler(VCSHandler_ABC):
         for key, value in metadata.items():
             metadata[key] = [value]
 
+        metadata["vcs"] = ["git"]
+        metadata["path"] = [self.path.__str__()]
+
         return DataFrame(data=metadata)

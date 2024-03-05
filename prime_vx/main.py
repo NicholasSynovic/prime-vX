@@ -1,4 +1,5 @@
-from argparse import ArgumentParser, Namespace, _SubParsersAction
+from argparse import ArgumentParser, HelpFormatter, Namespace, _SubParsersAction
+from operator import attrgetter
 from pathlib import Path
 from string import Template
 from typing import Any, List, Literal, Tuple
@@ -19,6 +20,12 @@ CLOC_HELP_TEMPLATE: Template = Template(
 )
 
 
+class SortingHelpFormatter(HelpFormatter):
+    def add_arguments(self, actions):
+        actions = sorted(actions, key=attrgetter("option_strings"))
+        super(SortingHelpFormatter, self).add_arguments(actions)
+
+
 class CMDLineParser:
     """
     PRIME vX specific command line parser
@@ -29,10 +36,12 @@ class CMDLineParser:
             prog=PROG,
             description=TOP_LEVEL_DESCRIPTION,
             epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
         )
 
         self.subparsers: _SubParsersAction[ArgumentParser] = self.parser.add_subparsers(
-            title="Subprograms", description=f"{PROG} subprograms"
+            title="Subprograms",
+            description=f"{PROG} subprograms",
         )
 
         # Git VCS subparser
@@ -41,6 +50,7 @@ class CMDLineParser:
             help=VCS_HELP_TEMPLATE.substitute(vcs="git"),
             prog=PROG,
             epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
         )
         self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
 
@@ -50,6 +60,7 @@ class CMDLineParser:
             help=VCS_HELP_TEMPLATE.substitute(vcs="mercurial"),
             prog=PROG,
             epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
         )
         self._addArgs(
             suffix="vcs",
@@ -63,6 +74,7 @@ class CMDLineParser:
             help=CLOC_HELP_TEMPLATE.substitute(tool="scc"),
             prog=PROG,
             epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
         )
         self._addArgs(suffix="cloc", parser=self.sccSubparser, parserName="scc")
 

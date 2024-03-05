@@ -13,4 +13,6 @@ VCS_METADATA_KEY_LIST: List[str] = [
     "refName",
     "refNameSource",
     "gpgSignature",
+    "vcs",
+    "path",
 ]

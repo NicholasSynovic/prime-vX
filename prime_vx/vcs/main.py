@@ -42,18 +42,25 @@ def extractCommitMetadata(handler: VCSHandler_ABC) -> DataFrame:
 
 
 def main(namespace: Namespace) -> None:
-    programInput: List[Tuple[str, List[Path]]] = namespace._get_kwargs()
-    firstParameterSplit: List[str] = programInput[0][0].split(sep=".")
+    programInput: dict[str, List[Path]] = dict(namespace._get_kwargs())
+    programKeys: List[str] = list(programInput.keys())
 
-    match firstParameterSplit[1]:
+    inputKey: str = [key for key in programKeys if "input" in key][0]
+    inputKeySplit: List[str] = inputKey.split(sep=".")
+    repositoryPath: Path = programInput[inputKey][0]
+
+    outputKey: str = [key for key in programKeys if "output" in key][0]
+    dbPath: Path = programInput[outputKey][0]
+
+    match inputKeySplit[1]:
         case "git":
-            vcsHandler: VCSHandler_ABC = GitHandler(path=programInput[0][1][0])
+            vcsHandler: VCSHandler_ABC = GitHandler(path=repositoryPath)
         case _:
             print("Invalid version control system")
             quit(1)
 
     metadataDF: DataFrame = extractCommitMetadata(handler=vcsHandler)
 
-    metadataDBHandler: VCS_DB = VCS_DB(path=programInput[1][1][0])
+    metadataDBHandler: VCS_DB = VCS_DB(path=dbPath)
     metadataDBHandler.createMetadata()
     metadataDBHandler.write(df=metadataDF)
