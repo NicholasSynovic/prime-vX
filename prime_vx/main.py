@@ -1,7 +1,7 @@
 from argparse import ArgumentParser, Namespace, _SubParsersAction
 from pathlib import Path
 from string import Template
-from typing import Any, List, Tuple
+from typing import Any, List, Literal, Tuple
 
 from prime_vx.vcs.main import main as vcsMain
 
@@ -10,6 +10,13 @@ TOP_LEVEL_DESCRIPTION: str = (
     "Tooling to compute process metrics of software repositories"
 )
 EPILOG: str = "Created by Nicholas M. Synovic"
+
+VCS_HELP_TEMPLATE: Template = Template(
+    template="Extract version control system (VCS) information from a ${vcs} software repository",
+)
+CLOC_HELP_TEMPLATE: Template = Template(
+    template="Compute CLOC metrics of a software repository with ${tool}",
+)
 
 
 class CMDLineParser:
@@ -24,59 +31,84 @@ class CMDLineParser:
             epilog=EPILOG,
         )
 
-        self.vcsSubparsers: _SubParsersAction[
-            ArgumentParser
-        ] = self.parser.add_subparsers(
-            title="VCS",
-            description="Subcommands to extract data from different version control systems",
+        self.subparsers: _SubParsersAction[ArgumentParser] = self.parser.add_subparsers(
+            title="Subprograms", description=f"{PROG} subprograms"
         )
 
-        # Config subparsers via functions
-        self._configVCSParser()
+        # Git VCS subparser
+        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="git",
+            help=VCS_HELP_TEMPLATE.substitute(vcs="git"),
+            prog=PROG,
+            epilog=EPILOG,
+        )
+        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
+
+        # Mercurial VCS subparser
+        self.mercurialSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="mercurial",
+            help=VCS_HELP_TEMPLATE.substitute(vcs="mercurial"),
+            prog=PROG,
+            epilog=EPILOG,
+        )
+        self._addArgs(
+            suffix="vcs",
+            parser=self.mercurialSubparser,
+            parserName="mercurial",
+        )
+
+        # SCC CLOC subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="scc",
+            help=CLOC_HELP_TEMPLATE.substitute(tool="scc"),
+            prog=PROG,
+            epilog=EPILOG,
+        )
+        self._addArgs(suffix="cloc", parser=self.sccSubparser, parserName="scc")
 
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()
 
-    def _configVCSParser(self) -> None:
-        def _addArgs(parser: ArgumentParser, vcsName: str) -> None:
-            parser.add_argument(
-                "-i",
-                "--input",
-                nargs=1,
-                type=Path,
-                required=True,
-                help=f"Path to {vcsName} repository",
-                dest=f"vcs.{vcsName}.input",
-            )
+    def _addArgs(
+        self,
+        suffix: Literal["vcs", "cloc"],
+        parser: ArgumentParser,
+        parserName: str,
+    ) -> None:
+        helpMessage: str = ""
+        destination: str = ""
 
-            parser.add_argument(
-                "-o",
-                "--output",
-                nargs=1,
-                type=Path,
-                required=True,
-                help=f"Path to output SQLite3 database",
-                dest=f"vcs.{vcsName}.output",
-            )
+        match suffix:
+            case "vcs":
+                helpMessage = f"Path to {parserName} software repository"
+                destination = f"vcs.{parserName}.input"
 
-        descriptionTemplate: Template = Template(
-            template="Tools to extract data from ${vcs} repositories"
+                parser.add_argument(
+                    "-o",
+                    "--output",
+                    nargs=1,
+                    type=Path,
+                    required=True,
+                    help=f"Path to output SQLite3 database",
+                    dest=f"vcs.{parserName}.output",
+                )
+            case "cloc":
+                helpMessage = (
+                    f"Path to SQLite3 database generated from a {PROG} VCS tool"
+                )
+                destination = f"cloc.{parserName}.input"
+            case _:
+                pass
+
+        parser.add_argument(
+            "-i",
+            "--input",
+            nargs=1,
+            type=Path,
+            required=True,
+            help=helpMessage,
+            dest=destination,
         )
-
-        gitParser: ArgumentParser = self.vcsSubparsers.add_parser(
-            name="git",
-            description=descriptionTemplate.substitute(vcs="git"),
-            epilog=EPILOG,
-        )
-
-        mercurialParser: ArgumentParser = self.vcsSubparsers.add_parser(
-            name="mercurial",
-            description=descriptionTemplate.substitute(vcs="mercurial"),
-            epilog=EPILOG,
-        )
-
-        _addArgs(parser=gitParser, vcsName="git")
-        _addArgs(parser=mercurialParser, vcsName="mercurial")
 
 
 def main() -> None:
@@ -88,6 +120,8 @@ def main() -> None:
     match parameterData[0]:
         case "vcs":
             vcsMain(namespace=parser.namespace)
+        case "cloc":
+            print(parser.namespace)
 
         case _:
             print("Invalid command line options")
