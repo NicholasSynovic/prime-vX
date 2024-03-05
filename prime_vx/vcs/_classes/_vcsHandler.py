@@ -4,6 +4,8 @@ from typing import List, Protocol
 
 from pandas import DataFrame
 
+from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
+
 
 class VCSHandler_Protocol(Protocol):
     """
@@ -49,7 +51,7 @@ class VCSHandler_ABC(VCSHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def getCommitMetadata(self, commitHash: str) -> DataFrame:
+    def getCommitMetadata(self, commitHash: str) -> VCS_DF_DATAMODEL:
         """
         getCommitMetadata
 

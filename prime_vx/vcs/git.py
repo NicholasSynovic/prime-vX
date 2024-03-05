@@ -3,6 +3,7 @@ from typing import Any, List
 
 from pandas import DataFrame
 
+from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.shell.fs import isDirectory, resolvePath
 from prime_vx.shell.shell import runProgram
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
@@ -62,7 +63,7 @@ class GitHandler(VCSHandler_ABC):
         else:
             return False
 
-    def getCommitMetadata(self, commitHash: str) -> DataFrame:
+    def getCommitMetadata(self, commitHash: str) -> VCS_DF_DATAMODEL:
         values: List[str] = (
             runProgram(
                 cmd=f"{self.cmdPrefix} log {commitHash} -n 1 --format='%H,,%T,,%P,,%an,,%ae,,%at,,%cn,,%ce,,%ct,,%d,,%S,,%G?'"
@@ -83,4 +84,6 @@ class GitHandler(VCSHandler_ABC):
         metadata["vcs"] = ["git"]
         metadata["path"] = [self.path.__str__()]
 
-        return DataFrame(data=metadata)
+        df: DataFrame = DataFrame(data=metadata)
+
+        return VCS_DF_DATAMODEL(df=df)

@@ -323,6 +323,21 @@ pymysql = ["pymysql"]
 sqlcipher = ["sqlcipher3_binary"]
 
 [[package]]
+name = "typedframe"
+version = "0.11.0"
+description = "Typed Wrappers over Pandas and Polars DataFrames with schema validation"
+optional = false
+python-versions = "*"
+files = [
+    {file = "typedframe-0.11.0-py3-none-any.whl", hash = "sha256:d38ed1206072c5953e846be6e29fce0f657a82de3937023292bd2a9ffd8d4832"},
+    {file = "typedframe-0.11.0.tar.gz", hash = "sha256:d77c12369a0954a305f2e912c433367235d36c61d2f3b37090a8ad6ec4285443"},
+]
+
+[package.extras]
+pandas = ["numpy", "pandas"]
+polars = ["polars", "pyarrow"]
+
+[[package]]
 name = "typing-extensions"
 version = "4.10.0"
 description = "Backported and Experimental Type Hints for Python 3.8+"
@@ -347,4 +362,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "6d2be6952989b6eaf0e3ee07f5dc0f57f9c62a87632552ed4cc5725917ece346"
+content-hash = "40415055d2ebdd3d4ab24e932307ab8817e97e01d3e75309173a7121ea98d428"

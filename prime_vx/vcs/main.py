@@ -6,6 +6,7 @@ import pandas
 from pandas import DataFrame
 from progress.bar import Bar
 
+from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db.sqlite import VCS_DB
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
@@ -33,12 +34,14 @@ def extractCommitMetadata(handler: VCSHandler_ABC) -> DataFrame:
     with Bar("Extracting commit metadata...", max=len(hashes)) as bar:
         hash_: str
         for hash_ in hashes:
-            data.append(handler.getCommitMetadata(commitHash=hash_))
+            data.append(handler.getCommitMetadata(commitHash=hash_).df)
             bar.next()
 
     df: DataFrame = pandas.concat(objs=data, ignore_index=True)
 
-    return df
+    validateDF: VCS_DF_DATAMODEL = VCS_DF_DATAMODEL(df=df)
+
+    return validateDF.df
 
 
 def main(namespace: Namespace) -> None:
