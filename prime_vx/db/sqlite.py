@@ -3,7 +3,7 @@ from typing import Any, List
 
 from pandas import DataFrame
 from progress.bar import Bar
-from sqlalchemy import Column, MetaData, String, Table, create_engine
+from sqlalchemy import Column, Date, MetaData, String, Table, create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.base import ReadOnlyColumnCollection
 
@@ -60,10 +60,10 @@ class VCS_DB(SQLiteHandler_ABC):
             Column("parentHashes", String),
             Column("authorName", String),
             Column("authorEmail", String),
-            Column("authorDate", String),
+            Column("authorDate", Date),
             Column("committerName", String),
             Column("committerEmail", String),
-            Column("committerDate", String),
+            Column("committerDate", Date),
             Column("refName", String),
             Column("refNameSource", String),
             Column("gpgSignature", String),
