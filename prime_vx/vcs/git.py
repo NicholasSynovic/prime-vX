@@ -1,3 +1,4 @@
+from datetime import datetime
 from pathlib import Path
 from typing import Any, List
 
@@ -80,6 +81,13 @@ class GitHandler(VCSHandler_ABC):
         value: str
         for key, value in metadata.items():
             metadata[key] = [value]
+
+        metadata["authorDate"] = [
+            datetime.fromtimestamp(float(metadata["authorDate"][0]))
+        ]
+        metadata["committerDate"] = [
+            datetime.fromtimestamp(float(metadata["committerDate"][0]))
+        ]
 
         metadata["vcs"] = ["git"]
         metadata["path"] = [self.path.__str__()]
