@@ -86,6 +86,15 @@ class VCS_DB(SQLiteHandler_ABC):
             quit()
 
     def write(self, df: DataFrame) -> None:
+        try:
+            df.to_sql(
+                name=self.tableName,
+                con=self.engine,
+                index=False,
+            )
+        except IntegrityError:
+            pass
+
         dfPerRow: List[DataFrame] = [DataFrame(data=row).T for _, row in df.iterrows()]
 
         with Bar(f"Writing data to {self.path}...", max=len(dfPerRow)) as bar:
