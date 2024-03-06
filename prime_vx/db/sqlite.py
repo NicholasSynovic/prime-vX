@@ -3,7 +3,7 @@ from typing import Any, List
 
 from pandas import DataFrame
 from progress.bar import Bar
-from sqlalchemy import Column, Date, MetaData, String, Table, create_engine
+from sqlalchemy import Column, DateTime, MetaData, String, Table, create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.base import ReadOnlyColumnCollection
 
@@ -63,10 +63,10 @@ class VCS_DB(SQLiteHandler_ABC):
             Column("parentHashes", String),
             Column("authorName", String),
             Column("authorEmail", String),
-            Column("authorDate", Date),
+            Column("authorDate", DateTime),
             Column("committerName", String),
             Column("committerEmail", String),
-            Column("committerDate", Date),
+            Column("committerDate", DateTime),
             Column("refName", String),
             Column("refNameSource", String),
             Column("gpgSignature", String),
@@ -104,7 +104,7 @@ class VCS_DB(SQLiteHandler_ABC):
                 bar.next()
 
     def readTable(self, tdf: type[TypedDataFrame])  ->  DataFrame:
-        df: DataFrame = pandas.read_sql_table(table_name=tableName, con=self.engine,)
+        df: DataFrame = pandas.read_sql_table(table_name=self.tableName, con=self.engine,)
 
         return tdf(df=df).df
 

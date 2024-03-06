@@ -1,4 +1,5 @@
-from typedframe import DATE_TIME_DTYPE, TypedDataFrame
+from typedframe import TypedDataFrame
+from datetime import datetime
 
 
 class VCS_DF_DATAMODEL(TypedDataFrame):
@@ -8,10 +9,10 @@ class VCS_DF_DATAMODEL(TypedDataFrame):
         "parentHashes": str,
         "authorName": str,
         "authorEmail": str,
-        "authorDate": DATE_TIME_DTYPE,
+        "authorDate": datetime,
         "committerName": str,
         "committerEmail": str,
-        "committerDate": DATE_TIME_DTYPE,
+        "committerDate": datetime,
         "refName": str,
         "refNameSource": str,
         "gpgSignature": str,
