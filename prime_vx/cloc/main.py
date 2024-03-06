@@ -8,7 +8,6 @@ from pandas import DataFrame
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db.sqlite import VCS_DB
 from prime_vx.shell.fs import isFile, resolvePath
-from prime_vx.vcs.main import DB_TABLE_NAME as VCS_DB_TABLE_NAME
 
 
 def main(namespace: Namespace) -> None:
@@ -30,3 +29,8 @@ def main(namespace: Namespace) -> None:
             "Invalid filepath. Please point to a database created with a PRIME VCS tool."
         )
         quit(1)
+
+    vcsDB: VCS_DB = VCS_DB(path=resolvedDBPath)
+    vcsDF: DataFrame = vcsDB.readTable(tdf=VCS_DF_DATAMODEL)
+
+    print(vcsDF)
