@@ -5,6 +5,7 @@ from typing import List
 from pandas import DataFrame
 
 from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
+from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.shell.fs import isDirectory, resolvePath
 from prime_vx.shell.shell import runProgram
 
@@ -29,9 +30,8 @@ class SCC(CLOCTool_ABC):
 
         self.command = f"scc --by-file --min-gen --no-complexity --no-duplicates --format json {self.path.__str__()}"
 
-    def compute(self) -> DataFrame:
-        # TODO: Validate the output with a Typed Frame
-        data: dict[str, List] = {}
+    def compute(self, commitHash: str) -> CLOC_DF_DATAMODEL:
+        data: dict[str, List] = {"commitHash": [commitHash]}
 
         output: str = runProgram(cmd=self.command).stdout.decode().strip()
         jsonData: List[dict[str, int | List]] = loads(s=output)
@@ -43,4 +43,6 @@ class SCC(CLOCTool_ABC):
         data["codeLineCount"] = [sum([document["Code"] for document in jsonData])]
         data["json"] = [jsonData]
 
-        return DataFrame(data=data)
+        df: DataFrame = DataFrame(data=data)
+
+        return CLOC_DF_DATAMODEL(df=df)
