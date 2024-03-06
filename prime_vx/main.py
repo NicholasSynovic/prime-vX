@@ -46,7 +46,7 @@ class CMDLineParser:
 
         # Git VCS subparser
         self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="git",
+            name="vcs-git",
             help=VCS_HELP_TEMPLATE.substitute(vcs="git"),
             prog=PROG,
             epilog=EPILOG,
@@ -55,28 +55,38 @@ class CMDLineParser:
         self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
 
         # Mercurial VCS subparser
-        self.mercurialSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="mercurial",
-            help=VCS_HELP_TEMPLATE.substitute(vcs="mercurial"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="vcs",
-            parser=self.mercurialSubparser,
-            parserName="mercurial",
-        )
+        # self.mercurialSubparser: ArgumentParser = self.subparsers.add_parser(
+        #     name="vcs-mercurial",
+        #     help=VCS_HELP_TEMPLATE.substitute(vcs="mercurial"),
+        #     prog=PROG,
+        #     epilog=EPILOG,
+        #     formatter_class=SortingHelpFormatter,
+        # )
+        # self._addArgs(
+        #     suffix="vcs",
+        #     parser=self.mercurialSubparser,
+        #     parserName="mercurial",
+        # )
 
         # SCC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="scc",
+            name="cloc-scc",
             help=CLOC_HELP_TEMPLATE.substitute(tool="scc"),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
         )
         self._addArgs(suffix="cloc", parser=self.sccSubparser, parserName="scc")
+
+        # SCC CLOC subparser
+        # self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+        #     name="cloc-cloc",
+        #     help=CLOC_HELP_TEMPLATE.substitute(tool="cloc"),
+        #     prog=PROG,
+        #     epilog=EPILOG,
+        #     formatter_class=SortingHelpFormatter,
+        # )
+        # self._addArgs(suffix="cloc", parser=self.sccSubparser, parserName="cloc")
 
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()
