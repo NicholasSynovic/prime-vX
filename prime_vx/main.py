@@ -4,6 +4,7 @@ from pathlib import Path
 from string import Template
 from typing import Any, List, Literal, Tuple
 
+from prime_vx.cloc.main import main as clocMain
 from prime_vx.vcs.main import main as vcsMain
 
 PROG: str = "PRIME vX"
@@ -143,7 +144,7 @@ def main() -> None:
         case "vcs":
             vcsMain(namespace=parser.namespace)
         case "cloc":
-            print(parser.namespace)
+            clocMain(namespace=parser.namespace)
 
         case _:
             print("Invalid command line options")
