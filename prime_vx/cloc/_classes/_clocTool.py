@@ -26,13 +26,13 @@ class CLOCTool_ABC(CLOCTool_Protocol, metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def compute(self) -> CLOC_DF_DATAMODEL:
+    def compute(self, commitHash: str) -> CLOC_DF_DATAMODEL:
         """
         compute
 
         Compute the lines of code in the path. Returns a complex datatype (see return), but will default to 0 if the CLOC tool does not support the return value
 
-        :return: A datatype containing (# of files, # of lines, # of blank lines, # of comment lines, # of code lines, dict(structured output))
-        :rtype: DataFrame
+        :return: A datatype containing commit hash, # of files, # of lines, # of blank lines, # of comment lines, # of code lines, dict(structured output)
+        :rtype: CLOC_DF_DATAMODEL 
         """
         ...

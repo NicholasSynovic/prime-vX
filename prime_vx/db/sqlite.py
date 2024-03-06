@@ -10,6 +10,8 @@ from sqlalchemy.sql.base import ReadOnlyColumnCollection
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.shell.fs import isDirectory, isFile, resolvePath
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
+from typedframe import TypedDataFrame
+import pandas
 
 
 class VCS_DB(SQLiteHandler_ABC):
@@ -19,18 +21,19 @@ class VCS_DB(SQLiteHandler_ABC):
     Database handler specifically for handling version control system (VCS) metadata of repositories.
     """
 
-    def __init__(self, path: Path, tableName: str = "vcs_metadata") -> None:
+    def __init__(self, path: Path) -> None:
         """
         __init__
 
         Initalize class with specified parameters and connect to database at *path*.
 
+        Data is written to a table called 'vcs_metadata'.
+
         :param path: Path to SQLite3 database
         :type path: Path
-        :param tableName: Name of table to store data to, defaults to "vcs_metadata"
-        :type tableName: str, optional
         """
-        self.tableName: str = tableName
+        # NOTE: tableName is hardcoded
+        self.tableName: str = "vcs_metadata" 
 
         resolvedPath: Path = resolvePath(path=path)
 
@@ -99,3 +102,9 @@ class VCS_DB(SQLiteHandler_ABC):
                     pass
 
                 bar.next()
+
+    def readTable(self, tdf: type[TypedDataFrame])  ->  DataFrame:
+        df: DataFrame = pandas.read_sql_table(table_name=tableName, con=self.engine,)
+
+        return tdf(df=df).df
+

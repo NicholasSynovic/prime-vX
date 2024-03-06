@@ -4,6 +4,7 @@ from typing import Protocol
 
 from pandas import DataFrame
 from sqlalchemy.engine import Engine
+from typedframe import TypedDataFrame
 
 
 class DBHandler_Protocol(Protocol):
@@ -54,3 +55,17 @@ class SQLiteHandler_ABC(SQLiteHandler_Protocol, metaclass=ABCMeta):
         :type df: DataFrame
         """
         ...
+    
+    @abstractmethod
+    def readTable(self, tableName: str, tdf: TypedDataFrame) -> DataFrame:
+        """
+        readTable
+
+        Read database table to DataFrame and validate that types adhere to a TypedDataFrame schema.
+
+        :param tableName: A string denoting the table of the database to read from.
+        :type tableName: str
+        :param tdf: A TypedDataFrame defining a schema the output data should adhere to.
+        :type tdf: TypedDataFrame
+        :rtype: DataFrame
+        """
