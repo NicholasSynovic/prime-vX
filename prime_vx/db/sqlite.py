@@ -1,17 +1,17 @@
 from pathlib import Path
 from typing import Any, List
 
+import pandas
 from pandas import DataFrame
 from progress.bar import Bar
 from sqlalchemy import Column, DateTime, MetaData, String, Table, create_engine
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.base import ReadOnlyColumnCollection
+from typedframe import TypedDataFrame
 
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.shell.fs import isDirectory, isFile, resolvePath
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
-from typedframe import TypedDataFrame
-import pandas
 
 
 class VCS_DB(SQLiteHandler_ABC):
@@ -33,7 +33,7 @@ class VCS_DB(SQLiteHandler_ABC):
         :type path: Path
         """
         # NOTE: tableName is hardcoded
-        self.tableName: str = "vcs_metadata" 
+        self.tableName: str = "vcs_metadata"
 
         resolvedPath: Path = resolvePath(path=path)
 
@@ -103,8 +103,10 @@ class VCS_DB(SQLiteHandler_ABC):
 
                 bar.next()
 
-    def readTable(self, tdf: type[TypedDataFrame])  ->  DataFrame:
-        df: DataFrame = pandas.read_sql_table(table_name=self.tableName, con=self.engine,)
+    def readTable(self, tdf: type[TypedDataFrame]) -> DataFrame:
+        df: DataFrame = pandas.read_sql_table(
+            table_name=self.tableName,
+            con=self.engine,
+        )
 
         return tdf(df=df).df
-
