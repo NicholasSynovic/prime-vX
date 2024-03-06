@@ -1,24 +1,17 @@
 from argparse import ArgumentParser, HelpFormatter, Namespace, _SubParsersAction
 from operator import attrgetter
 from pathlib import Path
-from string import Template
 from typing import Any, List, Literal, Tuple
 
+from prime_vx import (
+    CLOC_HELP_TEMPLATE,
+    EPILOG,
+    PROG,
+    TOP_LEVEL_DESCRIPTION,
+    VCS_HELP_TEMPLATE,
+)
 from prime_vx.cloc.main import main as clocMain
 from prime_vx.vcs.main import main as vcsMain
-
-PROG: str = "PRIME vX"
-TOP_LEVEL_DESCRIPTION: str = (
-    "Tooling to compute process metrics of software repositories"
-)
-EPILOG: str = "Created by Nicholas M. Synovic"
-
-VCS_HELP_TEMPLATE: Template = Template(
-    template="Extract version control system (VCS) information from a ${vcs} software repository",
-)
-CLOC_HELP_TEMPLATE: Template = Template(
-    template="Compute CLOC metrics of a software repository with ${tool}",
-)
 
 
 class SortingHelpFormatter(HelpFormatter):
