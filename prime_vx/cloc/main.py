@@ -37,12 +37,8 @@ def computeCLOC(
             data.append(tool.compute(commitHash=row[0]).df)
             bar.next()
 
-    df: DataFrame = pandas.concat(objs=data, ignore_index=True)
-    clocDF: DataFrame = CLOC_DF_DATAMODEL(df=df).df
-
-    clocDF["deltaLOC"] = clocDF["codeLineCount"]
-
-    print(clocDF)
+    rawDF: DataFrame = pandas.concat(objs=data, ignore_index=True)
+    return CLOC_DF_DATAMODEL(df=rawDF).df
 
 
 def main(namespace: Namespace) -> None:
@@ -92,4 +88,8 @@ def main(namespace: Namespace) -> None:
         case _:
             raise InvalidVersionControl
 
-    computeCLOC(df=relevantColumnsDF, tool=tool, vcs=vcsHandler)
+    df: DataFrame = computeCLOC(
+        df=relevantColumnsDF,
+        tool=tool,
+        vcs=vcsHandler,
+    )
