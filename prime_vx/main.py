@@ -11,6 +11,7 @@ from prime_vx import (
     VCS_HELP_TEMPLATE,
 )
 from prime_vx.cloc.main import main as clocMain
+from prime_vx.exceptions import InvalidCommandLineSubprogram
 from prime_vx.vcs.main import main as vcsMain
 
 
@@ -138,10 +139,8 @@ def main() -> None:
             vcsMain(namespace=parser.namespace)
         case "cloc":
             clocMain(namespace=parser.namespace)
-
-        case _:
-            print("Invalid command line options")
-            quit(1)
+        # case _:
+        #     raise InvalidCommandLineSubprogram
 
 
 if __name__ == "__main__":

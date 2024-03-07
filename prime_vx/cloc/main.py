@@ -95,4 +95,4 @@ def main(namespace: Namespace) -> None:
     computeCLOC(df=relevantColumnsDF, tool=tool, vcs=vcsHandler)
 
 
-main(Namespace(**{"cloc.scc.input": [Path("../test.db")]}))
+# main(Namespace(**{"cloc.scc.input": [Path("../test.db")]}))

@@ -86,31 +86,35 @@ class VCS_DB(SQLiteHandler_ABC):
             quit()
 
     def write(self, df: DataFrame) -> None:
-        try:
-            df.to_sql(
-                name=self.tableName,
-                con=self.engine,
-                index=False,
-            )
-        except IntegrityError:
-            pass
+        if self.exists == False:
+            try:
+                df.to_sql(
+                    name=self.tableName,
+                    con=self.engine,
+                    index=False,
+                    if_exists="replace",
+                )
+            except IntegrityError:
+                pass
+        else:
+            dfPerRow: List[DataFrame] = [
+                DataFrame(data=row).T for _, row in df.iterrows()
+            ]
 
-        dfPerRow: List[DataFrame] = [DataFrame(data=row).T for _, row in df.iterrows()]
+            with Bar(f"Writing data to {self.path}...", max=len(dfPerRow)) as bar:
+                row: DataFrame
+                for row in dfPerRow:
+                    try:
+                        row.to_sql(
+                            name=self.tableName,
+                            con=self.engine,
+                            index=False,
+                            if_exists="append",
+                        )
+                    except IntegrityError:
+                        pass
 
-        with Bar(f"Writing data to {self.path}...", max=len(dfPerRow)) as bar:
-            row: DataFrame
-            for row in dfPerRow:
-                try:
-                    row.to_sql(
-                        name=self.tableName,
-                        con=self.engine,
-                        index=False,
-                        if_exists="append",
-                    )
-                except IntegrityError:
-                    pass
-
-                bar.next()
+                    bar.next()
 
     def readTable(self, tdf: type[TypedDataFrame]) -> DataFrame:
         df: DataFrame = pandas.read_sql_table(
