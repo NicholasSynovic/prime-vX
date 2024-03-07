@@ -25,3 +25,9 @@ class InvalidDBPath(Exception):
             f"Provided path points to directory. Please point to database file"
         )
         super().__init__(self.message)
+
+
+class InvalidDirectoryPath(Exception):
+    def __init__(self) -> None:
+        self.message = f"Provided path does not point to a valid directory. Please point to directory"
+        super().__init__(self.message)

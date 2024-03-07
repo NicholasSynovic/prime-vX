@@ -6,6 +6,7 @@ from pandas import DataFrame
 
 from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
+from prime_vx.exceptions import InvalidDirectoryPath
 from prime_vx.shell.fs import isDirectory, resolvePath
 from prime_vx.shell.shell import runProgram
 
@@ -25,8 +26,7 @@ class SCC(CLOCTool_ABC):
         if isDirectory(path=resolvedPath):
             self.path = resolvedPath
         else:
-            print("Invalid directory path. Please point path to a directory")
-            quit(1)
+            raise InvalidDirectoryPath
 
         self.command = f"scc --by-file --min-gen --no-complexity --no-duplicates --format json {self.path.__str__()}"
 
