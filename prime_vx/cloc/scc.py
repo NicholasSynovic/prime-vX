@@ -1,4 +1,4 @@
-from json import loads
+from json import dumps, loads
 from pathlib import Path
 from typing import List
 
@@ -34,14 +34,14 @@ class SCC(CLOCTool_ABC):
         data: dict[str, List] = {"commitHash": [commitHash]}
 
         output: str = runProgram(cmd=self.command).stdout.decode().strip()
-        jsonData: List[dict[str, int | List]] = loads(s=output)
+        jsonData: List = loads(s=output)
 
         data["fileCount"] = [sum([len(document["Files"]) for document in jsonData])]
         data["lineCount"] = [sum([document["Lines"] for document in jsonData])]
         data["blankLineCount"] = [sum([document["Blank"] for document in jsonData])]
         data["commentLineCount"] = [sum([document["Comment"] for document in jsonData])]
         data["codeLineCount"] = [sum([document["Code"] for document in jsonData])]
-        data["json"] = [jsonData]
+        data["json"] = [dumps(obj=jsonData)]
 
         df: DataFrame = DataFrame(data=data)
 

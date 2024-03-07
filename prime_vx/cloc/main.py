@@ -10,7 +10,7 @@ from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.cloc.scc import SCC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
-from prime_vx.db.sqlite import VCS_DB
+from prime_vx.db.sqlite import CLOC_DB, VCS_DB
 from prime_vx.exceptions import (
     InvalidCLOCTool,
     InvalidDBPath,
@@ -93,3 +93,8 @@ def main(namespace: Namespace) -> None:
         tool=tool,
         vcs=vcsHandler,
     )
+    df.index.name = "index"
+
+    dbHandler: CLOC_DB = CLOC_DB(path=resolvedDBPath)
+    dbHandler.createMetadata()
+    dbHandler.write(df=df)

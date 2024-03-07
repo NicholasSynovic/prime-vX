@@ -189,35 +189,16 @@ class CLOC_DB(SQLiteHandler_ABC):
             raise InvalidVCSTableSchema
 
     def write(self, df: DataFrame) -> None:
-        if self.exists == False:
-            try:
-                df.to_sql(
-                    name=self.tableName,
-                    con=self.engine,
-                    index=False,
-                    if_exists="replace",
-                )
-            except IntegrityError:
-                pass
-        else:
-            dfPerRow: List[DataFrame] = [
-                DataFrame(data=row).T for _, row in df.iterrows()
-            ]
-
-            with Bar(f"Writing data to {self.path}...", max=len(dfPerRow)) as bar:
-                row: DataFrame
-                for row in dfPerRow:
-                    try:
-                        row.to_sql(
-                            name=self.tableName,
-                            con=self.engine,
-                            index=False,
-                            if_exists="append",
-                        )
-                    except IntegrityError:
-                        pass
-
-                    bar.next()
+        try:
+            df.to_sql(
+                name=self.tableName,
+                con=self.engine,
+                index=True,
+                index_label="index",
+                if_exists="replace",
+            )
+        except IntegrityError:
+            pass
 
     def readTable(self, tdf: type[TypedDataFrame]) -> DataFrame:
         df: DataFrame = pandas.read_sql_table(
