@@ -139,8 +139,8 @@ def main() -> None:
             vcsMain(namespace=parser.namespace)
         case "cloc":
             clocMain(namespace=parser.namespace)
-        # case _:
-        #     raise InvalidCommandLineSubprogram
+        case _:
+            raise InvalidCommandLineSubprogram
 
 
 if __name__ == "__main__":
