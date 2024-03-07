@@ -57,7 +57,7 @@ class SQLiteHandler_ABC(SQLiteHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def readTable(self, tdf: TypedDataFrame) -> DataFrame:
+    def readTable(self, tdf: type[TypedDataFrame]) -> DataFrame:
         """
         readTable
 
