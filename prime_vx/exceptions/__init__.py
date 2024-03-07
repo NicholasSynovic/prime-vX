@@ -1,3 +1,4 @@
+from prime_vx.cloc import CLOC_KEY_LIST
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
 
 
@@ -16,6 +17,12 @@ class InvalidVersionControl(Exception):
 class InvalidVCSTableSchema(Exception):
     def __init__(self) -> None:
         self.message = f"Invalid table schema. Schema does not match the following columns: {VCS_METADATA_KEY_LIST}"
+        super().__init__(self.message)
+
+
+class InvalidCLOCTableSchema(Exception):
+    def __init__(self) -> None:
+        self.message = f"Invalid table schema. Schema does not match the following columns: {CLOC_KEY_LIST}"
         super().__init__(self.message)
 
 
