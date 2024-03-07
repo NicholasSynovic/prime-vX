@@ -11,6 +11,13 @@ from prime_vx.cloc.scc import SCC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db.sqlite import VCS_DB
+from prime_vx.exceptions import (
+    InvalidCLOCTool,
+    InvalidDBPath,
+    InvalidVersionControl,
+    VCSDBError_MultiplePathCaptured,
+    VCSDBError_MultipleVCSCaptured,
+)
 from prime_vx.shell.fs import isFile, resolvePath
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
@@ -53,10 +60,7 @@ def main(namespace: Namespace) -> None:
     if isFile(path=resolvedDBPath):
         pass
     else:
-        print(
-            "Invalid filepath. Please point to a database created with a PRIME VCS tool."
-        )
-        quit(1)
+        raise InvalidDBPath
 
     vcsDB: VCS_DB = VCS_DB(path=resolvedDBPath)
     vcsDF: DataFrame = vcsDB.readTable(tdf=VCS_DF_DATAMODEL)
@@ -67,12 +71,10 @@ def main(namespace: Namespace) -> None:
     capturedPath: List = relevantColumnsDF["path"].unique()
 
     if len(capturedVCS) > 1:
-        print("Too many VCS captured in single database table")
-        quit(1)
+        raise VCSDBError_MultipleVCSCaptured
 
     if len(capturedPath) > 1:
-        print("Too many repositories captured in single database table")
-        quit(1)
+        raise VCSDBError_MultiplePathCaptured
 
     repositoryPath: Path = Path(capturedPath[0])
 
@@ -81,18 +83,13 @@ def main(namespace: Namespace) -> None:
         case "scc":
             tool: CLOCTool_ABC = SCC(path=repositoryPath)
         case _:
-            print("Invalid tool option")
-            quit(1)
+            raise InvalidCLOCTool
 
     # Create instance of VCS handler from DB
     match capturedVCS[0]:
         case "git":
             vcsHandler: VCSHandler_ABC = GitHandler(path=repositoryPath)
         case _:
-            print("Invalid VCS")
-            quit(1)
+            raise InvalidVersionControl
 
     computeCLOC(df=relevantColumnsDF, tool=tool, vcs=vcsHandler)
-
-
-# main(Namespace(**{"cloc.scc.input": [Path("../test.db")]}))

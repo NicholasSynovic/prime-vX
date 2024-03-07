@@ -9,7 +9,7 @@ class InvalidCommandLineSubprogram(Exception):
 
 class InvalidVersionControl(Exception):
     def __init__(self) -> None:
-        self.message = "Invalid version control"
+        self.message = "Invalid version control system"
         super().__init__(self.message)
 
 
@@ -30,4 +30,22 @@ class InvalidDBPath(Exception):
 class InvalidDirectoryPath(Exception):
     def __init__(self) -> None:
         self.message = f"Provided path does not point to a valid directory. Please point to directory"
+        super().__init__(self.message)
+
+
+class InvalidCLOCTool(Exception):
+    def __init__(self) -> None:
+        self.message = "Invalid CLOC-like metric computation tool"
+        super().__init__(self.message)
+
+
+class VCSDBError_MultipleVCSCaptured(Exception):
+    def __init__(self) -> None:
+        self.message = "ERROR: Multiple VCSs captured in VCS database"
+        super().__init__(self.message)
+
+
+class VCSDBError_MultiplePathCaptured(Exception):
+    def __init__(self) -> None:
+        self.message = "ERROR: Multiple project paths captured in VCS database"
         super().__init__(self.message)
