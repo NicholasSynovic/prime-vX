@@ -1,6 +1,6 @@
 from argparse import Namespace
 from pathlib import Path
-from typing import List, Tuple
+from typing import List
 
 import pandas
 from pandas import DataFrame
@@ -8,6 +8,7 @@ from progress.bar import Bar
 
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db.sqlite import VCS_DB
+from prime_vx.exceptions import InvalidVersionControl
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
 
@@ -59,8 +60,7 @@ def main(namespace: Namespace) -> None:
         case "git":
             vcsHandler: VCSHandler_ABC = GitHandler(path=repositoryPath)
         case _:
-            print("Invalid version control system")
-            quit(1)
+            raise InvalidVersionControl
 
     metadataDF: DataFrame = extractCommitMetadata(handler=vcsHandler)
 
