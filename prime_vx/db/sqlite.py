@@ -9,7 +9,9 @@ from sqlalchemy.exc import IntegrityError
 from sqlalchemy.sql.base import ReadOnlyColumnCollection
 from typedframe import TypedDataFrame
 
+from prime_vx.db import VCS_DB_TABLE_NAME
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
+from prime_vx.exceptions import InvalidDBPath, InvalidVCSTableSchema
 from prime_vx.shell.fs import isDirectory, isFile, resolvePath
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
 
@@ -32,16 +34,12 @@ class VCS_DB(SQLiteHandler_ABC):
         :param path: Path to SQLite3 database
         :type path: Path
         """
-        # NOTE: tableName is hardcoded
-        self.tableName: str = "vcs_metadata"
+        self.tableName = VCS_DB_TABLE_NAME
 
         resolvedPath: Path = resolvePath(path=path)
 
         if isDirectory(path=resolvedPath):
-            print(
-                "Invalid path provided. Please point path to a database file, not a directory"
-            )
-            quit(1)
+            raise InvalidDBPath
 
         self.path = resolvedPath
 
@@ -80,10 +78,7 @@ class VCS_DB(SQLiteHandler_ABC):
         if [x.key for x in columnData] == VCS_METADATA_KEY_LIST:
             metadata.create_all(bind=self.engine)
         else:
-            print(
-                "Invalid table schema. Table schema does not align with VCS_METADATA_KEYS_LIST"
-            )
-            quit()
+            raise InvalidVCSTableSchema
 
     def write(self, df: DataFrame) -> None:
         if self.exists == False:
