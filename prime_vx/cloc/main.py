@@ -10,7 +10,8 @@ from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.cloc.scc import SCC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
-from prime_vx.db.sqlite import CLOC_DB, VCS_DB
+from prime_vx.db import CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
+from prime_vx.db.sqlite import Generic_DB
 from prime_vx.exceptions import (
     InvalidCLOCTool,
     InvalidDBPath,
@@ -58,8 +59,11 @@ def main(namespace: Namespace) -> None:
     else:
         raise InvalidDBPath
 
-    vcsDB: VCS_DB = VCS_DB(path=resolvedDBPath)
-    vcsDF: DataFrame = vcsDB.readTable(tdf=VCS_DF_DATAMODEL)
+    db: Generic_DB = Generic_DB(path=resolvedDBPath)
+    vcsDF: DataFrame = db.read(
+        tdf=VCS_DF_DATAMODEL,
+        tableName=VCS_DB_TABLE_NAME,
+    )
 
     relevantColumnsDF: DataFrame = vcsDF[["commitHash", "vcs", "path"]]
 
@@ -95,6 +99,4 @@ def main(namespace: Namespace) -> None:
     )
     df.index.name = "index"
 
-    dbHandler: CLOC_DB = CLOC_DB(path=resolvedDBPath)
-    dbHandler.createMetadata()
-    dbHandler.write(df=df)
+    db.write(df=df, tableName=CLOC_DB_TABLE_NAME, includeIndex=True)

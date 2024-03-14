@@ -36,7 +36,7 @@ class SQLiteHandler_ABC(SQLiteHandler_Protocol, metaclass=ABCMeta):
     """
 
     @abstractmethod
-    def createMetadata(self) -> None:
+    def createTables(self) -> None:
         """
         createMetadata
 
@@ -45,7 +45,7 @@ class SQLiteHandler_ABC(SQLiteHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def write(self, df: DataFrame) -> None:
+    def write(self, df: DataFrame, tableName: str) -> None:
         """
         write
 
@@ -57,7 +57,7 @@ class SQLiteHandler_ABC(SQLiteHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def readTable(self, tdf: type[TypedDataFrame]) -> DataFrame:
+    def read(self, tdf: type[TypedDataFrame], tableName: str) -> DataFrame:
         """
         readTable
 

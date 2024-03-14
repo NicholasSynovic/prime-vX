@@ -7,7 +7,8 @@ from pandas import DataFrame
 from progress.bar import Bar
 
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
-from prime_vx.db.sqlite import VCS_DB
+from prime_vx.db import VCS_DB_TABLE_NAME
+from prime_vx.db.sqlite import Generic_DB
 from prime_vx.exceptions import InvalidVersionControl
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
@@ -64,6 +65,6 @@ def main(namespace: Namespace) -> None:
 
     metadataDF: DataFrame = extractCommitMetadata(handler=vcsHandler)
 
-    metadataDBHandler: VCS_DB = VCS_DB(path=dbPath)
-    metadataDBHandler.createMetadata()
-    metadataDBHandler.write(df=metadataDF)
+    metadataDBHandler: Generic_DB = Generic_DB(path=dbPath)
+    metadataDBHandler.createTables()
+    metadataDBHandler.write(df=metadataDF, tableName=VCS_DB_TABLE_NAME)
