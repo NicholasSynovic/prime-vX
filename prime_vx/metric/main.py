@@ -39,6 +39,8 @@ def main(namespace: Namespace) -> None:
 
     match metricName:
         case "loc":
-            locMain(df=clocDF)
+            df: DataFrame = locMain(df=clocDF)
         case _:
             raise InvalidMetricSubprogram
+
+    print(df)
