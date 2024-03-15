@@ -12,3 +12,6 @@ VCS_HELP_TEMPLATE: Template = Template(
 CLOC_HELP_TEMPLATE: Template = Template(
     template="Compute CLOC metrics of a software repository with ${tool}",
 )
+METRIC_HELP_TEMPLATE: Template = Template(
+    template="Compute ${metric} metrics",
+)

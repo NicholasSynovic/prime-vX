@@ -6,12 +6,14 @@ from typing import Any, List, Literal, Tuple
 from prime_vx import (
     CLOC_HELP_TEMPLATE,
     EPILOG,
+    METRIC_HELP_TEMPLATE,
     PROG,
     TOP_LEVEL_DESCRIPTION,
     VCS_HELP_TEMPLATE,
 )
 from prime_vx.cloc.main import main as clocMain
 from prime_vx.exceptions import InvalidCommandLineSubprogram
+from prime_vx.metric.main import main as metricMain
 from prime_vx.vcs.main import main as vcsMain
 
 
@@ -81,14 +83,25 @@ class CMDLineParser:
         #     epilog=EPILOG,
         #     formatter_class=SortingHelpFormatter,
         # )
-        # self._addArgs(suffix="cloc", parser=self.sccSubparser, parserName="cloc")
+
+        # LOC metric subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="metric-loc",
+            help=METRIC_HELP_TEMPLATE.substitute(
+                metric="loc, kloc, delta loc, delta kloc"
+            ),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(suffix="metric", parser=self.sccSubparser, parserName="loc")
 
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()
 
     def _addArgs(
         self,
-        suffix: Literal["vcs", "cloc"],
+        suffix: Literal["vcs", "cloc", "metric"],
         parser: ArgumentParser,
         parserName: str,
     ) -> None:
@@ -114,6 +127,11 @@ class CMDLineParser:
                     f"Path to SQLite3 database generated from a {PROG} VCS tool"
                 )
                 destination = f"cloc.{parserName}.input"
+            case "metric":
+                helpMessage = (
+                    f"Path to SQLite3 database generated from a {PROG} VCS tool"
+                )
+                destination = f"metric.{parserName}.input"
             case _:
                 pass
 
@@ -139,6 +157,8 @@ def main() -> None:
             vcsMain(namespace=parser.namespace)
         case "cloc":
             clocMain(namespace=parser.namespace)
+        case "metric":
+            metricMain(namespace=parser.namespace)
         case _:
             raise InvalidCommandLineSubprogram
 
