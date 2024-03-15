@@ -8,6 +8,12 @@ class InvalidCommandLineSubprogram(Exception):
         super().__init__(self.message)
 
 
+class InvalidMetricSubprogram(Exception):
+    def __init__(self) -> None:
+        self.message = "Invalid metric subprogram"
+        super().__init__(self.message)
+
+
 class InvalidVersionControl(Exception):
     def __init__(self) -> None:
         self.message = "Invalid version control system"
