@@ -11,6 +11,7 @@ from prime_vx.exceptions import InvalidDBPath, InvalidMetricSubprogram
 from prime_vx.metrics.loc.main import main as locMain
 from prime_vx.shell.fs import isFile, resolvePath
 
+
 def main(namespace: Namespace) -> None:
     # TODO: Add docstring
 

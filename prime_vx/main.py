@@ -94,7 +94,11 @@ class CMDLineParser:
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
         )
-        self._addArgs(suffix="metric", parser=self.sccSubparser, parserName="loc",)
+        self._addArgs(
+            suffix="metric",
+            parser=self.sccSubparser,
+            parserName="loc",
+        )
 
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()
