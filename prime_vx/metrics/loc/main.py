@@ -2,6 +2,7 @@ from typing import List, Tuple
 
 from pandas import DataFrame
 from progress.bar import Bar
+from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 
 
 def computeLOC(loc: int) -> int:
@@ -57,6 +58,7 @@ def main(df: DataFrame) -> DataFrame:
 
             previousLOC = row[1]
             bar.next()
+    
+    df: DataFrame = DataFrame(data=data)
 
-    # TODO: Add datamodel
-    return DataFrame(data=data)
+    return LOC_DF_DATAMODEL(df=df).df

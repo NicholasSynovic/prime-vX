@@ -8,9 +8,8 @@ from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.db import CLOC_DB_TABLE_NAME
 from prime_vx.db.sqlite import Generic_DB
 from prime_vx.exceptions import InvalidDBPath, InvalidMetricSubprogram
-from prime_vx.metric.loc.main import main as locMain
+from prime_vx.metrics.loc.main import main as locMain
 from prime_vx.shell.fs import isFile, resolvePath
-
 
 def main(namespace: Namespace) -> None:
     # TODO: Add docstring
@@ -40,7 +39,6 @@ def main(namespace: Namespace) -> None:
     match metricName:
         case "loc":
             df: DataFrame = locMain(df=clocDF)
+            db.write(df=df, tableName="loc", includeIndex=True)
         case _:
             raise InvalidMetricSubprogram
-
-    print(df)

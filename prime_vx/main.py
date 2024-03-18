@@ -13,7 +13,7 @@ from prime_vx import (
 )
 from prime_vx.cloc.main import main as clocMain
 from prime_vx.exceptions import InvalidCommandLineSubprogram
-from prime_vx.metric.main import main as metricMain
+from prime_vx.metrics.main import main as metricMain
 from prime_vx.vcs.main import main as vcsMain
 
 
@@ -88,13 +88,13 @@ class CMDLineParser:
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="metric-loc",
             help=METRIC_HELP_TEMPLATE.substitute(
-                metric="loc, kloc, delta loc, delta kloc"
+                metric="loc, kloc, delta-loc, and delta-kloc"
             ),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
         )
-        self._addArgs(suffix="metric", parser=self.sccSubparser, parserName="loc")
+        self._addArgs(suffix="metric", parser=self.sccSubparser, parserName="loc",)
 
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()

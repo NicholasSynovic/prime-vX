@@ -19,7 +19,7 @@ from sqlalchemy import (
 from sqlalchemy.exc import IntegrityError
 from typedframe import TypedDataFrame
 
-from prime_vx.db import CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
+from prime_vx.db import LOC_DB_TABLE_NAME, CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.exceptions import InvalidDBPath
 from prime_vx.shell.fs import isDirectory, isFile, resolvePath
@@ -85,6 +85,22 @@ class Generic_DB(SQLiteHandler_ABC):
             Column("commentLineCount", Integer),
             Column("codeLineCount", Integer),
             Column("json", String),
+            PrimaryKeyConstraint("index"),
+            ForeignKeyConstraint(
+                columns=["commitHash"],
+                refcolumns=[f"{VCS_DB_TABLE_NAME}.commitHash"],
+            ),
+        )
+        
+        locTable: Table = Table(
+            LOC_DB_TABLE_NAME,
+            metadata,
+            Column("index", Integer),
+            Column("commitHash", String),
+            Column("loc", Integer),
+            Column("kloc", Integer),
+            Column("delta_loc", Integer),
+            Column("delta_kloc", Integer),
             PrimaryKeyConstraint("index"),
             ForeignKeyConstraint(
                 columns=["commitHash"],
