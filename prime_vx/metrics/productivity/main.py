@@ -1,55 +1,17 @@
 from typing import List, Tuple
 
-from pandas import DataFrame
+from pandas import DataFrame, Grouper
+from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
 from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 
 DATA_STOR_DICT: dict[str, List] = {
     "commitHash": [],
-    "dateBucket": [],
+    "startDateBucket": [],
+    "endDateBucket": [],
     "productivity": [],
 }
-
-
-def computeDailyProductivity(loc: int) -> int:
-    # TODO: Add docstring
-    return loc
-
-
-def computeWeeklyProductivity(loc: int) -> float:
-    # TODO: Add docstring
-    return loc / 1000
-
-
-def computeBiWeeklyProductivity(loc: int) -> float:
-    # TODO: Add docstring
-    return loc / 1000
-
-
-def computeMonthlyProductivity(currentLOC: int, previousLOC: int = 0) -> int:
-    # TODO: Add docstring
-    return currentLOC - previousLOC
-
-
-def computeTwoMonthProductivity(currentLOC: int, previousLOC: int = 0) -> int:
-    # TODO: Add docstring
-    return currentLOC - previousLOC
-
-
-def computeThreeMonthProductivity(currentLOC: int, previousLOC: int = 0) -> int:
-    # TODO: Add docstring
-    return currentLOC - previousLOC
-
-
-def computeSixMonthProductivity(currentLOC: int, previousLOC: int = 0) -> int:
-    # TODO: Add docstring
-    return currentLOC - previousLOC
-
-
-def computeAnnualProductivity(currentLOC: int, previousLOC: int = 0) -> int:
-    # TODO: Add docstring
-    return currentLOC - previousLOC
 
 
 def main(df: DataFrame) -> DataFrame:
@@ -66,21 +28,48 @@ def main(df: DataFrame) -> DataFrame:
         ("annual", -12, DATA_STOR_DICT),
     ]
 
-    relevantDataVCS: DataFrame = df[
-        [
-            "commitHash",
-            "committerDate",
-            "loc",
-            "kloc",
-        ],
+    relevantDataDF: DataFrame = df[
+        ["commitHash", "committerDate", "delta_loc", "delta_kloc"]
     ]
 
-    print(relevantDataVCS.dtypes)
-    print(relevantDataVCS.shape)
+    datum: Tuple[str, int, dict]
+    for datum in data:
+        frequency: str = "D"
 
-    # datum: Tuple[str, int, dict]
-    # for datum in data:
-    #     with Bar(msg=f"Computing {datum[0]} productivity...", max=-1) as bar:
-    #         pass
+        if datum[1] > 0:
+            match datum[1]:
+                case 7:
+                    frequency = "W"
+                case 14:
+                    frequency = "2W"
+                case _:
+                    # TODO: Add exception
+                    pass
+        else:
+            match datum[1]:
+                case -1:
+                    frequency = "ME"
+                case -2:
+                    frequency = "2ME"
+                    pass
+                case -3:
+                    frequency = "QE"
+                case -6:
+                    frequency = "2QE"
+                case -12:
+                    frequency = "YE"
+                case _:
+                    # TODO: Add exception
+                    pass
 
-    pass
+        groups: DataFrameGroupBy = relevantDataDF.groupby(
+            by=Grouper(
+                key="committerDate",
+                freq=frequency,
+            )
+        )
+
+        with Bar(f"Computing {datum[0]} productivity...", max=len(groups)) as bar:
+            group: DataFrame
+            for _, group in groups:
+                bar.next()
