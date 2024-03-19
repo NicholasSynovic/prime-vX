@@ -51,20 +51,6 @@ class CMDLineParser:
         )
         self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
 
-        # Mercurial VCS subparser
-        # self.mercurialSubparser: ArgumentParser = self.subparsers.add_parser(
-        #     name="vcs-mercurial",
-        #     help=VCS_HELP_TEMPLATE.substitute(vcs="mercurial"),
-        #     prog=PROG,
-        #     epilog=EPILOG,
-        #     formatter_class=SortingHelpFormatter,
-        # )
-        # self._addArgs(
-        #     suffix="vcs",
-        #     parser=self.mercurialSubparser,
-        #     parserName="mercurial",
-        # )
-
         # SCC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-scc",
@@ -73,16 +59,11 @@ class CMDLineParser:
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
         )
-        self._addArgs(suffix="cloc", parser=self.sccSubparser, parserName="scc")
-
-        # SCC CLOC subparser
-        # self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-        #     name="cloc-cloc",
-        #     help=CLOC_HELP_TEMPLATE.substitute(tool="cloc"),
-        #     prog=PROG,
-        #     epilog=EPILOG,
-        #     formatter_class=SortingHelpFormatter,
-        # )
+        self._addArgs(
+            suffix="cloc",
+            parser=self.sccSubparser,
+            parserName="scc",
+        )
 
         # LOC metric subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
@@ -98,6 +79,20 @@ class CMDLineParser:
             suffix="metric",
             parser=self.sccSubparser,
             parserName="loc",
+        )
+
+        # Productivity metric subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="metric-prod",
+            help=METRIC_HELP_TEMPLATE.substitute(metric="productivity"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="metric",
+            parser=self.sccSubparser,
+            parserName="productivity",
         )
 
         # Parse args

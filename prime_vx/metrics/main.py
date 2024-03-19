@@ -5,10 +5,13 @@ from typing import List
 from pandas import DataFrame
 
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
-from prime_vx.db import CLOC_DB_TABLE_NAME
+from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
+from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
+from prime_vx.db import CLOC_DB_TABLE_NAME, LOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
 from prime_vx.db.sqlite import Generic_DB
-from prime_vx.exceptions import InvalidDBPath, InvalidMetricSubprogram
+from prime_vx.exceptions import InvalidDBPath
 from prime_vx.metrics.loc.main import main as locMain
+from prime_vx.metrics.productivity.main import main as prodMain
 from prime_vx.shell.fs import isFile, resolvePath
 
 
@@ -30,6 +33,11 @@ def main(namespace: Namespace) -> None:
         raise InvalidDBPath
 
     db: Generic_DB = Generic_DB(path=resolvedDBPath)
+
+    vcsDF: DataFrame = db.read(
+        tdf=VCS_DF_DATAMODEL,
+        tableName=VCS_DB_TABLE_NAME,
+    )
     clocDF: DataFrame = db.read(
         tdf=CLOC_DF_DATAMODEL,
         tableName=CLOC_DB_TABLE_NAME,
@@ -40,6 +48,20 @@ def main(namespace: Namespace) -> None:
     match metricName:
         case "loc":
             df: DataFrame = locMain(df=clocDF)
-            db.write(df=df, tableName="loc", includeIndex=True)
+            db.write(df=df, tableName=LOC_DB_TABLE_NAME, includeIndex=True)
+        case "productivity":
+            locDF: DataFrame = db.read(
+                tdf=LOC_DF_DATAMODEL,
+                tableName=LOC_DB_TABLE_NAME,
+            )
+
+            mergedDF: DataFrame = vcsDF.join(
+                other=locDF.set_index("commitHash"),
+                on="commitHash",
+            )
+            prodMain(df=mergedDF)
+
+            # df: DataFrame = locMain(df=clocDF)
+            # db.write(df=df, tableName="loc", includeIndex=True)
         case _:
             raise InvalidMetricSubprogram
