@@ -1,0 +1,32 @@
+TODOs
+
+- Add docstrings to all functions and classes
+- Move all database opening and closing functionality to the initial main method
+- Add support for SBOM
+- Add the following metrics
+    - Bus factor
+    - Issue spoilage
+    - Issue density
+    - Developer count
+    - Issue count
+- Add JSON schema for CLOC JSON output
+- Remove all custom filesystem handling code
+    - Use pyfs
+- Rename sqlite.db/Generic_DB to sqlite.db/SQLite3_DB
+- Density of comments (comment lines / lines of code)
+- Halstead code size ???
+- Number of bytes (potentially already implemented)
+- Number of chars
+- Number of subpackages, classes, interfaces, abstract classes
+- Number of public methods, operations, or attributes in a class
+- Number of parameters in or overloaded versions of a method
+- Weighted methods per class
+    - Weight could be a complexity measurement
+        - With a default of one this is simply a count of methods in a class
+- Generate UML / data flow diagram per commit?
+- COCOMO 1
+- COCOMO 2
+- LOC per class
+- LOC per method
+- Average method / class size
+- Distribution of method / class size
