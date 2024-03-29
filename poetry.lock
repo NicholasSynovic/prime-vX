@@ -200,6 +200,21 @@ files = [
 ]
 
 [[package]]
+name = "pyfs"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.10"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/NicholasSynovic/python-fs-utils"
+reference = "HEAD"
+resolved_reference = "2d030dcdd7d75d40eb603699454020116ae7be81"
+
+[[package]]
 name = "python-dateutil"
 version = "2.9.0.post0"
 description = "Extensions to the standard Python datetime module"
@@ -362,4 +377,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "40415055d2ebdd3d4ab24e932307ab8817e97e01d3e75309173a7121ea98d428"
+content-hash = "078d5d8540c14714f03bc0cf1c542327faef1977e1718e1bd772d9e4a040b529"
