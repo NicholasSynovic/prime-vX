@@ -26,9 +26,22 @@ from prime_vx.shell.fs import isDirectory, isFile, resolvePath
 
 
 class Generic_DB(SQLiteHandler_ABC):
-    # TODO: Add doc string
+    """
+    Generic_DB
+
+    A class for reading from and writing to SQLite3 databases.
+    """
 
     def __init__(self, path: Path) -> None:
+        """
+        __init__
+
+        Initalize the class pointing to a SQLite3 database file (.db)
+
+        :param path: A path to a valid SQLite3 file
+        :type path: Path
+        :raises InvalidDBPath: If the SQLite3 file path is invalid, raises error
+        """
         resolvedPath: Path = resolvePath(path=path)
 
         if isDirectory(path=resolvedPath):
@@ -44,14 +57,27 @@ class Generic_DB(SQLiteHandler_ABC):
         self.engine = create_engine(url=f"sqlite:///{self.path}")
 
         @event.listens_for(Engine, "connect")
-        def set_sqlite_pragma(dbapi_connection, connection_record):
-            # TODO: Add doc string
+        def set_sqlite_pragma(dbapi_connection, connection_record) -> None:
+            """
+            set_sqlite_pragma
+
+            Enable foreign key support if disabled.
+            """
             cursor = dbapi_connection.cursor()
             cursor.execute("PRAGMA foreign_keys=ON")
             cursor.close()
 
     def createTables(self) -> None:
-        # TODO: Add doc string
+        """
+        createTables
+
+        Creates tables within the SQLite3 database to host data along with
+        key types.
+
+        This only needs to be ran once per new database to create tables.
+        Running this multiple times should not harm the database, but is
+        frowned upon.
+        """
         metadata: MetaData = MetaData()
 
         vcsTable: Table = Table(
@@ -108,9 +134,21 @@ class Generic_DB(SQLiteHandler_ABC):
             ),
         )
 
-        metadata.create_all(bind=self.engine)
+        metadata.create_all(bind=self.engine, checkfirst=True)
 
     def write(self, df: DataFrame, tableName: str, includeIndex: bool = False) -> None:
+        """
+        write
+
+        Write pandas DataFrame to specific table.
+
+        :param df: Pandas DataFrame to write data from
+        :type df: DataFrame
+        :param tableName: Name of table within database to write data to
+        :type tableName: str
+        :param includeIndex: Include the Pandas DataFrame index as a column, defaults to False
+        :type includeIndex: bool, optional
+        """
         try:
             df.to_sql(
                 name=tableName,
@@ -123,6 +161,18 @@ class Generic_DB(SQLiteHandler_ABC):
             pass
 
     def read(self, tdf: type[TypedDataFrame], tableName: str) -> DataFrame:
+        """
+        read
+
+        Read data from a table and ensure that it aligns with the expected output via a TypedDataFrame.
+
+        :param tdf: A TypedDataFrame to validate the table data against
+        :type tdf: type[TypedDataFrame]
+        :param tableName: The name of the table to read from
+        :type tableName: str
+        :return: A DataFrame that's been validated against a TypedDataFrame
+        :rtype: DataFrame
+        """
         df: DataFrame = pandas.read_sql_table(
             table_name=tableName,
             con=self.engine,
