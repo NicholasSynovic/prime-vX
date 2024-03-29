@@ -18,6 +18,12 @@ from prime_vx.vcs.main import main as vcsMain
 
 
 class SortingHelpFormatter(HelpFormatter):
+    """
+    SortingHelpFormatter
+
+    Class to order the command line arguments alphabetically
+    """
+
     def add_arguments(self, actions):
         actions = sorted(actions, key=attrgetter("option_strings"))
         super(SortingHelpFormatter, self).add_arguments(actions)
@@ -29,6 +35,11 @@ class CMDLineParser:
     """
 
     def __init__(self) -> None:
+        """
+        __init__
+
+        Initialize the command line parser and handle inputs
+        """
         self.parser: ArgumentParser = ArgumentParser(
             prog=PROG,
             description=TOP_LEVEL_DESCRIPTION,
@@ -104,6 +115,19 @@ class CMDLineParser:
         parser: ArgumentParser,
         parserName: str,
     ) -> None:
+        """
+        _addArgs
+
+        Functional method to handle creating command line args for different
+        parsers
+
+        :param suffix: String representing what type of parser is passed into the function
+        :type suffix: Literal['vcs', 'cloc', 'metric']
+        :param parser: A parser to add args
+        :type parser: ArgumentParser
+        :param parserName: The name of the parser to add to the help string
+        :type parserName: str
+        """
         helpMessage: str = ""
         destination: str = ""
 
@@ -146,6 +170,11 @@ class CMDLineParser:
 
 
 def main() -> None:
+    """
+    main
+
+    Main input method to the application
+    """
     parser: CMDLineParser = CMDLineParser()
 
     firstParameter: Tuple[str, Any] = parser.namespace._get_kwargs()[0]
