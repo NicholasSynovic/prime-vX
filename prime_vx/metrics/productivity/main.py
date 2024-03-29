@@ -14,53 +14,38 @@ DATA_STOR_DICT: dict[str, List] = {
 }
 
 
+def computeProductivity(
+    groups: DataFrameGroupBy, datum: Tuple[str, str, dict]
+) -> DataFrame:
+    with Bar(f"Computing {datum[0]} productivity...", max=len(groups)) as bar:
+        group: DataFrame
+        for _, group in groups:
+            print(group["delta_loc"].abs().sum())
+            quit()
+            bar.next()
+
+
 def main(df: DataFrame) -> DataFrame:
     # TODO: Add docstring
 
-    data: List[Tuple[str, int, dict]] = [
-        ("daily", 1, DATA_STOR_DICT),
-        ("weekly", 7, DATA_STOR_DICT),
-        ("two week", 14, DATA_STOR_DICT),
-        ("monthly", -1, DATA_STOR_DICT),
-        ("two month", -2, DATA_STOR_DICT),
-        ("three month", -3, DATA_STOR_DICT),
-        ("six month", -6, DATA_STOR_DICT),
-        ("annual", -12, DATA_STOR_DICT),
+    data: List[Tuple[str, str, dict]] = [
+        ("daily", "D", DATA_STOR_DICT),
+        ("weekly", "W", DATA_STOR_DICT),
+        ("two week", "2W", DATA_STOR_DICT),
+        ("monthly", "ME", DATA_STOR_DICT),
+        ("two month", "2ME", DATA_STOR_DICT),
+        ("three month", "QE", DATA_STOR_DICT),
+        ("six month", "2QE", DATA_STOR_DICT),
+        ("annual", "YE", DATA_STOR_DICT),
     ]
 
     relevantDataDF: DataFrame = df[
         ["commitHash", "committerDate", "delta_loc", "delta_kloc"]
     ]
 
-    datum: Tuple[str, int, dict]
+    datum: Tuple[str, str, dict]
     for datum in data:
-        frequency: str = "D"
-
-        if datum[1] > 0:
-            match datum[1]:
-                case 7:
-                    frequency = "W"
-                case 14:
-                    frequency = "2W"
-                case _:
-                    # TODO: Add exception
-                    pass
-        else:
-            match datum[1]:
-                case -1:
-                    frequency = "ME"
-                case -2:
-                    frequency = "2ME"
-                    pass
-                case -3:
-                    frequency = "QE"
-                case -6:
-                    frequency = "2QE"
-                case -12:
-                    frequency = "YE"
-                case _:
-                    # TODO: Add exception
-                    pass
+        frequency: str = datum[1]
 
         groups: DataFrameGroupBy = relevantDataDF.groupby(
             by=Grouper(
@@ -69,7 +54,4 @@ def main(df: DataFrame) -> DataFrame:
             )
         )
 
-        with Bar(f"Computing {datum[0]} productivity...", max=len(groups)) as bar:
-            group: DataFrame
-            for _, group in groups:
-                bar.next()
+        tempDF: DataFrame = computeProductivity(groups=groups, datum=datum)
