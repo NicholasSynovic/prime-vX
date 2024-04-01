@@ -43,7 +43,7 @@ def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> Dat
 
             data["bucket"].append(bucket)
             data["bucket_start"].append(group["committerDate"].min().to_pydatetime())
-            data["bucket_end"].append(group["committerDate"].max().to_pytdatetime())
+            data["bucket_end"].append(group["committerDate"].max().to_pydatetime())
             data["effort_KLOC"].append(effortKLOC)
             data["effort_LOC"].append(effortLOC)
             data["productivity_KLOC"].append(productivityKLOC)
