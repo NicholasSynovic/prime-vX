@@ -9,7 +9,7 @@ from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import CLOC_DB_TABLE_NAME, LOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
-from prime_vx.db.sqlite import Generic_DB
+from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidDBPath
 from prime_vx.metrics.loc.main import main as locMain
 from prime_vx.metrics.productivity.main import main as prodMain
@@ -32,7 +32,7 @@ def main(namespace: Namespace) -> None:
     else:
         raise InvalidDBPath
 
-    db: Generic_DB = Generic_DB(path=resolvedDBPath)
+    db: SQLite = SQLite(path=resolvedDBPath)
 
     vcsDF: DataFrame = db.read(
         tdf=VCS_DF_DATAMODEL,

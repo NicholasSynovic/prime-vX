@@ -12,7 +12,7 @@ from prime_vx.cloc.scc import SCC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
-from prime_vx.db.sqlite import Generic_DB
+from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import (
     InvalidCLOCTool,
     InvalidDBPath,
@@ -84,7 +84,7 @@ def main(namespace: Namespace) -> None:
     else:
         raise InvalidDBPath
 
-    db: Generic_DB = Generic_DB(path=resolvedDBPath)
+    db: SQLite = SQLite(path=resolvedDBPath)
     vcsDF: DataFrame = db.read(
         tdf=VCS_DF_DATAMODEL,
         tableName=VCS_DB_TABLE_NAME,

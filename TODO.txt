@@ -12,7 +12,7 @@ TODOs
 - Add JSON schema for CLOC JSON output
 - Remove all custom filesystem handling code
     - Use pyfs
-- Rename sqlite.db/Generic_DB to sqlite.db/SQLite3_DB
+- Rename sqlite.db/SQLite to sqlite.db/SQLite3_DB
 - Density of comments (comment lines / lines of code)
 - Halstead code size ???
 - Number of bytes (potentially already implemented)

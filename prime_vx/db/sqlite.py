@@ -25,9 +25,9 @@ from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.exceptions import InvalidDBPath
 
 
-class Generic_DB(SQLiteHandler_ABC):
+class SQLite(SQLiteHandler_ABC):
     """
-    Generic_DB
+    SQLite
 
     A class for reading from and writing to SQLite3 databases.
     """
