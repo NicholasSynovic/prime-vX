@@ -1,9 +1,11 @@
+from collections import namedtuple
 from datetime import datetime
 from typing import List, Tuple
 
 from pandas import DataFrame, Grouper
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
+from pyds import OrderedSet
 
 from prime_vx.datamodels.metrics.productivity import PRODUCTIVITY_DF_DATAMODEL
 from prime_vx.db import (
@@ -16,6 +18,22 @@ from prime_vx.db import (
     TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
     WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
 )
+
+BUCKET_STOR = namedtuple(
+    typename="BUCKET_STOR",
+    field_names=[
+        DAILY_PRODUCTIVITY_DB_TABLE_NAME,
+        WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
+        TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
+        MONTHLY_PRODUCTIVITY_DB_TABLE_NAME,
+        TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+        THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+        SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+        ANNUAL_PRODUCTIVITY_DB_TABLE_NAME,
+    ],
+)
+
+COMMIT_HASH_TO_BUCKET_MAPPING: dict[str, BUCKET_STOR] = {}
 
 
 def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> DataFrame:
@@ -59,6 +77,14 @@ def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> Dat
             data["productivity_KLOC"].append(productivityKLOC)
             data["productivity_LOC"].append(productivityLOC)
 
+            hash_: str
+            for hash_ in group["commitHash"]:
+                setattr(
+                    COMMIT_HASH_TO_BUCKET_MAPPING[hash_],
+                    datum[0],
+                    bucket,
+                )
+
             bucket += 1
             bar.next()
 
@@ -76,6 +102,7 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
     :return: A dictionary where each key is a time interval (as a string) and each value is a DataFrame of the productivity throughout that time interval
     :rtype: dict[str, DataFrame]
     """
+    global COMMIT_HASH_TO_BUCKET_MAPPING
 
     dfDict: dict[str, DataFrame] = {}
 
@@ -93,6 +120,9 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
     relevantDataDF: DataFrame = df[
         ["commitHash", "committerDate", "delta_loc", "delta_kloc"]
     ]
+
+    hashes: List[str] = relevantDataDF["commitHash"].to_list()
+    COMMIT_HASH_TO_BUCKET_MAPPING = {hash_: BUCKET_STOR for hash_ in hashes}
 
     datum: Tuple[str, str]
     for datum in data:

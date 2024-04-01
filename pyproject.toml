@@ -12,6 +12,7 @@ progress = "^1.6"
 sqlalchemy = "^2.0.27"
 typedframe = "^0.11.0"
 pyfs = {git = "https://github.com/NicholasSynovic/python-fs-utils"}
+pyds = {git = "https://github.com/NicholasSynovic/python-data-structures"}
 
 
 [build-system]

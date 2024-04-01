@@ -200,6 +200,21 @@ files = [
 ]
 
 [[package]]
+name = "pyds"
+version = "0.1.0"
+description = ""
+optional = false
+python-versions = "^3.10"
+files = []
+develop = false
+
+[package.source]
+type = "git"
+url = "https://github.com/NicholasSynovic/python-data-structures"
+reference = "HEAD"
+resolved_reference = "0ac185b4f1d9f07b289b88a82bec95a715c05250"
+
+[[package]]
 name = "pyfs"
 version = "0.1.0"
 description = ""
@@ -377,4 +392,4 @@ files = [
 [metadata]
 lock-version = "2.0"
 python-versions = "^3.10"
-content-hash = "078d5d8540c14714f03bc0cf1c542327faef1977e1718e1bd772d9e4a040b529"
+content-hash = "8a66fd9b2d2fd88882c84971d341b398c2dfa20ea067d8425719fb2b4f0ee50c"
