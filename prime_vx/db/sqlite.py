@@ -20,7 +20,7 @@ from sqlalchemy import (
 from sqlalchemy.exc import IntegrityError
 from typedframe import TypedDataFrame
 
-from prime_vx.db import CLOC_DB_TABLE_NAME, LOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
+from prime_vx.db import *
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.exceptions import InvalidDBPath
 
@@ -131,6 +131,60 @@ class SQLite(SQLiteHandler_ABC):
             ForeignKeyConstraint(
                 columns=["commitHash"],
                 refcolumns=[f"{VCS_DB_TABLE_NAME}.commitHash"],
+            ),
+        )
+
+        commitHashToProductivityBucketMap: Table = Table(
+            COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
+            metadata,
+            Column("index", Integer),
+            Column("commitHash", String),
+            Column(DAILY_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            Column(WEEKLY_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            Column(TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            Column(MONTHLY_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            Column(TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            Column(THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            Column(SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            Column(ANNUAL_PRODUCTIVITY_DB_TABLE_NAME, Integer),
+            PrimaryKeyConstraint("index"),
+            ForeignKeyConstraint(
+                columns=["commitHash"],
+                refcolumns=[f"{VCS_DB_TABLE_NAME}.commitHash"],
+            ),
+            ForeignKeyConstraint(
+                columns=[DAILY_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[f"{DAILY_PRODUCTIVITY_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[WEEKLY_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[f"{WEEKLY_PRODUCTIVITY_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[MONTHLY_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[f"{MONTHLY_PRODUCTIVITY_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[
+                    f"{THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME}.bucket",
+                ],
+            ),
+            ForeignKeyConstraint(
+                columns=[SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[f"{SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[ANNUAL_PRODUCTIVITY_DB_TABLE_NAME],
+                refcolumns=[f"{ANNUAL_PRODUCTIVITY_DB_TABLE_NAME}.bucket"],
             ),
         )
 
