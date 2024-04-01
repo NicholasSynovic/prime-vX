@@ -66,7 +66,7 @@ def main(namespace: Namespace) -> None:
                 db.write(
                     df=df,
                     tableName=tableName,
-                    includeIndex=False,
+                    includeIndex=True,
                 )
 
         case _:
