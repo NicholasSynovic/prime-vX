@@ -5,10 +5,22 @@ from pandas import DataFrame, Grouper
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
+from prime_vx.datamodels.metrics.productivity import PRODUCTIVITY_DF_DATAMODEL
+
 
 def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> DataFrame:
-    # TODO: Add doc string
+    """
+    computeProductivity
 
+    Compute the productivity of a project (effort / time) for different time intervals
+
+    :param groups: A DataFrameGroupBy object that is grouped into time intervals
+    :type groups: DataFrameGroupBy
+    :param datum: Metadata containing the time interval type being analyzed
+    :type datum: Tuple[str, str]
+    :return: A DataFrame that conforms to the Productivity datamodel
+    :rtype: DataFrame
+    """
     data: dict[str, List[int | float | datetime]] = {
         "bucket": [],
         "bucket_start": [],
@@ -40,11 +52,22 @@ def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> Dat
             bucket += 1
             bar.next()
 
-    return DataFrame(data=data)
+    return PRODUCTIVITY_DF_DATAMODEL(df=DataFrame(data=data)).df
 
 
-def main(df: DataFrame) -> DataFrame:
-    # TODO: Add docstring
+def main(df: DataFrame) -> dict[str, DataFrame]:
+    """
+    main
+
+    Wrapper to compute the productivity of a project at different time intervals
+
+    :param df: A DataFrame containing relevant information (i.e LOC and commit time)
+    :type df: DataFrame
+    :return: A dictionary where each key is a time interval (as a string) and each value is a DataFrame of the productivity throughout that time interval
+    :rtype: dict[str, DataFrame]
+    """
+
+    dfDict: dict[str, DataFrame] = {}
 
     data: List[Tuple[str, str]] = [
         ("daily", "D"),
@@ -72,4 +95,9 @@ def main(df: DataFrame) -> DataFrame:
             )
         )
 
-        df: DataFrame = computeProductivity(groups=groups, datum=datum)
+        dfDict[datum[0]] = computeProductivity(
+            groups=groups,
+            datum=datum,
+        )
+
+    return dfDict
