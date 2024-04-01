@@ -106,17 +106,6 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
 
     dfDict: dict[str, DataFrame] = {}
 
-    data: List[Tuple[str, str]] = [
-        (DAILY_PRODUCTIVITY_DB_TABLE_NAME, "D"),
-        (WEEKLY_PRODUCTIVITY_DB_TABLE_NAME, "W"),
-        (TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME, "2W"),
-        (MONTHLY_PRODUCTIVITY_DB_TABLE_NAME, "ME"),
-        (TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME, "2ME"),
-        (THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME, "QE"),
-        (SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME, "2QE"),
-        (ANNUAL_PRODUCTIVITY_DB_TABLE_NAME, "YE"),
-    ]
-
     relevantDataDF: DataFrame = df[
         ["commitHash", "committerDate", "delta_loc", "delta_kloc"]
     ]
