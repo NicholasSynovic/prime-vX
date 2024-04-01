@@ -2,6 +2,7 @@ from pathlib import Path
 
 import pandas
 from pandas import DataFrame
+from pyfs import isDirectory, isFile, resolvePath
 from sqlalchemy import (
     Column,
     DateTime,
@@ -22,7 +23,6 @@ from typedframe import TypedDataFrame
 from prime_vx.db import CLOC_DB_TABLE_NAME, LOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
 from prime_vx.db._classes._dbHandler import SQLiteHandler_ABC
 from prime_vx.exceptions import InvalidDBPath
-from prime_vx.shell.fs import isDirectory, isFile, resolvePath
 
 
 class Generic_DB(SQLiteHandler_ABC):

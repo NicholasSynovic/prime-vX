@@ -3,6 +3,7 @@ from pathlib import Path
 from typing import List
 
 from pandas import DataFrame
+from pyfs import isFile, resolvePath
 
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
@@ -12,7 +13,6 @@ from prime_vx.db.sqlite import Generic_DB
 from prime_vx.exceptions import InvalidDBPath
 from prime_vx.metrics.loc.main import main as locMain
 from prime_vx.metrics.productivity.main import main as prodMain
-from prime_vx.shell.fs import isFile, resolvePath
 
 
 def main(namespace: Namespace) -> None:

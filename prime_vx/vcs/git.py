@@ -3,9 +3,9 @@ from pathlib import Path
 from typing import Any, List
 
 from pandas import DataFrame
+from pyfs import isDirectory, resolvePath
 
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
-from prime_vx.shell.fs import isDirectory, resolvePath
 from prime_vx.shell.shell import runProgram
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC

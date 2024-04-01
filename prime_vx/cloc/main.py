@@ -5,6 +5,7 @@ from typing import List, Tuple
 import pandas
 from pandas import DataFrame
 from progress.bar import Bar
+from pyfs import isFile, resolvePath
 
 from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.cloc.scc import SCC
@@ -19,7 +20,6 @@ from prime_vx.exceptions import (
     VCSDBError_MultiplePathCaptured,
     VCSDBError_MultipleVCSCaptured,
 )
-from prime_vx.shell.fs import isFile, resolvePath
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
 

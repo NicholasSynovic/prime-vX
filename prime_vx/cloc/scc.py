@@ -3,11 +3,11 @@ from pathlib import Path
 from typing import List
 
 from pandas import DataFrame
+from pyfs import isDirectory, resolvePath
 
 from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.exceptions import InvalidDirectoryPath
-from prime_vx.shell.fs import isDirectory, resolvePath
 from prime_vx.shell.shell import runProgram
 
 
