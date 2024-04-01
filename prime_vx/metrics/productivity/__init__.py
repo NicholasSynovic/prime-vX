@@ -30,7 +30,7 @@ INTERVAL_PAIRS: List[Tuple[str, str]] = [
 def createGroups(
     df: DataFrame,
     key: str = "committerDate",
-) -> List[Tuple[DataFrameGroupBy]]:
+) -> List[Tuple[str, DataFrameGroupBy]]:
     dfs: List[DataFrameGroupBy] = []
 
     with Bar("Computing groups by time interval...", max=len(INTERVAL_PAIRS)) as bar:
@@ -43,7 +43,7 @@ def createGroups(
                 ),
             )
 
-            dfs.append(group)
+            dfs.append((pair[0], group))
             bar.next()
 
     return dfs
