@@ -61,6 +61,10 @@ def main(namespace: Namespace) -> None:
             )
             dfs: dict[str, DataFrame] = prodMain(df=mergedDF)
 
+            key: str
+            for key in dfs.keys():
+                print(key)
+
             # df: DataFrame = locMain(df=clocDF)
             # db.write(df=df, tableName="loc", includeIndex=True)
         case _:

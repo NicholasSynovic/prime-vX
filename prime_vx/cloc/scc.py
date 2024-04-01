@@ -3,12 +3,11 @@ from pathlib import Path
 from typing import List
 
 from pandas import DataFrame
-from pyfs import isDirectory, resolvePath
+from pyfs import isDirectory, resolvePath, runCommand
 
 from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.exceptions import InvalidDirectoryPath
-from prime_vx.shell.shell import runProgram
 
 
 class SCC(CLOCTool_ABC):
@@ -42,7 +41,7 @@ class SCC(CLOCTool_ABC):
     def compute(self, commitHash: str) -> CLOC_DF_DATAMODEL:
         data: dict[str, List] = {"commitHash": [commitHash]}
 
-        output: str = runProgram(cmd=self.command).stdout.decode().strip()
+        output: str = runCommand(cmd=self.command).stdout.decode().strip()
         jsonData: List = loads(s=output)
 
         data["fileCount"] = [sum([len(document["Files"]) for document in jsonData])]
