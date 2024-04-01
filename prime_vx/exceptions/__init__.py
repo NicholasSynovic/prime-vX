@@ -4,7 +4,7 @@ from prime_vx.vcs import VCS_METADATA_KEY_LIST
 
 class InvalidCommandLineSubprogram(Exception):
     def __init__(self) -> None:
-        self.message = "Invalid command line subprogram arguement"
+        self.message = "Invalid command line subprogram argument"
         super().__init__(self.message)
 
 
