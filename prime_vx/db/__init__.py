@@ -1,4 +1,12 @@
 VCS_DB_TABLE_NAME: str = "vcs_metadata"
 CLOC_DB_TABLE_NAME: str = "cloc"
 LOC_DB_TABLE_NAME: str = "loc"
-PRODUCTIVITY_DB_TABLE_NAME_SUFFIX: str = "productivity"
+
+DAILY_PRODUCTIVITY_DB_TABLE_NAME: str = "daily_productivity"
+WEEKLY_PRODUCTIVITY_DB_TABLE_NAME: str = "weekly_productivity"
+TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME: str = "two_week_productivity"
+MONTHLY_PRODUCTIVITY_DB_TABLE_NAME: str = "monthly_productivity"
+TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME: str = "two_month_productivity"
+THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME: str = "three_month_productivity"
+SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME: str = "six_month_productivity"
+ANNUAL_PRODUCTIVITY_DB_TABLE_NAME: str = "annual_productivity"

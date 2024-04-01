@@ -8,7 +8,12 @@ from pyfs import isFile, resolvePath
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
-from prime_vx.db import CLOC_DB_TABLE_NAME, LOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
+from prime_vx.db import (
+    CLOC_DB_TABLE_NAME,
+    LOC_DB_TABLE_NAME,
+    PRODUCTIVITY_DB_TABLE_NAME_SUFFIX,
+    VCS_DB_TABLE_NAME,
+)
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidDBPath, InvalidMetricSubprogram
 from prime_vx.metrics.loc.main import main as locMain

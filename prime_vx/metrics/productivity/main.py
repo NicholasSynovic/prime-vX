@@ -6,6 +6,16 @@ from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
 from prime_vx.datamodels.metrics.productivity import PRODUCTIVITY_DF_DATAMODEL
+from prime_vx.db import (
+    ANNUAL_PRODUCTIVITY_DB_TABLE_NAME,
+    DAILY_PRODUCTIVITY_DB_TABLE_NAME,
+    MONTHLY_PRODUCTIVITY_DB_TABLE_NAME,
+    SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+    THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+    TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+    TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
+    WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
+)
 
 
 def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> DataFrame:
@@ -33,7 +43,7 @@ def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> Dat
 
     bucket: int = 1
 
-    with Bar(f"Computing {datum[0]} productivity...", max=len(groups)) as bar:
+    with Bar(f"Computing {datum[0].replace('_', ' ')}...", max=len(groups)) as bar:
         group: DataFrame
         for _, group in groups:
             effortLOC: int = group["delta_loc"].abs().sum()
@@ -70,14 +80,14 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
     dfDict: dict[str, DataFrame] = {}
 
     data: List[Tuple[str, str]] = [
-        ("daily", "D"),
-        ("weekly", "W"),
-        ("two week", "2W"),
-        ("monthly", "ME"),
-        ("two month", "2ME"),
-        ("three month", "QE"),
-        ("six month", "2QE"),
-        ("annual", "YE"),
+        (DAILY_PRODUCTIVITY_DB_TABLE_NAME, "D"),
+        (WEEKLY_PRODUCTIVITY_DB_TABLE_NAME, "W"),
+        (TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME, "2W"),
+        (MONTHLY_PRODUCTIVITY_DB_TABLE_NAME, "ME"),
+        (TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME, "2ME"),
+        (THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME, "QE"),
+        (SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME, "2QE"),
+        (ANNUAL_PRODUCTIVITY_DB_TABLE_NAME, "YE"),
     ]
 
     relevantDataDF: DataFrame = df[
