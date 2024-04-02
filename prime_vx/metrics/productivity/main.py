@@ -119,7 +119,7 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
 
         dfDict[frequency] = computeProductivity(
             groups=group[1],
-            datum=frequency,
+            frequency=frequency,
         )
 
     return dfDict

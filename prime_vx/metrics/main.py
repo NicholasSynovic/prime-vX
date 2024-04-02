@@ -8,11 +8,17 @@ from pyfs import isFile, resolvePath
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
-from prime_vx.db import CLOC_DB_TABLE_NAME, LOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
+from prime_vx.db import (
+    CLOC_DB_TABLE_NAME,
+    COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
+    LOC_DB_TABLE_NAME,
+    VCS_DB_TABLE_NAME,
+)
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidDBPath, InvalidMetricSubprogram
 from prime_vx.metrics.loc.main import main as locMain
 from prime_vx.metrics.productivity.main import main as prodMain
+from prime_vx.metrics.productivity.mapping import main as prodMapping
 
 
 def main(namespace: Namespace) -> None:
@@ -59,6 +65,14 @@ def main(namespace: Namespace) -> None:
                 other=locDF.set_index("commitHash"),
                 on="commitHash",
             )
+
+            prodMappingDF: DataFrame = prodMapping(df=mergedDF)
+            db.write(
+                df=prodMappingDF,
+                tableName=COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
+                includeIndex=True,
+            )
+
             dfs: dict[str, DataFrame] = prodMain(df=mergedDF)
 
             key: str
@@ -66,7 +80,6 @@ def main(namespace: Namespace) -> None:
                 db.write(
                     df=df,
                     tableName=tableName,
-                    includeIndex=True,
                 )
 
         case _:

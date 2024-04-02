@@ -137,7 +137,6 @@ class SQLite(SQLiteHandler_ABC):
         dailyProductivityTable: Table = Table(
             DAILY_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -145,17 +144,12 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{DAILY_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         weeklyProductivityTable: Table = Table(
             WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -163,17 +157,12 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{WEEKLY_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         twoWeekProductivityTable: Table = Table(
             TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -181,17 +170,12 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         monthlyProductivityTable: Table = Table(
             MONTHLY_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -199,17 +183,12 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{MONTHLY_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         twoMonthProductivityTable: Table = Table(
             TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -217,17 +196,12 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         threeMonthProductivityTable: Table = Table(
             THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -235,17 +209,12 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         sixMonthProductivityTable: Table = Table(
             SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -253,17 +222,12 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         annualMonthProductivityTable: Table = Table(
             ANNUAL_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
-            Column("index", Integer),
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
             Column("bucket_end", DateTime),
@@ -271,11 +235,7 @@ class SQLite(SQLiteHandler_ABC):
             Column("effort_kloc", Float),
             Column("productivity_loc", Float),
             Column("productivity_kloc", Float),
-            PrimaryKeyConstraint("index"),
-            # ForeignKeyConstraint(
-            #     columns=["bucket"],
-            #     refcolumns=[f"{COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME}.{ANNUAL_PRODUCTIVITY_DB_TABLE_NAME}",],
-            # ),
+            PrimaryKeyConstraint("bucket"),
         )
 
         commitHashToProductivityBucketMap: Table = Table(
