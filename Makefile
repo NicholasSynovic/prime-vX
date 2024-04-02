@@ -1,3 +1,3 @@
 build:
 	poetry build
-	pip install dist/*.tar.gz
+	pip install --no-deps dist/*.tar.gz

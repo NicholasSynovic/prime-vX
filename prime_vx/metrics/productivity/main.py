@@ -2,10 +2,9 @@ from collections import namedtuple
 from datetime import datetime
 from typing import List, Tuple
 
-from pandas import DataFrame, Grouper
+from pandas import DataFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
-from pyds import OrderedSet
 
 from prime_vx.datamodels.metrics.productivity import PRODUCTIVITY_DF_DATAMODEL
 from prime_vx.db import (
@@ -18,6 +17,8 @@ from prime_vx.db import (
     TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
     WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
 )
+from prime_vx.metrics.productivity import createGroups
+from prime_vx.metrics.productivity.mapping import main as prodMapping
 
 BUCKET_STOR = namedtuple(
     typename="BUCKET_STOR",
@@ -36,7 +37,7 @@ BUCKET_STOR = namedtuple(
 COMMIT_HASH_TO_BUCKET_MAPPING: dict[str, BUCKET_STOR] = {}
 
 
-def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> DataFrame:
+def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
     """
     computeProductivity
 
@@ -49,6 +50,7 @@ def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> Dat
     :return: A DataFrame that conforms to the Productivity datamodel
     :rtype: DataFrame
     """
+
     data: dict[str, List[int | float | datetime]] = {
         "bucket": [],
         "bucket_start": [],
@@ -61,7 +63,7 @@ def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> Dat
 
     bucket: int = 1
 
-    with Bar(f"Computing {datum[0].replace('_', ' ')}...", max=len(groups)) as bar:
+    with Bar(f"Computing {frequency.replace('_', ' ')}...", max=len(groups)) as bar:
         group: DataFrame
         for _, group in groups:
             effortLOC: int = group["delta_loc"].abs().sum()
@@ -81,7 +83,7 @@ def computeProductivity(groups: DataFrameGroupBy, datum: Tuple[str, str]) -> Dat
             for hash_ in group["commitHash"]:
                 setattr(
                     COMMIT_HASH_TO_BUCKET_MAPPING[hash_],
-                    datum[0],
+                    frequency,
                     bucket,
                 )
 
@@ -106,27 +108,18 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
 
     dfDict: dict[str, DataFrame] = {}
 
-    relevantDataDF: DataFrame = df[
-        ["commitHash", "committerDate", "delta_loc", "delta_kloc"]
-    ]
-
-    hashes: List[str] = relevantDataDF["commitHash"].to_list()
+    hashes: List[str] = df["commitHash"].to_list()
     COMMIT_HASH_TO_BUCKET_MAPPING = {hash_: BUCKET_STOR for hash_ in hashes}
 
-    datum: Tuple[str, str]
-    for datum in data:
-        frequency: str = datum[1]
+    groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(df=df)
 
-        groups: DataFrameGroupBy = relevantDataDF.groupby(
-            by=Grouper(
-                key="committerDate",
-                freq=frequency,
-            )
-        )
+    group: Tuple[str, DataFrameGroupBy]
+    for group in groups:
+        frequency: str = group[0]
 
-        dfDict[datum[0]] = computeProductivity(
-            groups=groups,
-            datum=datum,
+        dfDict[frequency] = computeProductivity(
+            groups=group[1],
+            datum=frequency,
         )
 
     return dfDict

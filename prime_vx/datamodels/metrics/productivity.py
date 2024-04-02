@@ -11,3 +11,17 @@ class PRODUCTIVITY_DF_DATAMODEL(TypedDataFrame):
         "productivity_LOC": float,
         "productivity_KLOC": float,
     }
+
+
+class PRODUCTIVITY_MAPPING_DF_DATAMODEL(TypedDataFrame):
+    schema = {
+        "commitHash": str,
+        "daily_productivity": int,
+        "weekly_productivity": int,
+        "two_week_productivity": int,
+        "monthly_productivity": int,
+        "two_month_productivity": int,
+        "three_month_productivity": int,
+        "six_month_productivity": int,
+        "annual_productivity": int,
+    }

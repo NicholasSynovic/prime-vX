@@ -1,3 +1,4 @@
+from collections import namedtuple
 from typing import List, Tuple
 
 from pandas import DataFrame, Grouper
@@ -13,6 +14,21 @@ from prime_vx.db import (
     TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
     TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
     WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
+)
+
+BUCKET_STOR = namedtuple(
+    typename="BUCKET_STOR",
+    field_names=[
+        DAILY_PRODUCTIVITY_DB_TABLE_NAME,
+        WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
+        TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
+        MONTHLY_PRODUCTIVITY_DB_TABLE_NAME,
+        TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+        THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+        SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
+        ANNUAL_PRODUCTIVITY_DB_TABLE_NAME,
+    ],
+    defaults=[None, None, None, None, None, None, None, None],
 )
 
 INTERVAL_PAIRS: List[Tuple[str, str]] = [
