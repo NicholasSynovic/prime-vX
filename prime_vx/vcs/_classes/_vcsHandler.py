@@ -2,8 +2,6 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from typing import List, Protocol
 
-from pandas import DataFrame
-
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 
 
@@ -11,7 +9,7 @@ class VCSHandler_Protocol(Protocol):
     """
     VCSHandler_Protocol
 
-    Top level Protocol (a class for linters to ensure that variables andmethods are defined) for version control system (VCS) handlers to enforce common variables are defined in all implementations
+    Top level Protocol (a class for linters to ensure that variables and methods are defined) for version control system (VCS) handlers to enforce common variables are defined in all implementations
     """
 
     path: Path
