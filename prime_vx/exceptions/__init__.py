@@ -62,3 +62,9 @@ class VCSDBError_MultiplePathCaptured(Exception):
     def __init__(self) -> None:
         self.message = "ERROR: Multiple project paths captured in VCS database"
         super().__init__(self.message)
+
+
+class InvalidIssueTrackerControl(Exception):
+    def __init__(self) -> None:
+        self.message = "Invalid issue tracker"
+        super().__init__(self.message)

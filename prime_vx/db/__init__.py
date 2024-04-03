@@ -4,6 +4,7 @@ LOC_DB_TABLE_NAME: str = "loc"
 COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME: str = (
     "commit_hash_to_productivity_map"
 )
+ISSUES_DB_TABLE_NAME: str = "issues"
 
 DAILY_PRODUCTIVITY_DB_TABLE_NAME: str = "daily_productivity"
 WEEKLY_PRODUCTIVITY_DB_TABLE_NAME: str = "weekly_productivity"

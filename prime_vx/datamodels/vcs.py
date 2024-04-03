@@ -1,5 +1,3 @@
-from datetime import datetime
-
 from typedframe import DATE_TIME_DTYPE, TypedDataFrame
 
 
