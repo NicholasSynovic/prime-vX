@@ -21,7 +21,7 @@ from prime_vx.metrics.productivity.main import main as prodMain
 from prime_vx.metrics.productivity.mapping import main as prodMapping
 
 
-def main(namespace: Namespace) -> None:
+def main(namespace: Namespace, db: SQLite) -> None:
     # TODO: Add docstring
 
     programInput: dict[str, List[Path]] = dict(namespace._get_kwargs())
@@ -29,16 +29,6 @@ def main(namespace: Namespace) -> None:
 
     inputKey: str = [key for key in programKeys if "input" in key][0]
     inputKeySplit: List[str] = inputKey.split(sep=".")
-
-    dbPath: Path = programInput[inputKey][0]
-    resolvedDBPath: Path = resolvePath(path=dbPath)
-
-    if isFile(path=resolvedDBPath):
-        pass
-    else:
-        raise InvalidDBPath
-
-    db: SQLite = SQLite(path=resolvedDBPath)
 
     vcsDF: DataFrame = db.read(
         tdf=VCS_DF_DATAMODEL,
