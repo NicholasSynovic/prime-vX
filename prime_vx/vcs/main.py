@@ -12,6 +12,7 @@ from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidVersionControl
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
+from prime_vx.vcs.mercurial import MercurialHandler
 
 
 def extractCommitMetadata(handler: VCSHandler_ABC) -> DataFrame:
@@ -57,6 +58,8 @@ def main(namespace: Namespace, db: SQLite) -> None:
     match inputKeySplit[1]:
         case "git":
             vcsHandler: VCSHandler_ABC = GitHandler(path=repositoryPath)
+        case "hg":
+            vcsHandler: VCSHandler_ABC = MercurialHandler(path=repositoryPath)
         case _:
             raise InvalidVersionControl
 

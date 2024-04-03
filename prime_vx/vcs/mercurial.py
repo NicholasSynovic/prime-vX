@@ -10,11 +10,11 @@ from prime_vx.vcs import VCS_METADATA_KEY_LIST
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 
 
-class GitHandler(VCSHandler_ABC):
+class MercurialHandler(VCSHandler_ABC):
     """
-    GitHandler
+    MercurialHandler
 
-    Interface to extract information stored in the VCS from git repositories
+    Interface to extract information stored in the VCS from hg repositories
     """
 
     def __init__(self, path: Path) -> None:
@@ -23,7 +23,7 @@ class GitHandler(VCSHandler_ABC):
 
         Initalize the class and determine if the path is a valid path
 
-        :param path: A path to a directory containing a git repository
+        :param path: A path to a directory containing a hg repository
         :type path: Path
         """
         resolvedPath: Path = resolvePath(path=path)
@@ -34,12 +34,10 @@ class GitHandler(VCSHandler_ABC):
             print("Invalid directory path. Please point path to a directory")
             quit(1)
 
-        self.cmdPrefix: str = f"git --no-pager -C {self.path}"
+        self.cmdPrefix: str = f"hg --pager never -R {self.path}"
 
     def isRepository(self) -> bool:
-        code: int = runCommand(
-            cmd=f"{self.cmdPrefix} rev-parse --is-inside-work-tree"
-        ).returncode
+        code: int = runCommand(cmd=f"{self.cmdPrefix} --cwd {self.path}").returncode
 
         if code == 0:
             return True
@@ -48,14 +46,14 @@ class GitHandler(VCSHandler_ABC):
 
     def getCommitHashes(self) -> List[str]:
         hashes: str = runCommand(
-            cmd=f"{self.cmdPrefix} log --all --reverse --format='%H'"
+            cmd=f"{self.cmdPrefix} log --template '{{node}}\n'"
         ).stdout.decode()
         hashList: List[str] = hashes.strip().replace("'", "").split(sep="\n")
         return hashList
 
     def checkoutCommit(self, commitHash: str) -> bool:
         code: int = runCommand(
-            cmd=f"{self.cmdPrefix} checkout --force {commitHash}"
+            cmd=f"{self.cmdPrefix} update --clean {commitHash}"
         ).returncode
 
         if code == 0:
@@ -66,7 +64,7 @@ class GitHandler(VCSHandler_ABC):
     def getCommitMetadata(self, commitHash: str) -> DataFrame:
         values: List[str] = (
             runCommand(
-                cmd=f"{self.cmdPrefix} log {commitHash} -n 1 --format='%H,,%T,,%P,,%an,,%ae,,%at,,%cn,,%ce,,%ct,,%d,,%S,,%G?'"
+                cmd=f"{self.cmdPrefix} log -r {commitHash} -T '{{node}},,'',,{{parents}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{rev}},,{{branch}},,''\n'"
             )
             .stdout.decode()
             .strip()
@@ -82,13 +80,13 @@ class GitHandler(VCSHandler_ABC):
             metadata[key] = [value]
 
         metadata["authorDate"] = [
-            datetime.fromtimestamp(float(metadata["authorDate"][0]))
+            datetime.fromtimestamp(float(metadata["authorDate"][0].split(" ")[0]))
         ]
         metadata["committerDate"] = [
-            datetime.fromtimestamp(float(metadata["committerDate"][0]))
+            datetime.fromtimestamp(float(metadata["committerDate"][0].split(" ")[0]))
         ]
 
-        metadata["vcs"] = ["git"]
+        metadata["vcs"] = ["mercurial"]
         metadata["path"] = [self.path.__str__()]
 
         df: DataFrame = DataFrame(data=metadata)

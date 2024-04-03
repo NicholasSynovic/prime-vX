@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from typing import List, Protocol
 
-from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
+from pandas import DataFrame
 
 
 class VCSHandler_Protocol(Protocol):
@@ -49,7 +49,7 @@ class VCSHandler_ABC(VCSHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def getCommitMetadata(self, commitHash: str) -> VCS_DF_DATAMODEL:
+    def getCommitMetadata(self, commitHash: str) -> DataFrame:
         """
         getCommitMetadata
 

@@ -66,6 +66,16 @@ class CMDLineParser:
         )
         self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
 
+        # Mercurial VCS subparser
+        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="vcs-hg",
+            help=VCS_HELP_TEMPLATE.substitute(vcs="hg"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="hg")
+
         # SCC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-scc",
