@@ -19,7 +19,7 @@ CLOC_KEY_LIST: List[str] = [
 # gocloc (https://github.com/hhatto/gocloc)
 # loc (https://github.com/cgag/loc)
 # loccount (https://gitlab.com/esr/loccount)
-# polygloy (https://github.com/vmchale/polyglot)
+# polyglot (https://github.com/vmchale/polyglot)
 # Tokei (https://github.com/XAMPPRocky/tokei)
 # sloc (https://github.com/flosse/sloc)
 # gloc (https://github.com/JoaoDanielRufino/gcloc)
