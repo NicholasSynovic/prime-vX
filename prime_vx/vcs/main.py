@@ -6,7 +6,6 @@ import pandas
 from pandas import DataFrame
 from progress.bar import Bar
 
-from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import VCS_DB_TABLE_NAME
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidVersionControl
@@ -40,11 +39,7 @@ def extractCommitMetadata(handler: VCSHandler_ABC) -> DataFrame:
             data.append(handler.getCommitMetadata(commitHash=hash_).df)
             bar.next()
 
-    df: DataFrame = pandas.concat(objs=data, ignore_index=True)
-
-    validateDF: VCS_DF_DATAMODEL = VCS_DF_DATAMODEL(df=df)
-
-    return validateDF.df
+    return pandas.concat(objs=data, ignore_index=True)
 
 
 def main(namespace: Namespace, db: SQLite) -> None:
