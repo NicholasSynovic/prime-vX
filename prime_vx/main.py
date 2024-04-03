@@ -3,6 +3,8 @@ from operator import attrgetter
 from pathlib import Path
 from typing import Any, List, Literal, Tuple
 
+from pyfs import isFile, resolvePath
+
 from prime_vx import (
     CLOC_HELP_TEMPLATE,
     EPILOG,
@@ -12,6 +14,8 @@ from prime_vx import (
     VCS_HELP_TEMPLATE,
 )
 from prime_vx.cloc.main import main as clocMain
+from prime_vx.db.sqlite import SQLite
+from prime_vx.exceptions import *
 from prime_vx.exceptions import InvalidCommandLineSubprogram
 from prime_vx.metrics.main import main as metricMain
 from prime_vx.vcs.main import main as vcsMain
@@ -169,6 +173,24 @@ class CMDLineParser:
         )
 
 
+def getDB(namespace: Namespace, searchTerm: str = "input") -> SQLite:
+    programInput: dict[str, List[Path]] = dict(namespace._get_kwargs())
+    programKeys: List[str] = list(programInput.keys())
+
+    inputKey: str = [key for key in programKeys if searchTerm in key][0]
+    inputKeySplit: List[str] = inputKey.split(sep=".")
+
+    dbPath: Path = programInput[inputKey][0]
+    resolvedDBPath: Path = resolvePath(path=dbPath)
+
+    if isFile(path=resolvedDBPath):
+        pass
+    else:
+        raise InvalidDBPath
+
+    return SQLite(path=resolvedDBPath)
+
+
 def main() -> None:
     """
     main
@@ -182,11 +204,27 @@ def main() -> None:
 
     match parameterData[0]:
         case "vcs":
-            vcsMain(namespace=parser.namespace)
+            vcsMain(
+                namespace=parser.namespace,
+                db=getDB(
+                    namespace=parser.namespace,
+                    searchTerm="output",
+                ),
+            )
         case "cloc":
-            clocMain(namespace=parser.namespace)
+            clocMain(
+                namespace=parser.namespace,
+                db=getDB(
+                    namespace=parser.namespace,
+                ),
+            )
         case "metric":
-            metricMain(namespace=parser.namespace)
+            metricMain(
+                namespace=parser.namespace,
+                db=getDB(
+                    namespace=parser.namespace,
+                ),
+            )
         case _:
             raise InvalidCommandLineSubprogram
 
