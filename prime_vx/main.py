@@ -188,7 +188,11 @@ def getDB(namespace: Namespace, searchTerm: str = "input") -> SQLite:
     else:
         raise InvalidDBPath
 
-    return SQLite(path=resolvedDBPath)
+    db: SQLite = SQLite(path=resolvedDBPath)
+
+    db.createTables()
+
+    return db
 
 
 def main() -> None:
@@ -202,28 +206,31 @@ def main() -> None:
     firstParameter: Tuple[str, Any] = parser.namespace._get_kwargs()[0]
     parameterData: List[str] = firstParameter[0].split(sep=".")
 
+    db: SQLite
     match parameterData[0]:
         case "vcs":
+            db = getDB(
+                namespace=parser.namespace,
+                searchTerm="output",
+            )
+
             vcsMain(
                 namespace=parser.namespace,
-                db=getDB(
-                    namespace=parser.namespace,
-                    searchTerm="output",
-                ),
+                db=db,
             )
         case "cloc":
+            db = getDB(namespace=parser.namespace)
+
             clocMain(
                 namespace=parser.namespace,
-                db=getDB(
-                    namespace=parser.namespace,
-                ),
+                db=db,
             )
         case "metric":
+            db = getDB(namespace=parser.namespace)
+
             metricMain(
                 namespace=parser.namespace,
-                db=getDB(
-                    namespace=parser.namespace,
-                ),
+                db=db,
             )
         case _:
             raise InvalidCommandLineSubprogram

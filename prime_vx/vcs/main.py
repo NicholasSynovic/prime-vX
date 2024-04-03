@@ -46,16 +46,13 @@ def extractCommitMetadata(handler: VCSHandler_ABC) -> DataFrame:
     return validateDF.df
 
 
-def main(namespace: Namespace) -> None:
+def main(namespace: Namespace, db: SQLite) -> None:
     programInput: dict[str, List[Path]] = dict(namespace._get_kwargs())
     programKeys: List[str] = list(programInput.keys())
 
     inputKey: str = [key for key in programKeys if "input" in key][0]
     inputKeySplit: List[str] = inputKey.split(sep=".")
     repositoryPath: Path = programInput[inputKey][0]
-
-    outputKey: str = [key for key in programKeys if "output" in key][0]
-    dbPath: Path = programInput[outputKey][0]
 
     match inputKeySplit[1]:
         case "git":
@@ -65,6 +62,4 @@ def main(namespace: Namespace) -> None:
 
     metadataDF: DataFrame = extractCommitMetadata(handler=vcsHandler)
 
-    metadataDBHandler: SQLite = SQLite(path=dbPath)
-    metadataDBHandler.createTables()
-    metadataDBHandler.write(df=metadataDF, tableName=VCS_DB_TABLE_NAME)
+    db.write(df=metadataDF, tableName=VCS_DB_TABLE_NAME)
