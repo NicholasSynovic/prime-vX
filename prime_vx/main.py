@@ -3,7 +3,7 @@ from operator import attrgetter
 from pathlib import Path
 from typing import Any, List, Literal, Tuple
 
-from pyfs import isFile, resolvePath
+from pyfs import isDirectory, isFile, resolvePath
 
 from prime_vx import (
     CLOC_HELP_TEMPLATE,
@@ -177,12 +177,12 @@ def getDB(namespace: Namespace, searchTerm: str = "input") -> SQLite:
     programInput: dict[str, List[Path]] = dict(namespace._get_kwargs())
     programKeys: List[str] = list(programInput.keys())
 
-    inputKey: str = [key for key in programKeys if searchTerm in key][0]
+    dbKey: str = [key for key in programKeys if searchTerm in key][0]
 
-    dbPath: Path = programInput[inputKey][0]
+    dbPath: Path = programInput[dbKey][0]
     resolvedDBPath: Path = resolvePath(path=dbPath)
 
-    if isFile(path=resolvedDBPath):
+    if isFile(path=resolvedDBPath) or not isDirectory(path=resolvedDBPath):
         pass
     else:
         raise InvalidDBPath
