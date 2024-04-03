@@ -13,13 +13,7 @@ from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
 from prime_vx.db.sqlite import SQLite
-from prime_vx.exceptions import (
-    InvalidCLOCTool,
-    InvalidDBPath,
-    InvalidVersionControl,
-    VCSDBError_MultiplePathCaptured,
-    VCSDBError_MultipleVCSCaptured,
-)
+from prime_vx.exceptions import *
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
 
@@ -61,7 +55,7 @@ def computeCLOC(
     return CLOC_DF_DATAMODEL(df=rawDF).df
 
 
-def main(namespace: Namespace) -> None:
+def main(namespace: Namespace, db: SQLite) -> None:
     """
     main
 
@@ -76,15 +70,6 @@ def main(namespace: Namespace) -> None:
     inputKey: str = [key for key in programKeys if "input" in key][0]
     inputKeySplit: List[str] = inputKey.split(sep=".")
 
-    dbPath: Path = programInput[inputKey][0]
-    resolvedDBPath: Path = resolvePath(path=dbPath)
-
-    if isFile(path=resolvedDBPath):
-        pass
-    else:
-        raise InvalidDBPath
-
-    db: SQLite = SQLite(path=resolvedDBPath)
     vcsDF: DataFrame = db.read(
         tdf=VCS_DF_DATAMODEL,
         tableName=VCS_DB_TABLE_NAME,
