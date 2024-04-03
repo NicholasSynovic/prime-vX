@@ -178,7 +178,6 @@ def getDB(namespace: Namespace, searchTerm: str = "input") -> SQLite:
     programKeys: List[str] = list(programInput.keys())
 
     inputKey: str = [key for key in programKeys if searchTerm in key][0]
-    inputKeySplit: List[str] = inputKey.split(sep=".")
 
     dbPath: Path = programInput[inputKey][0]
     resolvedDBPath: Path = resolvePath(path=dbPath)
