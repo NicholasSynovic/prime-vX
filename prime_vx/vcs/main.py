@@ -36,7 +36,12 @@ def extractCommitMetadata(handler: VCSHandler_ABC) -> DataFrame:
     with Bar("Extracting commit metadata...", max=len(hashes)) as bar:
         hash_: str
         for hash_ in hashes:
-            data.append(handler.getCommitMetadata(commitHash=hash_).df)
+            df: DataFrame | None = handler.getCommitMetadata(commitHash=hash_)
+            if df is None:
+                bar.next()
+                continue
+
+            data.append(df)
             bar.next()
 
     return pandas.concat(objs=data, ignore_index=True)

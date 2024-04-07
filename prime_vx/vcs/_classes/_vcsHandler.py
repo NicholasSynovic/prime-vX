@@ -49,7 +49,7 @@ class VCSHandler_ABC(VCSHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def getCommitMetadata(self, commitHash: str) -> DataFrame:
+    def getCommitMetadata(self, commitHash: str) -> DataFrame | None:
         """
         getCommitMetadata
 

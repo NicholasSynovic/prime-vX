@@ -61,7 +61,7 @@ class MercurialHandler(VCSHandler_ABC):
         else:
             return False
 
-    def getCommitMetadata(self, commitHash: str) -> DataFrame:
+    def getCommitMetadata(self, commitHash: str) -> DataFrame | None:
         values: List[str] = (
             runCommand(
                 cmd=f"{self.cmdPrefix} log -r {commitHash} -T '{{node}},,'',,{{parents}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{rev}},,{{branch}},,''\n'"
@@ -73,6 +73,9 @@ class MercurialHandler(VCSHandler_ABC):
         )
 
         metadata: dict[str, Any] = dict(zip(VCS_METADATA_KEY_LIST, values))
+
+        if len(metadata) == 1:
+            return None
 
         key: str
         value: str
