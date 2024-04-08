@@ -2,6 +2,7 @@ from abc import ABCMeta, abstractmethod
 from string import Template
 from typing import List, Protocol
 
+from pandas import DataFrame
 from requests import Response
 
 
@@ -17,5 +18,5 @@ class ITHandler_ABC(ITHandler_Protocol, metaclass=ABCMeta):
         ...
 
     @abstractmethod
-    def extractIssues(self, resp: Response) -> dict:
+    def extractIssues(self, resps: List[Response]) -> DataFrame:
         ...

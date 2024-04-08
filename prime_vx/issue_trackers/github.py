@@ -1,25 +1,26 @@
 import re
 from datetime import datetime
+from json import dumps
 from re import Match
 from string import Template
 from time import sleep, time
 from typing import List
 
+from pandas import DataFrame
 from progress.bar import Bar
 from requests import Response, get
 from requests.structures import CaseInsensitiveDict
 
+from prime_vx.datamodels.issue_tracker import IT_DF_DATAMODEL
 from prime_vx.issue_trackers import RESPONSE_HEADERS_HANDLER
 from prime_vx.issue_trackers._classes._issueTrackerHandler import ITHandler_ABC
 
 
 class GitHubHandler(ITHandler_ABC):
-    def __init__(self, repo: str, owner: str, token: str) -> None:
+    def __init__(self, owner: str, repo: str, token: str) -> None:
         self.token: str = token
 
-        foo: str = (
-            f"https://api.github.com/repos/{owner}/{repo}/issues?state=all&per_page=100"
-        )
+        foo: str = f"https://api.github.com/repos/{owner}/{repo}/issues?state=all&direction=asc&per_page=100"
         self.endpoint: Template = Template(template=foo + "&page=${page}")
 
     def parseResponseHeader(self, headers: CaseInsensitiveDict) -> None:
@@ -49,7 +50,7 @@ class GitHubHandler(ITHandler_ABC):
             "Accept": "application/vnd.github+json",
             "X-GitHub-Api-Version": "2022-11-28",
             "User-Agent": "prime-vX",
-            # "Authorization": f"Bearer {self.token}",
+            "Authorization": f"Bearer {self.token}",
         }
 
         with Bar("Getting issues...", max=1) as bar:
@@ -103,10 +104,42 @@ class GitHubHandler(ITHandler_ABC):
 
         return data
 
-    def extractIssues(self, resp: Response) -> dict:
-        pass
+    def extractIssues(self, resps: List[Response]) -> DataFrame:
+        data: dict[str, List[str | int | float]] = {
+            "id": [],
+            "nodeID": [],
+            "state": [],
+            "dateOpened": [],
+            "dateClosed": [],
+            "json": [],
+        }
 
+        with Bar("Extracting issues from HTTP responses...", max=len(resps)) as bar:
+            resp: Response
+            for resp in resps:
+                json: List[dict] = resp.json()
 
-gh = GitHubHandler(repo="numpy", owner="numpy", token="a")
+                datum: dict
+                for datum in json:
+                    createdAt: float = datetime.strptime(
+                        datum["created_at"], "%Y-%m-%dT%H:%M:%S%z"
+                    ).timestamp()
 
-print(len(gh.getResponses()))
+                    closedAt: float
+                    try:
+                        closedAt = datetime.strptime(
+                            datum["closed_at"], "%Y-%m-%dT%H:%M:%S%z"
+                        ).timestamp()
+                    except TypeError:
+                        closedAt = -1.0
+
+                    data["id"].append(datum["id"])
+                    data["nodeID"].append(datum["node_id"])
+                    data["state"].append(datum["state"])
+                    data["dateOpened"].append(createdAt)
+                    data["dateClosed"].append(closedAt)
+                    data["json"].append(dumps(obj=datum))
+
+                bar.next()
+
+        return IT_DF_DATAMODEL(df=DataFrame(data=data)).df
