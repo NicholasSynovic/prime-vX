@@ -252,7 +252,12 @@ def main() -> None:
     """
     parser: CMDLineParser = CMDLineParser()
 
-    firstParameter: Tuple[str, Any] = parser.namespace._get_kwargs()[0]
+    try:
+        firstParameter: Tuple[str, Any] = parser.namespace._get_kwargs()[0]
+    except IndexError:
+        print(PROG, EPILOG)
+        quit(1)
+
     parameterData: List[str] = firstParameter[0].split(sep=".")
 
     db: SQLite
