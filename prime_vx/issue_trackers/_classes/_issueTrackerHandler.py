@@ -1,16 +1,19 @@
 from abc import ABCMeta, abstractmethod
-from typing import Protocol
+from string import Template
+from typing import List, Protocol
 
 from requests import Response
 
 
 class ITHandler_Protocol(Protocol):
+    token: str
+    endpoint: Template
     ...
 
 
 class ITHandler_ABC(ITHandler_Protocol, metaclass=ABCMeta):
     @abstractmethod
-    def getRequest(self, paginate: bool = True) -> dict:
+    def getResponses(self) -> List[Response]:
         ...
 
     @abstractmethod
