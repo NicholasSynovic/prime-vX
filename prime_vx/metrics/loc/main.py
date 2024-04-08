@@ -110,6 +110,6 @@ def main(df: DataFrame) -> DataFrame:
             previousLOC = row[1]
             bar.next()
 
-    df: DataFrame = DataFrame(data=data)
+    df_: DataFrame = DataFrame(data=data)
 
-    return LOC_DF_DATAMODEL(df=df).df
+    return LOC_DF_DATAMODEL(df=df_).df

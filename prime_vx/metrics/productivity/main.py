@@ -18,7 +18,6 @@ from prime_vx.db import (
     WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
 )
 from prime_vx.metrics.productivity import createGroups
-from prime_vx.metrics.productivity.mapping import main as prodMapping
 
 BUCKET_STOR = namedtuple(
     typename="BUCKET_STOR",
