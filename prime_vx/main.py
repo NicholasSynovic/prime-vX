@@ -120,12 +120,26 @@ class CMDLineParser:
             parserName="productivity",
         )
 
+        # GitHub issue tracker subparser
+        self.ghitSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="it-gh",
+            help=ISSUE_TRACKER_HELP_TEMPLATE.substitute(tracker="GitHub"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="it",
+            parser=self.sccSubparser,
+            parserName="gh",
+        )
+
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()
 
     def _addArgs(
         self,
-        suffix: Literal["vcs", "cloc", "metric"],
+        suffix: Literal["vcs", "cloc", "metric", "it"],
         parser: ArgumentParser,
         parserName: str,
     ) -> None:
@@ -142,7 +156,7 @@ class CMDLineParser:
         :param parserName: The name of the parser to add to the help string
         :type parserName: str
         """
-        helpMessage: str = ""
+        helpMessage = f"Path to SQLite3 database generated from a {PROG} VCS tool"
         destination: str = ""
 
         match suffix:
@@ -160,15 +174,39 @@ class CMDLineParser:
                     dest=f"vcs.{parserName}.output",
                 )
             case "cloc":
-                helpMessage = (
-                    f"Path to SQLite3 database generated from a {PROG} VCS tool"
-                )
                 destination = f"cloc.{parserName}.input"
             case "metric":
-                helpMessage = (
-                    f"Path to SQLite3 database generated from a {PROG} VCS tool"
-                )
                 destination = f"metric.{parserName}.input"
+            case "it":
+                parser.add_argument(
+                    "-o",
+                    "--owner",
+                    nargs=1,
+                    type=str,
+                    required=True,
+                    help=f"GitHub repository owner account name",
+                    dest=f"it.{parserName}.owner",
+                )
+                parser.add_argument(
+                    "-r",
+                    "--repo",
+                    nargs=1,
+                    type=str,
+                    required=True,
+                    help=f"GitHub repository name",
+                    dest=f"it.{parserName}.repo",
+                )
+                parser.add_argument(
+                    "-t",
+                    "--token",
+                    nargs=1,
+                    type=str,
+                    required=True,
+                    help=f"GitHub personal access token (PAT)",
+                    dest=f"it.{parserName}.token",
+                )
+
+                destination = f"it.{parserName}.input"
             case _:
                 pass
 

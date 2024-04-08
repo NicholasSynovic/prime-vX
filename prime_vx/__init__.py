@@ -15,3 +15,6 @@ CLOC_HELP_TEMPLATE: Template = Template(
 METRIC_HELP_TEMPLATE: Template = Template(
     template="Compute ${metric} metrics",
 )
+ISSUE_TRACKER_HELP_TEMPLATE: Template = Template(
+    template="Get issues from ${tracker} issue tracker",
+)

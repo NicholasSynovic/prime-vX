@@ -15,25 +15,7 @@ from prime_vx.issue_trackers.github import GitHubHandler
 
 
 def getIssues(handler: ITHandler_ABC) -> DataFrame:
-    data: List[DataFrame] = []
-
-    if handler.isRepository() is False:
-        print(f"Invalid repository path")
-        quit(1)
-
-    hashes: List[str] = handler.getCommitHashes()
-
-    with Bar("Extracting commit metadata...", max=len(hashes)) as bar:
-        hash_: str
-        for hash_ in hashes:
-            data.append(handler.getCommitMetadata(commitHash=hash_).df)
-            bar.next()
-
-    df: DataFrame = pandas.concat(objs=data, ignore_index=True)
-
-    validateDF: ISSUE_DF_DATAMODEL = ISSUE_DF_DATAMODEL(df=df)
-
-    return validateDF.df
+    pass
 
 
 def main(namespace: Namespace, db: SQLite) -> None:
@@ -42,11 +24,10 @@ def main(namespace: Namespace, db: SQLite) -> None:
 
     inputKey: str = [key for key in programKeys if "input" in key][0]
     inputKeySplit: List[str] = inputKey.split(sep=".")
-    repositoryPath: Path = programInput[inputKey][0]
 
     match inputKeySplit[1]:
-        case "git":
-            vcsHandler: ITHandler_ABC = GitHubHandler(path=repositoryPath)
+        case "github":
+            itHandler: ITHandler_ABC = GitHubHandler()
         case _:
             raise InvalidIssueTrackerControl()
 
