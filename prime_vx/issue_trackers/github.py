@@ -108,6 +108,7 @@ class GitHubHandler(ITHandler_ABC):
         data: dict[str, List[str | int | float]] = {
             "id": [],
             "nodeID": [],
+            "number": [],
             "state": [],
             "dateOpened": [],
             "dateClosed": [],
@@ -136,6 +137,7 @@ class GitHubHandler(ITHandler_ABC):
 
                     data["id"].append(datum["id"])
                     data["nodeID"].append(datum["node_id"])
+                    data["number"].append(datum["number"])
                     data["state"].append(datum["state"])
                     data["dateOpened"].append(createdAt)
                     data["dateClosed"].append(closedAt)

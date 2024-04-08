@@ -297,6 +297,7 @@ class SQLite(SQLiteHandler_ABC):
             metadata,
             Column("id", Integer),
             Column("nodeID", String),
+            Column("number", Integer),
             Column("state", String),
             Column("dateOpened", Float),
             Column("dateClosed", Float),

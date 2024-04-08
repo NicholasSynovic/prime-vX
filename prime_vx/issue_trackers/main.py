@@ -31,8 +31,6 @@ def main(namespace: Namespace, db: SQLite) -> None:
     repo: str = programInput[repoKey][0]
     token: str = programInput[tokenKey][0]
 
-    print(owner, repo, token)
-
     match inputKeySplit[1]:
         case "github":
             itHandler: ITHandler_ABC = GitHubHandler(
