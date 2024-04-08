@@ -292,6 +292,18 @@ class SQLite(SQLiteHandler_ABC):
             ),
         )
 
+        issueTrackerTable: Table = Table(
+            ISSUE_TRACKER_TABLE_NAME,
+            metadata,
+            Column("id"),
+            Column("nodeID"),
+            Column("state"),
+            Column("dateOpened"),
+            Column("dateClosed"),
+            Column("json"),
+            PrimaryKeyConstraint("id"),
+        )
+
         metadata.create_all(bind=self.engine, checkfirst=True)
 
     def write(self, df: DataFrame, tableName: str, includeIndex: bool = False) -> None:
