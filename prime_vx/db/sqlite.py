@@ -306,6 +306,140 @@ class SQLite(SQLiteHandler_ABC):
             PrimaryKeyConstraint("id"),
         )
 
+        dailyDeveloperCountTable: Table = Table(
+            DAILY_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        weeklyDeveloperCountTable: Table = Table(
+            WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoWeekDeveloperCountTable: Table = Table(
+            TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        monthlyDeveloperCountTable: Table = Table(
+            MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoMonthDeveloperCountTable: Table = Table(
+            TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        threeMonthDeveloperCountTable: Table = Table(
+            THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        sixMonthDeveloperCountTable: Table = Table(
+            SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        annualMonthDeveloperCountTable: Table = Table(
+            ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("developer_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        commitHashToDeveloperCountBucketMap: Table = Table(
+            COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
+            metadata,
+            Column("index", Integer),
+            Column("commitHash", String),
+            Column(DAILY_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            Column(WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            Column(TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            Column(MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            Column(TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            Column(THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            Column(SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            Column(ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME, Integer),
+            PrimaryKeyConstraint("index"),
+            ForeignKeyConstraint(
+                columns=["commitHash"],
+                refcolumns=[f"{VCS_DB_TABLE_NAME}.commitHash"],
+            ),
+            ForeignKeyConstraint(
+                columns=[DAILY_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{DAILY_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[
+                    f"{THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket",
+                ],
+            ),
+            ForeignKeyConstraint(
+                columns=[SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+        )
+
         metadata.create_all(bind=self.engine, checkfirst=True)
 
     def write(self, df: DataFrame, tableName: str, includeIndex: bool = False) -> None:
