@@ -8,6 +8,7 @@ from pyfs import isDirectory, isFile, resolvePath
 from prime_vx import (
     CLOC_HELP_TEMPLATE,
     EPILOG,
+    ISSUE_TRACKER_HELP_TEMPLATE,
     METRIC_HELP_TEMPLATE,
     PROG,
     TOP_LEVEL_DESCRIPTION,
@@ -17,6 +18,7 @@ from prime_vx.cloc.main import main as clocMain
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import *
 from prime_vx.exceptions import InvalidCommandLineSubprogram
+from prime_vx.issue_trackers.main import main as itMain
 from prime_vx.metrics.main import main as metricMain
 from prime_vx.vcs.main import main as vcsMain
 
@@ -130,8 +132,8 @@ class CMDLineParser:
         )
         self._addArgs(
             suffix="it",
-            parser=self.sccSubparser,
-            parserName="gh",
+            parser=self.ghitSubparser,
+            parserName="github",
         )
 
         # Parse args
@@ -276,6 +278,13 @@ def main() -> None:
             db = getDB(namespace=parser.namespace)
 
             metricMain(
+                namespace=parser.namespace,
+                db=db,
+            )
+        case "it":
+            db = getDB(namespace=parser.namespace)
+
+            itMain(
                 namespace=parser.namespace,
                 db=db,
             )

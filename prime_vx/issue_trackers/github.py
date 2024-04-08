@@ -111,6 +111,7 @@ class GitHubHandler(ITHandler_ABC):
             "state": [],
             "dateOpened": [],
             "dateClosed": [],
+            "url": [],
             "json": [],
         }
 
@@ -138,6 +139,7 @@ class GitHubHandler(ITHandler_ABC):
                     data["state"].append(datum["state"])
                     data["dateOpened"].append(createdAt)
                     data["dateClosed"].append(closedAt)
+                    data["url"].append(resp.url)
                     data["json"].append(dumps(obj=datum))
 
                 bar.next()

@@ -293,14 +293,15 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         issueTrackerTable: Table = Table(
-            ISSUE_TRACKER_TABLE_NAME,
+            ISSUE_TRACKER_DB_TABLE_NAME,
             metadata,
-            Column("id"),
-            Column("nodeID"),
-            Column("state"),
-            Column("dateOpened"),
-            Column("dateClosed"),
-            Column("json"),
+            Column("id", Integer),
+            Column("nodeID", String),
+            Column("state", String),
+            Column("dateOpened", Float),
+            Column("dateClosed", Float),
+            Column("url", String),
+            Column("json", String),
             PrimaryKeyConstraint("id"),
         )
 

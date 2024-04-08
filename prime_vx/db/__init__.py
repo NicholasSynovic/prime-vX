@@ -5,7 +5,7 @@ COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME: str = (
     "commit_hash_to_productivity_map"
 )
 ISSUES_DB_TABLE_NAME: str = "issues"
-ISSUE_TRACKER_TABLE_NAME: str = "issue_tracker"
+ISSUE_TRACKER_DB_TABLE_NAME: str = "issue_tracker"
 
 DAILY_PRODUCTIVITY_DB_TABLE_NAME: str = "daily_productivity"
 WEEKLY_PRODUCTIVITY_DB_TABLE_NAME: str = "weekly_productivity"

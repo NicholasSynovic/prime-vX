@@ -8,5 +8,6 @@ class IT_DF_DATAMODEL(TypedDataFrame):
         "state": str,
         "dateOpened": float,
         "dateClosed": float,
+        "url": str,
         "json": str,
     }
