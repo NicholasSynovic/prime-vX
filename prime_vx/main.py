@@ -58,26 +58,6 @@ class CMDLineParser:
             description=f"{PROG} subprograms",
         )
 
-        # Git VCS subparser
-        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="vcs-git",
-            help=VCS_HELP_TEMPLATE.substitute(vcs="git"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
-
-        # Mercurial VCS subparser
-        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="vcs-hg",
-            help=VCS_HELP_TEMPLATE.substitute(vcs="hg"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="hg")
-
         # SCC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-scc",
@@ -90,6 +70,20 @@ class CMDLineParser:
             suffix="cloc",
             parser=self.sccSubparser,
             parserName="scc",
+        )
+
+        # GitHub issue tracker subparser
+        self.ghitSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="it-gh",
+            help=ISSUE_TRACKER_HELP_TEMPLATE.substitute(tracker="GitHub"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="it",
+            parser=self.ghitSubparser,
+            parserName="github",
         )
 
         # LOC metric subparser
@@ -122,19 +116,25 @@ class CMDLineParser:
             parserName="productivity",
         )
 
-        # GitHub issue tracker subparser
-        self.ghitSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="it-gh",
-            help=ISSUE_TRACKER_HELP_TEMPLATE.substitute(tracker="GitHub"),
+        # Git VCS subparser
+        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="vcs-git",
+            help=VCS_HELP_TEMPLATE.substitute(vcs="git"),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
         )
-        self._addArgs(
-            suffix="it",
-            parser=self.ghitSubparser,
-            parserName="github",
+        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
+
+        # Mercurial VCS subparser
+        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="vcs-hg",
+            help=VCS_HELP_TEMPLATE.substitute(vcs="hg"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
         )
+        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="hg")
 
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()
