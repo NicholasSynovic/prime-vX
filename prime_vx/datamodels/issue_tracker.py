@@ -4,10 +4,10 @@ from typedframe import TypedDataFrame
 class IT_DF_DATAMODEL(TypedDataFrame):
     schema = {
         "id": int,
-        "nodeID": str,
+        "node_id": str,
         "state": str,
-        "dateOpened": float,
-        "dateClosed": float,
+        "date_opened": float,
+        "date_closed": float,
         "url": str,
         "json": str,
     }

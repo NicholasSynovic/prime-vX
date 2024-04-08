@@ -52,8 +52,8 @@ def main(namespace: Namespace, db: SQLite) -> None:
             )
 
             mergedDF: DataFrame = vcsDF.join(
-                other=locDF.set_index("commitHash"),
-                on="commitHash",
+                other=locDF.set_index("commit_hash"),
+                on="commit_hash",
             )
 
             prodMappingDF: DataFrame = prodMapping(df=mergedDF)

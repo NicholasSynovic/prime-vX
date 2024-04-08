@@ -107,11 +107,11 @@ class GitHubHandler(ITHandler_ABC):
     def extractIssues(self, resps: List[Response]) -> DataFrame:
         data: dict[str, List[str | int | float]] = {
             "id": [],
-            "nodeID": [],
+            "node_id": [],
             "number": [],
             "state": [],
-            "dateOpened": [],
-            "dateClosed": [],
+            "date_opened": [],
+            "date_closed": [],
             "url": [],
             "json": [],
         }
@@ -136,11 +136,11 @@ class GitHubHandler(ITHandler_ABC):
                         closedAt = -1.0
 
                     data["id"].append(datum["id"])
-                    data["nodeID"].append(datum["node_id"])
+                    data["node_id"].append(datum["node_id"])
                     data["number"].append(datum["number"])
                     data["state"].append(datum["state"])
-                    data["dateOpened"].append(createdAt)
-                    data["dateClosed"].append(closedAt)
+                    data["date_opened"].append(createdAt)
+                    data["date_closed"].append(closedAt)
                     data["url"].append(resp.url)
                     data["json"].append(dumps(obj=datum))
 

@@ -15,7 +15,7 @@ class PRODUCTIVITY_DF_DATAMODEL(TypedDataFrame):
 
 class PRODUCTIVITY_MAPPING_DF_DATAMODEL(TypedDataFrame):
     schema = {
-        "commitHash": str,
+        "commit_hash": str,
         "daily_productivity": int,
         "weekly_productivity": int,
         "two_week_productivity": int,

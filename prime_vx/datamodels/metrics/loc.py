@@ -3,7 +3,7 @@ from typedframe import TypedDataFrame
 
 class LOC_DF_DATAMODEL(TypedDataFrame):
     schema = {
-        "commitHash": str,
+        "commit_hash": str,
         "loc": int,
         "kloc": float,
         "delta_loc": int,

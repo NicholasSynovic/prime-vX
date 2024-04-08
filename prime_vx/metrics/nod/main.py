@@ -6,58 +6,45 @@ from pandas import DataFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
-from prime_vx.datamodels.metrics.productivity import PRODUCTIVITY_DF_DATAMODEL
+from prime_vx.datamodels.metrics.nod import DEVELOPER_COUNT_DF_DATAMODEL
 from prime_vx.db import (
-    ANNUAL_PRODUCTIVITY_DB_TABLE_NAME,
-    DAILY_PRODUCTIVITY_DB_TABLE_NAME,
-    MONTHLY_PRODUCTIVITY_DB_TABLE_NAME,
-    SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
-    THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
-    TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
-    TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
-    WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
+    ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME,
+    DAILY_DEVELOPER_COUNT_DB_TABLE_NAME,
+    MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME,
+    SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+    THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+    TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+    TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME,
+    WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME,
 )
 from prime_vx.metrics.productivity import createGroups
 
 BUCKET_STOR = namedtuple(
     typename="BUCKET_STOR",
     field_names=[
-        DAILY_PRODUCTIVITY_DB_TABLE_NAME,
-        WEEKLY_PRODUCTIVITY_DB_TABLE_NAME,
-        TWO_WEEK_PRODUCTIVITY_DB_TABLE_NAME,
-        MONTHLY_PRODUCTIVITY_DB_TABLE_NAME,
-        TWO_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
-        THREE_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
-        SIX_MONTH_PRODUCTIVITY_DB_TABLE_NAME,
-        ANNUAL_PRODUCTIVITY_DB_TABLE_NAME,
+        DAILY_DEVELOPER_COUNT_DB_TABLE_NAME,
+        WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME,
+        TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME,
+        MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME,
+        TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+        THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+        SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME,
+        ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME,
     ],
 )
 
 COMMIT_HASH_TO_BUCKET_MAPPING: dict[str, BUCKET_STOR] = {}
 
 
-def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
-    """
-    computeProductivity
-
-    Compute the productivity of a project (effort / time) for different time intervals
-
-    :param groups: A DataFrameGroupBy object that is grouped into time intervals
-    :type groups: DataFrameGroupBy
-    :param datum: Metadata containing the time interval type being analyzed
-    :type datum: Tuple[str, str]
-    :return: A DataFrame that conforms to the Productivity datamodel
-    :rtype: DataFrame
-    """
-
+def countDevelopers(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
     data: dict[str, List[int | float | datetime]] = {
         "bucket": [],
         "bucket_start": [],
         "bucket_end": [],
-        "effort_LOC": [],
-        "effort_KLOC": [],
-        "productivity_LOC": [],
-        "productivity_KLOC": [],
+        "author_count": [],
+        "author_email_count": [],
+        "committer_count": [],
+        "committer_email_count": [],
     }
 
     bucket: int = 1
@@ -65,21 +52,21 @@ def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
     with Bar(f"Computing {frequency.replace('_', ' ')}...", max=len(groups)) as bar:
         group: DataFrame
         for _, group in groups:
-            effortLOC: int = group["delta_loc"].abs().sum()
-            effortKLOC: float = group["delta_kloc"].abs().sum()
-            productivityLOC: float = effortLOC / bucket
-            productivityKLOC: float = effortKLOC / bucket
+            authorCount: int
+            authorEmailCount: int
+            committerCount: int
+            committerEmailCount: int
 
             data["bucket"].append(bucket)
-            data["bucket_start"].append(group["committerDate"].min().to_pydatetime())
-            data["bucket_end"].append(group["committerDate"].max().to_pydatetime())
-            data["effort_KLOC"].append(effortKLOC)
-            data["effort_LOC"].append(effortLOC)
-            data["productivity_KLOC"].append(productivityKLOC)
-            data["productivity_LOC"].append(productivityLOC)
+            data["bucket_start"].append(group["committer_date"].min().to_pydatetime())
+            data["bucket_end"].append(group["committer_date"].max().to_pydatetime())
+            data["author_count"]
+            data["author_email_count"]
+            data["committer_count"]
+            data["committer_email_count"]
 
             hash_: str
-            for hash_ in group["commitHash"]:
+            for hash_ in group["commit_hash"]:
                 setattr(
                     COMMIT_HASH_TO_BUCKET_MAPPING[hash_],
                     frequency,
@@ -89,7 +76,7 @@ def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
             bucket += 1
             bar.next()
 
-    return PRODUCTIVITY_DF_DATAMODEL(df=DataFrame(data=data)).df
+    return DEVELOPER_COUNT_DF_DATAMODEL(df=DataFrame(data=data)).df
 
 
 def main(df: DataFrame) -> dict[str, DataFrame]:
@@ -107,7 +94,7 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
 
     dfDict: dict[str, DataFrame] = {}
 
-    hashes: List[str] = df["commitHash"].to_list()
+    hashes: List[str] = df["commit_hash"].to_list()
     COMMIT_HASH_TO_BUCKET_MAPPING = {hash_: BUCKET_STOR for hash_ in hashes}
 
     groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(df=df)

@@ -71,15 +71,15 @@ def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
             productivityKLOC: float = effortKLOC / bucket
 
             data["bucket"].append(bucket)
-            data["bucket_start"].append(group["committerDate"].min().to_pydatetime())
-            data["bucket_end"].append(group["committerDate"].max().to_pydatetime())
+            data["bucket_start"].append(group["committer_date"].min().to_pydatetime())
+            data["bucket_end"].append(group["committer_date"].max().to_pydatetime())
             data["effort_KLOC"].append(effortKLOC)
             data["effort_LOC"].append(effortLOC)
             data["productivity_KLOC"].append(productivityKLOC)
             data["productivity_LOC"].append(productivityLOC)
 
             hash_: str
-            for hash_ in group["commitHash"]:
+            for hash_ in group["commit_hash"]:
                 setattr(
                     COMMIT_HASH_TO_BUCKET_MAPPING[hash_],
                     frequency,
@@ -107,7 +107,7 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
 
     dfDict: dict[str, DataFrame] = {}
 
-    hashes: List[str] = df["commitHash"].to_list()
+    hashes: List[str] = df["commit_hash"].to_list()
     COMMIT_HASH_TO_BUCKET_MAPPING = {hash_: BUCKET_STOR for hash_ in hashes}
 
     groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(df=df)

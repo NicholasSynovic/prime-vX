@@ -75,7 +75,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
         tableName=VCS_DB_TABLE_NAME,
     )
 
-    relevantColumnsDF: DataFrame = vcsDF[["commitHash", "vcs", "path"]]
+    relevantColumnsDF: DataFrame = vcsDF[["commit_hash", "vcs", "path"]]
 
     capturedVCS: List = relevantColumnsDF["vcs"].unique()
     capturedPath: List = relevantColumnsDF["path"].unique()

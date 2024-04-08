@@ -82,11 +82,11 @@ class MercurialHandler(VCSHandler_ABC):
         for key, value in metadata.items():
             metadata[key] = [value]
 
-        metadata["authorDate"] = [
-            datetime.fromtimestamp(float(metadata["authorDate"][0].split(" ")[0]))
+        metadata["author_date"] = [
+            datetime.fromtimestamp(float(metadata["author_date"][0].split(" ")[0]))
         ]
-        metadata["committerDate"] = [
-            datetime.fromtimestamp(float(metadata["committerDate"][0].split(" ")[0]))
+        metadata["committer_date"] = [
+            datetime.fromtimestamp(float(metadata["committer_date"][0].split(" ")[0]))
         ]
 
         metadata["vcs"] = ["mercurial"]

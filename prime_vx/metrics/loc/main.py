@@ -82,21 +82,21 @@ def main(df: DataFrame) -> DataFrame:
     previousLOC: int = 0
 
     data: dict[str, List[str | int | float]] = {
-        "commitHash": [],
+        "commit_hash": [],
         "loc": [],
         "kloc": [],
         "delta_loc": [],
         "delta_kloc": [],
     }
 
-    relevantDF: DataFrame = df[["commitHash", "lineCount"]]
+    relevantDF: DataFrame = df[["commit_hash", "line_count"]]
 
     with Bar(
         "Computing LOC, KLOC, Delta LOC, and Delta KLOC...", max=df.shape[0]
     ) as bar:
         row: Tuple[str, int]
         for row in relevantDF.itertuples(index=False):
-            data["commitHash"].append(row[0])
+            data["commit_hash"].append(row[0])
             data["loc"].append(computeLOC(loc=row[1]))
             data["kloc"].append(computeKLOC(loc=row[1]))
 

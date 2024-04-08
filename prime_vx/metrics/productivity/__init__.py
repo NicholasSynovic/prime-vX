@@ -45,7 +45,7 @@ INTERVAL_PAIRS: List[Tuple[str, str]] = [
 
 def createGroups(
     df: DataFrame,
-    key: str = "committerDate",
+    key: str = "committer_date",
 ) -> List[Tuple[str, DataFrameGroupBy]]:
     dfs: List[DataFrameGroupBy] = []
 
