@@ -1,8 +1,7 @@
 from abc import ABCMeta, abstractmethod
-from pathlib import Path
-from typing import List, Protocol
+from typing import Protocol
 
-from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
+from requests import Response
 
 
 class ITHandler_Protocol(Protocol):
@@ -11,5 +10,9 @@ class ITHandler_Protocol(Protocol):
 
 class ITHandler_ABC(ITHandler_Protocol, metaclass=ABCMeta):
     @abstractmethod
-    def getJSON(self) -> dict:
+    def getRequest(self, paginate: bool = True) -> dict:
+        ...
+
+    @abstractmethod
+    def extractIssues(self, resp: Response) -> dict:
         ...
