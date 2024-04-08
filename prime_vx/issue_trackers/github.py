@@ -1,6 +1,5 @@
 import re
 from datetime import datetime
-from pprint import pprint as print
 from re import Match
 from string import Template
 from time import sleep, time
@@ -10,14 +9,8 @@ from progress.bar import Bar
 from requests import Response, get
 from requests.structures import CaseInsensitiveDict
 
+from prime_vx.issue_trackers import RESPONSE_HEADERS_HANDLER
 from prime_vx.issue_trackers._classes._issueTrackerHandler import ITHandler_ABC
-
-RESPONSE_HEADERS: dict[str, int] = {
-    "lastPage": 1,
-    "tokenLimit": 0,
-    "tokenRemaining": 0,
-    "tokenReset": 0,
-}
 
 
 class GitHubHandler(ITHandler_ABC):
@@ -42,10 +35,12 @@ class GitHubHandler(ITHandler_ABC):
         lastPageMatch: Match[str] | None = re.search(r"[?&]page=(\d+)", lastPageLink)
         lastPage: int | None = int(lastPageMatch.group(1)) if lastPageMatch else None
 
-        RESPONSE_HEADERS["lastPage"] = lastPage
-        RESPONSE_HEADERS["tokenLimit"] = int(headers["x-ratelimit-limit"])
-        RESPONSE_HEADERS["tokenRemaining"] = int(headers["x-ratelimit-remaining"])
-        RESPONSE_HEADERS["tokenReset"] = int(headers["x-ratelimit-reset"]) + 10
+        RESPONSE_HEADERS_HANDLER["lastPage"] = lastPage
+        RESPONSE_HEADERS_HANDLER["tokenLimit"] = int(headers["x-ratelimit-limit"])
+        RESPONSE_HEADERS_HANDLER["tokenRemaining"] = int(
+            headers["x-ratelimit-remaining"]
+        )
+        RESPONSE_HEADERS_HANDLER["tokenReset"] = int(headers["x-ratelimit-reset"]) + 10
 
     def getResponses(self) -> List[Response]:
         data: List[Response] = []
@@ -60,7 +55,6 @@ class GitHubHandler(ITHandler_ABC):
         with Bar("Getting issues...", max=1) as bar:
 
             def _get(page: int) -> bool:
-                print(RESPONSE_HEADERS)
                 resp: Response = get(
                     url=self.endpoint.substitute(page=page),
                     headers=headers,
@@ -77,21 +71,23 @@ class GitHubHandler(ITHandler_ABC):
             if _get(page=1) == False:
                 return data
 
-            bar.max = RESPONSE_HEADERS["lastPage"]
+            bar.max = RESPONSE_HEADERS_HANDLER["lastPage"]
             bar.update()
             bar.next()
 
-            stableLastPage: int = RESPONSE_HEADERS["lastPage"]
+            stableLastPage: int = RESPONSE_HEADERS_HANDLER["lastPage"]
 
             page: int
             for page in range(2, stableLastPage + 1):
-                if RESPONSE_HEADERS["tokenRemaining"] > 0:
+                if RESPONSE_HEADERS_HANDLER["tokenRemaining"] > 0:
                     pass
                 else:
                     currentTime: float = time()
-                    diffTime: float = RESPONSE_HEADERS["tokenReset"] - currentTime
+                    diffTime: float = (
+                        RESPONSE_HEADERS_HANDLER["tokenReset"] - currentTime
+                    )
                     sleepUntil: datetime = datetime.fromtimestamp(
-                        RESPONSE_HEADERS["tokenReset"]
+                        RESPONSE_HEADERS_HANDLER["tokenReset"]
                     )
                     message: str = f"Sleeping until {sleepUntil}..."
                     bar.message = message
