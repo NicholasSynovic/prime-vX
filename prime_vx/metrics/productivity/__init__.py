@@ -47,7 +47,7 @@ def createGroups(
     df: DataFrame,
     key: str = "committer_date",
 ) -> List[Tuple[str, DataFrameGroupBy]]:
-    dfs: List[DataFrameGroupBy] = []
+    dfs: List[Tuple[str, DataFrameGroupBy]] = []
 
     with Bar("Computing groups by time interval...", max=len(INTERVAL_PAIRS)) as bar:
         pair: Tuple[str, str]
