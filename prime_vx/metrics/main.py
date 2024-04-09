@@ -9,6 +9,7 @@ from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import (
     CLOC_DB_TABLE_NAME,
+    COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
     COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
     LOC_DB_TABLE_NAME,
     VCS_DB_TABLE_NAME,
@@ -16,6 +17,8 @@ from prime_vx.db import (
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidMetricSubprogram
 from prime_vx.metrics.loc.main import main as locMain
+from prime_vx.metrics.nod.main import main as nodMain
+from prime_vx.metrics.nod.mapping import main as nodMapping
 from prime_vx.metrics.productivity.main import main as prodMain
 from prime_vx.metrics.productivity.mapping import main as prodMapping
 
@@ -56,23 +59,39 @@ def main(namespace: Namespace, db: SQLite) -> None:
             )
 
             prodMappingDF: DataFrame = prodMapping(df=mergedDF)
-
-            print(prodMappingDF)
-
-            db.write(
-                df=prodMappingDF,
-                tableName=COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
-                includeIndex=True,
-            )
-
             dfs: dict[str, DataFrame] = prodMain(df=mergedDF)
 
-            key: str
+            # Write prod. data to database
+            tableName: str
             for tableName, df in dfs.items():
                 db.write(
                     df=df,
                     tableName=tableName,
                 )
 
+            # Write prod. mapping to database
+            db.write(
+                df=prodMappingDF,
+                tableName=COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
+                includeIndex=True,
+            )
+
+        case "nod":
+            nodMappingDF: DataFrame = nodMapping(df=vcsDF)
+            dfs: dict[str, DataFrame] = nodMain(df=vcsDF)
+
+            # Write nod data to database
+            for tableName, df in dfs.items():
+                db.write(
+                    df=df,
+                    tableName=tableName,
+                )
+
+            # Write nod mapping to database
+            db.write(
+                df=nodMappingDF,
+                tableName=COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
+                includeIndex=True,
+            )
         case _:
             raise InvalidMetricSubprogram

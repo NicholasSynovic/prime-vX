@@ -426,9 +426,7 @@ class SQLite(SQLiteHandler_ABC):
             ),
             ForeignKeyConstraint(
                 columns=[THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],
-                refcolumns=[
-                    f"{THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket",
-                ],
+                refcolumns=[f"{THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
             ),
             ForeignKeyConstraint(
                 columns=[SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],

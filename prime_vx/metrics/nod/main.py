@@ -17,7 +17,7 @@ from prime_vx.db import (
     TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME,
     WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME,
 )
-from prime_vx.metrics.productivity import createGroups
+from prime_vx.metrics.nod import createGroups
 
 BUCKET_STOR = namedtuple(
     typename="BUCKET_STOR",
@@ -41,10 +41,7 @@ def countDevelopers(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
         "bucket": [],
         "bucket_start": [],
         "bucket_end": [],
-        "author_count": [],
-        "author_email_count": [],
-        "committer_count": [],
-        "committer_email_count": [],
+        "developer_count": [],
     }
 
     bucket: int = 1
@@ -52,18 +49,10 @@ def countDevelopers(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
     with Bar(f"Computing {frequency.replace('_', ' ')}...", max=len(groups)) as bar:
         group: DataFrame
         for _, group in groups:
-            authorCount: int
-            authorEmailCount: int
-            committerCount: int
-            committerEmailCount: int
-
             data["bucket"].append(bucket)
             data["bucket_start"].append(group["committer_date"].min().to_pydatetime())
             data["bucket_end"].append(group["committer_date"].max().to_pydatetime())
-            data["author_count"]
-            data["author_email_count"]
-            data["committer_count"]
-            data["committer_email_count"]
+            data["developer_count"].append(group["committer_email"].unique().size)
 
             hash_: str
             for hash_ in group["commit_hash"]:
@@ -103,7 +92,7 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
     for group in groups:
         frequency: str = group[0]
 
-        dfDict[frequency] = computeProductivity(
+        dfDict[frequency] = countDevelopers(
             groups=group[1],
             frequency=frequency,
         )

@@ -102,6 +102,20 @@ class CMDLineParser:
             parserName="loc",
         )
 
+        # Number of developers metric subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="metric-nod",
+            help=METRIC_HELP_TEMPLATE.substitute(metric="number of developers"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="metric",
+            parser=self.sccSubparser,
+            parserName="nod",
+        )
+
         # Productivity metric subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="metric-prod",
