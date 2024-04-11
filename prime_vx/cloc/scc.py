@@ -1,4 +1,4 @@
-from json import dumps, loads
+from json import dump, dumps, loads
 from pathlib import Path
 from typing import List
 
@@ -23,7 +23,7 @@ class SCC(CLOCTool_ABC):
 
         self.command = f"scc --by-file --min-gen --no-complexity --no-duplicates --format json {self.path.__str__()}"
 
-    def compute(self, commitHash: str) -> CLOC_DF_DATAMODEL:
+    def compute(self, commitHash: str) -> DataFrame:
         data: dict[str, List] = {"commit_hash": [commitHash]}
 
         output: str = runCommand(cmd=self.command).stdout.decode().strip()
@@ -36,8 +36,7 @@ class SCC(CLOCTool_ABC):
             sum([document["Comment"] for document in jsonData])
         ]
         data["code_line_count"] = [sum([document["Code"] for document in jsonData])]
+        data["tool"] = [self.toolName]
         data["json"] = [dumps(obj=jsonData)]
 
-        df: DataFrame = DataFrame(data=data)
-
-        return CLOC_DF_DATAMODEL(df=df)
+        return CLOC_DF_DATAMODEL(df=DataFrame(data=data)).df

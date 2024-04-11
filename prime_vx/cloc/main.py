@@ -5,11 +5,9 @@ from typing import List, Tuple
 import pandas
 from pandas import DataFrame
 from progress.bar import Bar
-from pyfs import isFile, resolvePath
 
 from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.cloc.scc import SCC
-from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
 from prime_vx.db.sqlite import SQLite
@@ -29,11 +27,10 @@ def computeCLOC(
         row: Tuple[str, str, str]
         for row in df.itertuples(index=False):
             vcs.checkoutCommit(commitHash=row[0])
-            data.append(tool.compute(commitHash=row[0]).df)
+            data.append(tool.compute(commitHash=row[0]))
             bar.next()
 
-    rawDF: DataFrame = pandas.concat(objs=data, ignore_index=True)
-    return CLOC_DF_DATAMODEL(df=rawDF).df
+    return pandas.concat(objs=data, ignore_index=True)
 
 
 def main(namespace: Namespace, db: SQLite) -> None:
