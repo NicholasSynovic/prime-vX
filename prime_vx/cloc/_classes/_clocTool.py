@@ -2,7 +2,7 @@ from abc import ABCMeta, abstractmethod
 from pathlib import Path
 from typing import Protocol, runtime_checkable
 
-from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
+from pandas import DataFrame
 
 
 @runtime_checkable
@@ -14,5 +14,5 @@ class CLOCTool_Protocol(Protocol):
 
 class CLOCTool_ABC(CLOCTool_Protocol, metaclass=ABCMeta):
     @abstractmethod
-    def compute(self, commitHash: str) -> CLOC_DF_DATAMODEL:
+    def compute(self, commitHash: str) -> DataFrame:
         ...
