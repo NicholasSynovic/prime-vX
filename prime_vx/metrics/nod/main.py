@@ -17,7 +17,8 @@ from prime_vx.db import (
     TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME,
     WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME,
 )
-from prime_vx.metrics.nod import createGroups
+from prime_vx.metrics import createGroups
+from prime_vx.metrics.nod import INTERVAL_PAIRS
 
 BUCKET_STOR = namedtuple(
     typename="BUCKET_STOR",
@@ -76,7 +77,10 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
     hashes: List[str] = df["commit_hash"].to_list()
     COMMIT_HASH_TO_BUCKET_MAPPING = {hash_: BUCKET_STOR for hash_ in hashes}
 
-    groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(df=df)
+    groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(
+        df=df,
+        intervalPairs=INTERVAL_PAIRS,
+    )
 
     group: Tuple[str, DataFrameGroupBy]
     for group in groups:
