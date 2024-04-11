@@ -80,6 +80,7 @@ class SQLite(SQLiteHandler_ABC):
             Column("blank_line_count", Integer),
             Column("comment_line_count", Integer),
             Column("code_line_count", Integer),
+            Column("tool", String),
             Column("json", String),
             PrimaryKeyConstraint("index"),
             ForeignKeyConstraint(

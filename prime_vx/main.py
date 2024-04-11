@@ -43,6 +43,20 @@ class CMDLineParser:
             description=f"{PROG} subprograms",
         )
 
+        # CLOC CLOC subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="cloc-cloc",
+            help=CLOC_HELP_TEMPLATE.substitute(tool="cloc"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="cloc",
+            parser=self.sccSubparser,
+            parserName="cloc",
+        )
+
         # SCC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-scc",
