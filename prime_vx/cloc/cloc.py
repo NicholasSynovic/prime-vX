@@ -10,9 +10,9 @@ from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 from prime_vx.exceptions import InvalidDirectoryPath
 
 
-class SCC(CLOCTool_ABC):
+class CLOC(CLOCTool_ABC):
     def __init__(self, path: Path) -> None:
-        self.toolName = "scc"
+        self.toolName = "cloc"
 
         resolvedPath: Path = resolvePath(path=path)
 
@@ -21,7 +21,7 @@ class SCC(CLOCTool_ABC):
         else:
             raise InvalidDirectoryPath
 
-        self.command = f"{self.toolName} --by-file --min-gen --no-complexity --no-duplicates --format json {self.path.__str__()}"
+        self.command = f"{self.toolName} --by-file-by-lang --use-sloccount --json {self.path.__str__()}"
 
     def compute(self, commitHash: str) -> DataFrame:
         data: dict[str, List] = {"commit_hash": [commitHash]}
@@ -29,13 +29,15 @@ class SCC(CLOCTool_ABC):
         output: str = runCommand(cmd=self.command).stdout.decode().strip()
         jsonData: List = loads(s=output)
 
-        data["file_count"] = [sum([len(document["Files"]) for document in jsonData])]
-        data["line_count"] = [sum([document["Lines"] for document in jsonData])]
-        data["blank_line_count"] = [sum([document["Blank"] for document in jsonData])]
-        data["comment_line_count"] = [
-            sum([document["Comment"] for document in jsonData])
+        byLangSUM: dict = jsonData["by_lang"]["SUM"]
+
+        data["file_count"] = [byLangSUM["nFiles"]]
+        data["line_count"] = [
+            byLangSUM["blank"] + byLangSUM["comment"] + byLangSUM["code"]
         ]
-        data["code_line_count"] = [sum([document["Code"] for document in jsonData])]
+        data["blank_line_count"] = [byLangSUM["blank"]]
+        data["comment_line_count"] = byLangSUM["comment"]
+        data["code_line_count"] = byLangSUM["code"]
         data["tool"] = [self.toolName]
         data["json"] = [dumps(obj=jsonData)]
 
