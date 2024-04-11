@@ -7,7 +7,8 @@ from progress.bar import Bar
 from prime_vx.datamodels.metrics.nod import DEVELOPER_COUNT_MAPPING_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import *
-from prime_vx.metrics.nod import BUCKET_STOR, createGroups
+from prime_vx.metrics import createGroups
+from prime_vx.metrics.nod import BUCKET_STOR, INTERVAL_PAIRS
 
 
 def commitHashToBucketMapper(df: DataFrame) -> dict[str, BUCKET_STOR]:
@@ -17,7 +18,10 @@ def commitHashToBucketMapper(df: DataFrame) -> dict[str, BUCKET_STOR]:
 
     data: dict[str, BUCKET_STOR] = {hash_: BUCKET_STOR() for hash_ in hashes}
 
-    groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(df=df)
+    groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(
+        df=df,
+        intervalPairs=INTERVAL_PAIRS,
+    )
 
     group: Tuple[str, DataFrameGroupBy]
     groupDF: DataFrame
