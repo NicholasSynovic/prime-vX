@@ -11,22 +11,7 @@ from prime_vx.exceptions import InvalidDirectoryPath
 
 
 class SCC(CLOCTool_ABC):
-    """
-    SCC
-
-    Class to interface with the SCC tool
-    """
-
     def __init__(self, path: Path) -> None:
-        """
-        __init__
-
-        Initialize class and point it at a specific repository
-
-        :param path: Path to repository to compute CLOC
-        :type path: Path
-        """
-
         self.toolName = "scc"
 
         resolvedPath: Path = resolvePath(path=path)

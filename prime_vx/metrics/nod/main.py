@@ -69,16 +69,6 @@ def countDevelopers(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
 
 
 def main(df: DataFrame) -> dict[str, DataFrame]:
-    """
-    main
-
-    Wrapper to compute the productivity of a project at different time intervals
-
-    :param df: A DataFrame containing relevant information (i.e LOC and commit time)
-    :type df: DataFrame
-    :return: A dictionary where each key is a time interval (as a string) and each value is a DataFrame of the productivity throughout that time interval
-    :rtype: dict[str, DataFrame]
-    """
     global COMMIT_HASH_TO_BUCKET_MAPPING
 
     dfDict: dict[str, DataFrame] = {}

@@ -37,19 +37,6 @@ COMMIT_HASH_TO_BUCKET_MAPPING: dict[str, BUCKET_STOR] = {}
 
 
 def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
-    """
-    computeProductivity
-
-    Compute the productivity of a project (effort / time) for different time intervals
-
-    :param groups: A DataFrameGroupBy object that is grouped into time intervals
-    :type groups: DataFrameGroupBy
-    :param datum: Metadata containing the time interval type being analyzed
-    :type datum: Tuple[str, str]
-    :return: A DataFrame that conforms to the Productivity datamodel
-    :rtype: DataFrame
-    """
-
     data: dict[str, List[int | float | datetime]] = {
         "bucket": [],
         "bucket_start": [],
@@ -93,16 +80,6 @@ def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
 
 
 def main(df: DataFrame) -> dict[str, DataFrame]:
-    """
-    main
-
-    Wrapper to compute the productivity of a project at different time intervals
-
-    :param df: A DataFrame containing relevant information (i.e LOC and commit time)
-    :type df: DataFrame
-    :return: A dictionary where each key is a time interval (as a string) and each value is a DataFrame of the productivity throughout that time interval
-    :rtype: dict[str, DataFrame]
-    """
     global COMMIT_HASH_TO_BUCKET_MAPPING
 
     dfDict: dict[str, DataFrame] = {}

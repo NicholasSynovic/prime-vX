@@ -11,21 +11,7 @@ from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 
 
 class MercurialHandler(VCSHandler_ABC):
-    """
-    MercurialHandler
-
-    Interface to extract information stored in the VCS from hg repositories
-    """
-
     def __init__(self, path: Path) -> None:
-        """
-        __init__
-
-        Initalize the class and determine if the path is a valid path
-
-        :param path: A path to a directory containing a hg repository
-        :type path: Path
-        """
         resolvedPath: Path = resolvePath(path=path)
 
         if isDirectory(path=resolvedPath):

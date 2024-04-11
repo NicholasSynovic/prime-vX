@@ -23,25 +23,6 @@ def computeCLOC(
     tool: CLOCTool_ABC,
     vcs: VCSHandler_ABC,
 ) -> DataFrame:
-    """
-    computeCLOC
-
-    Count lines of code (and other information) from source files in a version
-    controlled repository by iterating through its commits
-
-    :param df: A DataFrame containing commit hash and repository file path
-    location information
-    :type df: DataFrame
-    :param tool: A class that inherits the CLOCTool_ABC class for computing
-    CLOC
-    :type tool: CLOCTool_ABC
-    :param vcs: A class that inherits the VCSHandler_ABC class for iterating
-    through the commits of a repository
-    :type vcs: VCSHandler_ABC
-    :return: A DataFrame containing the CLOC information from a given
-    repository
-    :rtype: DataFrame
-    """
     data: List[DataFrame] = []
 
     with Bar("Computing CLOC-like metrics...", max=df.shape[0]) as bar:
@@ -56,14 +37,6 @@ def computeCLOC(
 
 
 def main(namespace: Namespace, db: SQLite) -> None:
-    """
-    main
-
-    Collect information regarding CLOC-like metrics for a given repository
-
-    :param namespace: Command line provided options and flags
-    :type namespace: Namespace
-    """
     programInput: dict[str, List[Path]] = dict(namespace._get_kwargs())
     programKeys: List[str] = list(programInput.keys())
 

@@ -7,78 +7,22 @@ from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 
 
 def computeLOC(loc: int) -> int:
-    """
-    computeLOC
-
-    Compute lines of code.
-
-    :param loc: Number of lines of code outputted from CLOC tool
-    :type loc: int
-    :return: The number of lines of code
-    :rtype: int
-    """
     return loc
 
 
 def computeKLOC(loc: int) -> float:
-    """
-    computeKLOC
-
-    Compute thousands of lines of code (LOC / 1000)
-
-    :param loc: Number of lines of code
-    :type loc: int
-    :return: loc / 1000
-    :rtype: float
-    """
     return loc / 1000
 
 
 def computeDeltaLOC(currentLOC: int, previousLOC: int = 0) -> int:
-    """
-    computeDeltaLOC
-
-    Given two different lines of code values, compute the difference between
-    the two
-
-    :param currentLOC: The most recent CLOC value
-    :type currentLOC: int
-    :param previousLOC: The CLOC value to compute against, defaults to 0
-    :type previousLOC: int, optional
-    :return: currentLOC - previousLOC
-    :rtype: int
-    """
     return currentLOC - previousLOC
 
 
 def computeDeltaKLOC(currentLOC: int, previousLOC: int = 0) -> float:
-    """
-    computeDeltaKLOC
-
-    Given two different lines of code values, compute the difference between
-    the two in thousands of lines of code
-
-    :param currentLOC: The most recent CLOC value
-    :type currentLOC: int
-    :param previousLOC: The CLOC value to compute against, defaults to 0
-    :type previousLOC: int, optional
-    :return: currentLOC - previousLOC
-    :rtype: int
-    """
     return computeKLOC(loc=currentLOC) - computeKLOC(loc=previousLOC)
 
 
 def main(df: DataFrame) -> DataFrame:
-    """
-    main
-
-    Compute LOC, KLOC, and Delta metrics
-
-    :param df: A DataFrame with CLOC information per commit
-    :type df: DataFrame
-    :return: A DataFrame with the computed CLOC information
-    :rtype: DataFrame
-    """
     previousLOC: int = 0
 
     data: dict[str, List[str | int | float]] = {
