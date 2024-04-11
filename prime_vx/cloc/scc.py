@@ -1,4 +1,4 @@
-from json import dump, dumps, loads
+from json import dumps, loads
 from pathlib import Path
 from typing import List
 
