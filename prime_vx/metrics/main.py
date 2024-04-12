@@ -13,6 +13,7 @@ from prime_vx.db import (
     COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
     COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
     ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
+    ISSUE_ID_TO_ISSUE_SPOILAGE_BUCKET_MAP_TABLE_NAME,
     ISSUE_TRACKER_DB_TABLE_NAME,
     LOC_DB_TABLE_NAME,
     VCS_DB_TABLE_NAME,
@@ -121,21 +122,13 @@ def main(namespace: Namespace, db: SQLite) -> None:
             )
 
         case "issue_spoilage":
-            # icMappingDF: DataFrame = icMapping(df=itDF)
             dfs: dict[str, DataFrame] = isMain(df=itDF)
 
-            # # Write issue count data to database
-            # for tableName, df in dfs.items():
-            #     db.write(
-            #         df=df,
-            #         tableName=tableName,
-            #     )
-
-            # # Write issue count mapping to database
-            # db.write(
-            #     df=icMappingDF,
-            #     tableName=ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
-            #     includeIndex=True,
-            # )
+            # Write issue spoilage data to database
+            for tableName, df in dfs.items():
+                db.write(
+                    df=df,
+                    tableName=tableName,
+                )
         case _:
             raise InvalidMetricSubprogram
