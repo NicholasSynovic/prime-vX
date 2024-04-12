@@ -543,6 +543,86 @@ class SQLite(SQLiteHandler_ABC):
             ),
         )
 
+        dailyIssueSpoilageTable: Table = Table(
+            DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        weeklyIssueSpoilageTable: Table = Table(
+            WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoWeekIssueSpoilageTable: Table = Table(
+            TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        monthlyIssueSpoilageTable: Table = Table(
+            MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoMonthIssueSpoilageTable: Table = Table(
+            TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        threeMonthIssueSpoilageTable: Table = Table(
+            THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        sixMonthIssueSpoilageTable: Table = Table(
+            SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        annualMonthIssueSpoilageTable: Table = Table(
+            ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("spoiled_issues", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
         metadata.create_all(bind=self.engine, checkfirst=True)
 
     def write(self, df: DataFrame, tableName: str, includeIndex: bool = False) -> None:
