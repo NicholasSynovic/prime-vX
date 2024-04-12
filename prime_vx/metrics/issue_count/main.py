@@ -18,7 +18,7 @@ from prime_vx.db import (
     WEEKLY_ISSUE_COUNT_DB_TABLE_NAME,
 )
 from prime_vx.metrics import createGroups
-from prime_vx.metrics.productivity import INTERVAL_PAIRS
+from prime_vx.metrics.issue_count import INTERVAL_PAIRS
 
 BUCKET_STOR = namedtuple(
     typename="BUCKET_STOR",
@@ -51,8 +51,8 @@ def countIssues(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
         group: DataFrame
         for _, group in groups:
             data["bucket"].append(bucket)
-            data["bucket_start"].append(group["committer_date"].min().to_pydatetime())
-            data["bucket_end"].append(group["committer_date"].max().to_pydatetime())
+            data["bucket_start"].append(group["date_opened"].min().to_pydatetime())
+            data["bucket_end"].append(group["date_opened"].max().to_pydatetime())
             data["issue_count"].append(group.shape[0])
 
             id_: str
@@ -78,8 +78,7 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
     ISSUE_ID_TO_BUCKET_MAPPING = {id_: BUCKET_STOR for id_ in issueIDs}
 
     groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(
-        df=df,
-        intervalPairs=INTERVAL_PAIRS,
+        df=df, intervalPairs=INTERVAL_PAIRS, key="date_opened"
     )
 
     group: Tuple[str, DataFrameGroupBy]

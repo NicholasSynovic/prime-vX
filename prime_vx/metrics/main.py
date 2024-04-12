@@ -5,12 +5,15 @@ from typing import List
 from pandas import DataFrame
 
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
+from prime_vx.datamodels.issue_tracker import IT_DF_DATAMODEL
 from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import (
     CLOC_DB_TABLE_NAME,
     COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
     COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
+    ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
+    ISSUE_TRACKER_DB_TABLE_NAME,
     LOC_DB_TABLE_NAME,
     VCS_DB_TABLE_NAME,
 )
@@ -40,6 +43,10 @@ def main(namespace: Namespace, db: SQLite) -> None:
         tdf=CLOC_DF_DATAMODEL,
         tableName=CLOC_DB_TABLE_NAME,
     )
+    itDF: DataFrame = db.read(
+        tdf=IT_DF_DATAMODEL,
+        tableName=ISSUE_TRACKER_DB_TABLE_NAME,
+    )
 
     metricName: str = inputKeySplit[1]
 
@@ -61,7 +68,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
             prodMappingDF: DataFrame = prodMapping(df=mergedDF)
             dfs: dict[str, DataFrame] = prodMain(df=mergedDF)
 
-            # Write prod. data to database
+            # Write productivity data to database
             tableName: str
             for tableName, df in dfs.items():
                 db.write(
@@ -69,7 +76,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
                     tableName=tableName,
                 )
 
-            # Write prod. mapping to database
+            # Write productivity mapping to database
             db.write(
                 df=prodMappingDF,
                 tableName=COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
@@ -80,14 +87,14 @@ def main(namespace: Namespace, db: SQLite) -> None:
             nodMappingDF: DataFrame = nodMapping(df=vcsDF)
             dfs: dict[str, DataFrame] = nodMain(df=vcsDF)
 
-            # Write nod data to database
+            # Write number of developers data to database
             for tableName, df in dfs.items():
                 db.write(
                     df=df,
                     tableName=tableName,
                 )
 
-            # Write nod mapping to database
+            # Write number of developers mapping to database
             db.write(
                 df=nodMappingDF,
                 tableName=COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
@@ -95,20 +102,20 @@ def main(namespace: Namespace, db: SQLite) -> None:
             )
 
         case "issue_count":
-            nodMappingDF: DataFrame = nodMapping(df=vcsDF)
-            dfs: dict[str, DataFrame] = nodMain(df=vcsDF)
+            icMappingDF: DataFrame = icMapping(df=itDF)
+            dfs: dict[str, DataFrame] = icMain(df=itDF)
 
-            # Write nod data to database
+            # Write issue count data to database
             for tableName, df in dfs.items():
                 db.write(
                     df=df,
                     tableName=tableName,
                 )
 
-            # Write nod mapping to database
+            # Write issue count mapping to database
             db.write(
-                df=nodMappingDF,
-                tableName=COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
+                df=icMappingDF,
+                tableName=ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
                 includeIndex=True,
             )
         case _:

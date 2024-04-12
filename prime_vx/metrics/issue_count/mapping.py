@@ -8,10 +8,10 @@ from prime_vx.datamodels.issue_tracker import IT_DF_DATAMODEL
 from prime_vx.datamodels.metrics.issue_count import ISSUE_COUNT_MAPPING_DF_DATAMODEL
 from prime_vx.db import *
 from prime_vx.metrics import createGroups
-from prime_vx.metrics.productivity import BUCKET_STOR, INTERVAL_PAIRS
+from prime_vx.metrics.issue_count import BUCKET_STOR, INTERVAL_PAIRS
 
 
-def commitHashToBucketMapper(df: DataFrame) -> dict[str, BUCKET_STOR]:
+def issueIDToBucketMapper(df: DataFrame) -> dict[str, BUCKET_STOR]:
     IT_DF_DATAMODEL(df=df)
 
     issueIDs: Series = df["id"]
@@ -21,6 +21,7 @@ def commitHashToBucketMapper(df: DataFrame) -> dict[str, BUCKET_STOR]:
     groups: List[Tuple[str, DataFrameGroupBy]] = createGroups(
         df=df,
         intervalPairs=INTERVAL_PAIRS,
+        key="date_opened",
     )
 
     group: Tuple[str, DataFrameGroupBy]
@@ -57,7 +58,7 @@ def main(df: DataFrame) -> DataFrame:
         ANNUAL_ISSUE_COUNT_DB_TABLE_NAME: [],
     }
 
-    chtbm: dict[str, BUCKET_STOR] = commitHashToBucketMapper(df=df)
+    chtbm: dict[str, BUCKET_STOR] = issueIDToBucketMapper(df=df)
 
     data["issue_id"].extend(chtbm.keys())
 

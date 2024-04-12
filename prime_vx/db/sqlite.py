@@ -105,6 +105,20 @@ class SQLite(SQLiteHandler_ABC):
             ),
         )
 
+        issueTrackerTable: Table = Table(
+            ISSUE_TRACKER_DB_TABLE_NAME,
+            metadata,
+            Column("id", Integer),
+            Column("node_id", String),
+            Column("number", Integer),
+            Column("state", String),
+            Column("date_opened", DateTime),
+            Column("date_closed", DateTime),
+            Column("url", String),
+            Column("json", String),
+            PrimaryKeyConstraint("id"),
+        )
+
         dailyProductivityTable: Table = Table(
             DAILY_PRODUCTIVITY_DB_TABLE_NAME,
             metadata,
@@ -263,20 +277,6 @@ class SQLite(SQLiteHandler_ABC):
             ),
         )
 
-        issueTrackerTable: Table = Table(
-            ISSUE_TRACKER_DB_TABLE_NAME,
-            metadata,
-            Column("id", Integer),
-            Column("node_id", String),
-            Column("number", Integer),
-            Column("state", String),
-            Column("date_opened", Float),
-            Column("date_closed", Float),
-            Column("url", String),
-            Column("json", String),
-            PrimaryKeyConstraint("id"),
-        )
-
         dailyDeveloperCountTable: Table = Table(
             DAILY_DEVELOPER_COUNT_DB_TABLE_NAME,
             metadata,
@@ -406,6 +406,140 @@ class SQLite(SQLiteHandler_ABC):
             ForeignKeyConstraint(
                 columns=[ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME],
                 refcolumns=[f"{ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+        )
+
+        dailyIssueCountTable: Table = Table(
+            DAILY_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        weeklyIssueCountTable: Table = Table(
+            WEEKLY_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoWeekIssueCountTable: Table = Table(
+            TWO_WEEK_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        monthlyIssueCountTable: Table = Table(
+            MONTHLY_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoMonthIssueCountTable: Table = Table(
+            TWO_MONTH_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        threeMonthIssueCountTable: Table = Table(
+            THREE_MONTH_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        sixMonthIssueCountTable: Table = Table(
+            SIX_MONTH_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        annualMonthIssueCountTable: Table = Table(
+            ANNUAL_ISSUE_COUNT_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_count", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        commitHashToIssueCountBucketMap: Table = Table(
+            ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
+            metadata,
+            Column("index", Integer),
+            Column("issue_id", String),
+            Column(DAILY_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            Column(WEEKLY_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            Column(TWO_WEEK_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            Column(MONTHLY_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            Column(TWO_MONTH_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            Column(THREE_MONTH_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            Column(SIX_MONTH_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            Column(ANNUAL_ISSUE_COUNT_DB_TABLE_NAME, Integer),
+            PrimaryKeyConstraint("index"),
+            ForeignKeyConstraint(
+                columns=["issue_id"],
+                refcolumns=[f"{ISSUE_TRACKER_DB_TABLE_NAME}.id"],
+            ),
+            ForeignKeyConstraint(
+                columns=[DAILY_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{DAILY_ISSUE_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[WEEKLY_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{WEEKLY_ISSUE_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_WEEK_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_WEEK_ISSUE_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[MONTHLY_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{MONTHLY_ISSUE_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_MONTH_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_MONTH_ISSUE_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[THREE_MONTH_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[
+                    f"{THREE_MONTH_ISSUE_COUNT_DB_TABLE_NAME}.bucket",
+                ],
+            ),
+            ForeignKeyConstraint(
+                columns=[SIX_MONTH_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{SIX_MONTH_ISSUE_COUNT_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[ANNUAL_ISSUE_COUNT_DB_TABLE_NAME],
+                refcolumns=[f"{ANNUAL_ISSUE_COUNT_DB_TABLE_NAME}.bucket"],
             ),
         )
 

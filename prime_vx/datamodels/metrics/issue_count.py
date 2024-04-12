@@ -12,7 +12,7 @@ class ISSUE_COUNT_DF_DATAMODEL(TypedDataFrame):
 
 class ISSUE_COUNT_MAPPING_DF_DATAMODEL(TypedDataFrame):
     schema = {
-        "issue_id": str,
+        "issue_id": int,
         "daily_issue_count": int,
         "weekly_issue_count": int,
         "two_week_issue_count": int,
