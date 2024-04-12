@@ -99,6 +99,20 @@ class CMDLineParser:
             parserName="issue_count",
         )
 
+        # Issue spoilage metric subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="metric-is",
+            help=METRIC_HELP_TEMPLATE.substitute(metric="issue spoilage"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="metric",
+            parser=self.sccSubparser,
+            parserName="issue_spoilage",
+        )
+
         # LOC metric subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="metric-loc",

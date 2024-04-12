@@ -21,6 +21,7 @@ from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidMetricSubprogram
 from prime_vx.metrics.issue_count.main import main as icMain
 from prime_vx.metrics.issue_count.mapping import main as icMapping
+from prime_vx.metrics.issue_spoilage.main import main as isMain
 from prime_vx.metrics.number_of_developers.main import main as nodMain
 from prime_vx.metrics.number_of_developers.mapping import main as nodMapping
 from prime_vx.metrics.productivity.main import main as prodMain
@@ -118,5 +119,23 @@ def main(namespace: Namespace, db: SQLite) -> None:
                 tableName=ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
                 includeIndex=True,
             )
+
+        case "issue_spoilage":
+            # icMappingDF: DataFrame = icMapping(df=itDF)
+            dfs: dict[str, DataFrame] = isMain(df=itDF)
+
+            # # Write issue count data to database
+            # for tableName, df in dfs.items():
+            #     db.write(
+            #         df=df,
+            #         tableName=tableName,
+            #     )
+
+            # # Write issue count mapping to database
+            # db.write(
+            #     df=icMappingDF,
+            #     tableName=ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
+            #     includeIndex=True,
+            # )
         case _:
             raise InvalidMetricSubprogram
