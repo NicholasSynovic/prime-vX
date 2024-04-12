@@ -6,7 +6,7 @@ class ISSUE_SPOILAGE_DF_DATAMODEL(TypedDataFrame):
         "bucket": int,
         "bucket_start": DATE_TIME_DTYPE,
         "bucket_end": DATE_TIME_DTYPE,
-        "spoiled_issue_spoilage": int,
+        "spoiled_issues": int,
     }
 
 

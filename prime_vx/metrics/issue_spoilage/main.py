@@ -4,6 +4,18 @@ from numpy import datetime64
 from pandas import DataFrame, DatetimeIndex, Timestamp, date_range
 from progress.bar import Bar
 
+from prime_vx.datamodels.metrics.issue_spoilage import ISSUE_SPOILAGE_DF_DATAMODEL
+from prime_vx.db import (
+    ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME,
+    DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+    MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+    SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+    THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+    TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+    TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME,
+    WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+)
+
 TIME_FORMAT: str = "%Y-%m-%d"
 
 
@@ -19,7 +31,7 @@ def computeIssueSpoilage(
         "2QE",
         "YE",
     ],
-) -> dict[str, List[int | datetime64]]:
+) -> DataFrame:
     data: dict[str, List[int | datetime64]] = {
         "bucket": [],
         "bucket_start": [],
@@ -68,8 +80,19 @@ def computeIssueSpoilage(
             data["bucket_end"].append(nextDate.to_datetime64())
             data["spoiled_issues"].append(spoiledIssuesCount)
 
-        return data
+    return ISSUE_SPOILAGE_DF_DATAMODEL(df=df).df
 
 
 def main(df: DataFrame) -> dict[str, DataFrame]:
-    computeIssueSpoilage(df=df, freq="D")
+    return {
+        ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="YE"),
+        DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="D"),
+        MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="ME"),
+        SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="2QE"),
+        THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df, freq="QE"
+        ),
+        TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="2ME"),
+        TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="2W"),
+        WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="W"),
+    }
