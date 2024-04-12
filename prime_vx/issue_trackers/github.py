@@ -6,7 +6,8 @@ from string import Template
 from time import sleep, time
 from typing import List
 
-from pandas import DataFrame
+from numpy import datetime64
+from pandas import DataFrame, Timestamp
 from progress.bar import Bar
 from requests import Response, get
 from requests.structures import CaseInsensitiveDict
@@ -123,17 +124,17 @@ class GitHubHandler(ITHandler_ABC):
 
                 datum: dict
                 for datum in json:
-                    createdAt: float = datetime.strptime(
-                        datum["created_at"], "%Y-%m-%dT%H:%M:%S%z"
-                    ).timestamp()
+                    createdAt: datetime64 = Timestamp(
+                        ts_input=datum["created_at"]
+                    ).to_datetime64()
 
-                    closedAt: float
+                    closedAt: datetime64
                     try:
-                        closedAt = datetime.strptime(
-                            datum["closed_at"], "%Y-%m-%dT%H:%M:%S%z"
-                        ).timestamp()
+                        closedAt = Timestamp(
+                            ts_input=datum["closed_at"]
+                        ).to_datetime64()
                     except TypeError:
-                        closedAt = -1.0
+                        closedAt = Timestamp().to_datetime64()
 
                     data["id"].append(datum["id"])
                     data["node_id"].append(datum["node_id"])
