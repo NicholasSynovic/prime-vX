@@ -69,7 +69,7 @@ def computeIssueSpoilage(
             try:
                 nextDate = dateRange[idx + 1]
             except IndexError:
-                nextDate = Timestamp().max
+                nextDate = Timestamp.max
 
             spoiledIssuesCount: int = df[
                 (df["date_opened"] >= currentDate) & (df["date_closed"] < nextDate)
@@ -80,7 +80,11 @@ def computeIssueSpoilage(
             data["bucket_end"].append(nextDate.to_datetime64())
             data["spoiled_issues"].append(spoiledIssuesCount)
 
-    return ISSUE_SPOILAGE_DF_DATAMODEL(df=df).df
+            bucket += 1
+
+            bar.next()
+
+    return ISSUE_SPOILAGE_DF_DATAMODEL(df=DataFrame(data=data)).df
 
 
 def main(df: DataFrame) -> dict[str, DataFrame]:
