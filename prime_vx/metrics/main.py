@@ -16,16 +16,14 @@ from prime_vx.db import (
 )
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidMetricSubprogram
-from prime_vx.metrics.loc.main import main as locMain
 from prime_vx.metrics.number_of_developers.main import main as nodMain
 from prime_vx.metrics.number_of_developers.mapping import main as nodMapping
 from prime_vx.metrics.productivity.main import main as prodMain
 from prime_vx.metrics.productivity.mapping import main as prodMapping
+from prime_vx.metrics.project_size.main import main as locMain
 
 
 def main(namespace: Namespace, db: SQLite) -> None:
-    # TODO: Add docstring
-
     programInput: dict[str, List[Path]] = dict(namespace._get_kwargs())
     programKeys: List[str] = list(programInput.keys())
 
