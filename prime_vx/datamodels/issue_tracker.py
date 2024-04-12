@@ -1,4 +1,4 @@
-from typedframe import TypedDataFrame
+from typedframe import DATE_TIME_DTYPE, TypedDataFrame
 
 
 class IT_DF_DATAMODEL(TypedDataFrame):
@@ -6,8 +6,8 @@ class IT_DF_DATAMODEL(TypedDataFrame):
         "id": int,
         "node_id": str,
         "state": str,
-        "date_opened": float,
-        "date_closed": float,
+        "date_opened": DATE_TIME_DTYPE,
+        "date_closed": DATE_TIME_DTYPE,
         "url": str,
         "json": str,
     }
