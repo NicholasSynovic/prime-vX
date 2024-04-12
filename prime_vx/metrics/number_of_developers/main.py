@@ -18,7 +18,7 @@ from prime_vx.db import (
     WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME,
 )
 from prime_vx.metrics import createGroups
-from prime_vx.metrics.nod import INTERVAL_PAIRS
+from prime_vx.metrics.number_of_developers import INTERVAL_PAIRS
 
 BUCKET_STOR = namedtuple(
     typename="BUCKET_STOR",
