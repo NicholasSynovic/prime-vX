@@ -16,6 +16,8 @@ from prime_vx.db import (
 )
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidMetricSubprogram
+from prime_vx.metrics.issue_count.main import main as icMain
+from prime_vx.metrics.issue_count.mapping import main as icMapping
 from prime_vx.metrics.number_of_developers.main import main as nodMain
 from prime_vx.metrics.number_of_developers.mapping import main as nodMapping
 from prime_vx.metrics.productivity.main import main as prodMain
@@ -42,7 +44,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
     metricName: str = inputKeySplit[1]
 
     match metricName:
-        case "loc":
+        case "project_size":
             df: DataFrame = locMain(df=clocDF)
             db.write(df=df, tableName=LOC_DB_TABLE_NAME, includeIndex=True)
         case "productivity":
@@ -74,7 +76,25 @@ def main(namespace: Namespace, db: SQLite) -> None:
                 includeIndex=True,
             )
 
-        case "nod":
+        case "number_of_developers":
+            nodMappingDF: DataFrame = nodMapping(df=vcsDF)
+            dfs: dict[str, DataFrame] = nodMain(df=vcsDF)
+
+            # Write nod data to database
+            for tableName, df in dfs.items():
+                db.write(
+                    df=df,
+                    tableName=tableName,
+                )
+
+            # Write nod mapping to database
+            db.write(
+                df=nodMappingDF,
+                tableName=COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
+                includeIndex=True,
+            )
+
+        case "issue_count":
             nodMappingDF: DataFrame = nodMapping(df=vcsDF)
             dfs: dict[str, DataFrame] = nodMain(df=vcsDF)
 

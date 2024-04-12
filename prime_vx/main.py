@@ -85,6 +85,20 @@ class CMDLineParser:
             parserName="github",
         )
 
+        # Issue count metric subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="metric-ic",
+            help=METRIC_HELP_TEMPLATE.substitute(metric="issue count"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="metric",
+            parser=self.sccSubparser,
+            parserName="issue_count",
+        )
+
         # LOC metric subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="metric-loc",
@@ -98,13 +112,15 @@ class CMDLineParser:
         self._addArgs(
             suffix="metric",
             parser=self.sccSubparser,
-            parserName="loc",
+            parserName="project_size",
         )
 
         # Number of developers metric subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="metric-nod",
-            help=METRIC_HELP_TEMPLATE.substitute(metric="number of developers"),
+            help=METRIC_HELP_TEMPLATE.substitute(
+                metric="number of developers",
+            ),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
@@ -112,7 +128,7 @@ class CMDLineParser:
         self._addArgs(
             suffix="metric",
             parser=self.sccSubparser,
-            parserName="nod",
+            parserName="number_of_developers",
         )
 
         # Productivity metric subparser
