@@ -72,7 +72,9 @@ def computeIssueSpoilage(
                 nextDate = Timestamp.max
 
             spoiledIssuesCount: int = df[
-                (df["date_opened"] >= currentDate) & (df["date_closed"] < nextDate)
+                (df["date_opened"] < df["date_closed"])
+                & (df["date_closed"] > currentDate)
+                & (df["date_closed"] <= nextDate)
             ].shape[0]
 
             data["bucket"].append(bucket)
@@ -89,14 +91,36 @@ def computeIssueSpoilage(
 
 def main(df: DataFrame) -> dict[str, DataFrame]:
     return {
-        ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="YE"),
-        DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="D"),
-        MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="ME"),
-        SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="2QE"),
-        THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
-            df=df, freq="QE"
+        ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="YE",
         ),
-        TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="2ME"),
-        TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="2W"),
-        WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(df=df, freq="W"),
+        DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="D",
+        ),
+        MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="ME",
+        ),
+        SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="2QE",
+        ),
+        THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="QE",
+        ),
+        TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="2ME",
+        ),
+        TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="2W",
+        ),
+        WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
+            df=df,
+            freq="W",
+        ),
     }
