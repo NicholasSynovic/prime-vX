@@ -78,8 +78,10 @@ def computeIssueSpoilage(
             ].shape[0]
 
             data["bucket"].append(bucket)
-            data["bucket_start"].append(currentDate.to_datetime64())
-            data["bucket_end"].append(nextDate.to_datetime64())
+            data["bucket_start"].append(
+                currentDate.to_pydatetime().replace(tzinfo=None)
+            )
+            data["bucket_end"].append(nextDate.to_pydatetime().replace(tzinfo=None))
             data["spoiled_issues"].append(spoiledIssuesCount)
 
             bucket += 1

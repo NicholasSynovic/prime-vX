@@ -68,10 +68,14 @@ class GitHandler(VCSHandler_ABC):
             metadata[key] = [value]
 
         metadata["author_date"] = [
-            datetime.fromtimestamp(float(metadata["author_date"][0]))
+            datetime.fromtimestamp(float(metadata["author_date"][0])).replace(
+                tzinfo=None
+            )
         ]
         metadata["committer_date"] = [
-            datetime.fromtimestamp(float(metadata["committer_date"][0]))
+            datetime.fromtimestamp(float(metadata["committer_date"][0])).replace(
+                tzinfo=None
+            )
         ]
 
         metadata["vcs"] = ["git"]

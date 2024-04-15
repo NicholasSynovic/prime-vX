@@ -2,7 +2,7 @@ from collections import namedtuple
 from datetime import datetime
 from typing import List, Tuple
 
-from pandas import DataFrame
+from pandas import DataFrame, Timestamp
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
@@ -51,8 +51,12 @@ def countIssues(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
         group: DataFrame
         for _, group in groups:
             data["bucket"].append(bucket)
-            data["bucket_start"].append(group["date_opened"].min().to_pydatetime())
-            data["bucket_end"].append(group["date_opened"].max().to_pydatetime())
+            data["bucket_start"].append(
+                group["date_opened"].min().to_pydatetime().replace(tzinfo=None)
+            )
+            data["bucket_end"].append(
+                group["date_opened"].max().to_pydatetime().replace(tzinfo=None)
+            )
             data["issue_count"].append(group.shape[0])
 
             id_: str

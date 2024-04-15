@@ -51,8 +51,12 @@ def countDevelopers(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
         group: DataFrame
         for _, group in groups:
             data["bucket"].append(bucket)
-            data["bucket_start"].append(group["committer_date"].min().to_pydatetime())
-            data["bucket_end"].append(group["committer_date"].max().to_pydatetime())
+            data["bucket_start"].append(
+                group["committer_date"].min().to_pydatetime().replace(tzinfo=None)
+            )
+            data["bucket_end"].append(
+                group["committer_date"].max().to_pydatetime().replace(tzinfo=None)
+            )
             data["developer_count"].append(group["committer_email"].unique().size)
 
             hash_: str
