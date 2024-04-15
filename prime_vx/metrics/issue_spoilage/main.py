@@ -15,6 +15,7 @@ from prime_vx.db import (
     TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME,
     WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
 )
+from prime_vx.metrics.issue_spoilage.reimplement import main as reMain
 
 TIME_FORMAT: str = "%Y-%m-%d"
 
@@ -92,6 +93,8 @@ def computeIssueSpoilage(
 
 
 def main(df: DataFrame) -> dict[str, DataFrame]:
+    reMain(df)
+    quit()
     return {
         ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME: computeIssueSpoilage(
             df=df,
