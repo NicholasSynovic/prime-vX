@@ -624,7 +624,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         dailyIssueDensityTable: Table = Table(
-            DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            DAILY_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
@@ -634,7 +634,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         weeklyIssueDensityTable: Table = Table(
-            WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            WEEKLY_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
@@ -644,7 +644,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         twoWeekIssueDensityTable: Table = Table(
-            TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            TWO_WEEK_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
@@ -654,7 +654,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         monthlyIssueDensityTable: Table = Table(
-            MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            MONTHLY_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
@@ -664,7 +664,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         twoMonthIssueDensityTable: Table = Table(
-            TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            TWO_MONTH_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
@@ -674,7 +674,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         threeMonthIssueDensityTable: Table = Table(
-            THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            THREE_MONTH_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
@@ -684,7 +684,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         sixMonthIssueDensityTable: Table = Table(
-            SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            SIX_MONTH_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
@@ -694,7 +694,7 @@ class SQLite(SQLiteHandler_ABC):
         )
 
         annualMonthIssueDensityTable: Table = Table(
-            ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            ANNUAL_ISSUE_DENSITY_DB_TABLE_NAME,
             metadata,
             Column("bucket", Integer),
             Column("bucket_start", DateTime),
