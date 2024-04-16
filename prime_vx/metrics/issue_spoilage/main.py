@@ -1,3 +1,4 @@
+from functools import partial
 from typing import List, Tuple
 
 from intervaltree import IntervalTree
@@ -45,7 +46,10 @@ def buildIntervalTree(df: DataFrame, dayZero: Timestamp) -> IntervalTree:
 
 
 def computeIssueSpoilage(
-    it: IntervalTree, dayZero: Timestamp, step: int = 1
+    it: IntervalTree,
+    dayZero: Timestamp,
+    step: int = 1,
+    interval: str = "daily",
 ) -> DataFrame:
     data: dict[str, List[int | datetime64]] = {
         "bucket": [],
@@ -57,7 +61,7 @@ def computeIssueSpoilage(
 
     itSize: int = len(it)
 
-    with Bar("Computing issue spoilage...", max=itSize // step) as bar:
+    with Bar(f"Computing {interval} issue spoilage...", max=itSize // step) as bar:
         for i in range(0, itSize, step):
             data["bucket"].append(bucket)
 
@@ -102,14 +106,26 @@ def main(df: DataFrame) -> dict[str, DataFrame]:
     df["date_opened"] = df["date_opened"].fillna(value=dayZero)
     df["date_closed"] = df["date_closed"].fillna(value=dayN)
 
-    timeline: List[int] = list(range((dayN - dayZero).days))
-
     it: IntervalTree = buildIntervalTree(df=df, dayZero=dayZero)
 
-    df: DataFrame = computeIssueSpoilage(
-        it=it,
-        dayZero=dayZero,
-        step=7,
-    )
+    partialCIS = partial(computeIssueSpoilage, it=it, dayZero=dayZero)
 
-    print(df)
+    annualDF: DataFrame = partialCIS(step=365, interval="annual")
+    dailyDF: DataFrame = partialCIS(step=1, interval="daily")
+    monthlyDF: DataFrame = partialCIS(step=30, interval="monthly")
+    sixMonthDF: DataFrame = partialCIS(step=180, interval="six month")
+    threeMonthDF: DataFrame = partialCIS(step=90, interval="three month")
+    twoMonthDF: DataFrame = partialCIS(step=60, interval="two month")
+    twoWeekDF: DataFrame = partialCIS(step=14, interval="two week")
+    weeklyDF: DataFrame = partialCIS(step=7, interval="weekly")
+
+    return {
+        ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME: annualDF,
+        DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME: dailyDF,
+        MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME: monthlyDF,
+        SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: sixMonthDF,
+        THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: threeMonthDF,
+        TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: twoMonthDF,
+        TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME: twoWeekDF,
+        WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME: weeklyDF,
+    }
