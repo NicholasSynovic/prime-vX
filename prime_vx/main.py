@@ -113,6 +113,20 @@ class CMDLineParser:
             parserName="issue_count",
         )
 
+        # Issue density metric subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="metric-id",
+            help=METRIC_HELP_TEMPLATE.substitute(metric="issue density"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="metric",
+            parser=self.sccSubparser,
+            parserName="issue_density",
+        )
+
         # Issue spoilage metric subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="metric-is",

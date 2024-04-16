@@ -21,19 +21,19 @@ from prime_vx.db import (
 
 def identifyDayZero_N(df: DataFrame) -> Tuple[Timestamp, Timestamp]:
     return (
-        df["date_opened"].min().replace(tzinfo=None),
+        df["committer_date"].min().replace(tzinfo=None),
         Timestamp.now().replace(tzinfo=None),
     )
 
 
-def buildIntervalTree(df: DataFrame, dayZero: Timestamp) -> IntervalTree:
+def buildIssueIntervalTree(df: DataFrame, dayZero: Timestamp) -> IntervalTree:
     it: IntervalTree = IntervalTree()
 
     start: List[Timedelta] = (df["date_opened"] - dayZero).to_list()
     end: List[Timedelta] = (df["date_closed"] - dayZero).to_list()
 
     with Bar("Creating interval tree...", max=df.shape[0]) as bar:
-        timedelta: Timedelta
+        timedelta: Tuple[Timedelta]
         for timedelta in list(zip(start, end)):
             it.addi(
                 begin=timedelta[0].days,
@@ -45,9 +45,10 @@ def buildIntervalTree(df: DataFrame, dayZero: Timestamp) -> IntervalTree:
     return it
 
 
-def computeIssueSpoilage(
+def computeIssueDensity(
     it: IntervalTree,
     dayZero: Timestamp,
+    locDF: DataFrame,
     step: int = 1,
     interval: str = "daily",
 ) -> DataFrame:
@@ -55,13 +56,13 @@ def computeIssueSpoilage(
         "bucket": [],
         "bucket_start": [],
         "bucket_end": [],
-        "spoiled_issues": [],
+        "issue_density": [],
     }
     bucket: int = 1
 
     itSize: int = len(it)
 
-    with Bar(f"Computing {interval} issue spoilage...", max=itSize // step) as bar:
+    with Bar(f"Computing {interval} issue density...", max=itSize // step) as bar:
         for i in range(0, itSize, step):
             data["bucket"].append(bucket)
 
@@ -72,8 +73,9 @@ def computeIssueSpoilage(
                 .to_datetime64()
             )
 
+            numberOfIssues: int
             try:
-                data["spoiled_issues"].append(len(it[i : i + step]))
+                numberOfIssues = len(it[i : i + step])
                 bucketEnd: datetime64 = (
                     (dayZero + Timedelta(days=i + step - 1))
                     .to_period(freq="D")
@@ -81,7 +83,7 @@ def computeIssueSpoilage(
                     .to_datetime64()
                 )
             except IndexError:
-                data["spoiled_issues"].append(len(it[i:-1]))
+                numberOfIssues = len(it[i:-1])
                 bucketEnd: datetime64 = (
                     (dayZero + Timedelta(days=itSize - 1))
                     .to_period(freq="D")
@@ -89,35 +91,52 @@ def computeIssueSpoilage(
                     .to_datetime64()
                 )
 
+            projectSize: float = locDF[
+                locDF["committer_date"]
+                >= Timestamp(bucketStart) & locDF["committer_date"]
+                <= Timestamp(bucketEnd)
+            ]["kloc"][-1]
+
+            density: float = numberOfIssues / projectSize
+
+            data["issue_density"].append(density)
             data["bucket_start"].append(bucketStart)
             data["bucket_end"].append(bucketEnd)
 
             bucket += 1
             bar.next()
 
+    return DataFrame(data=data)
     return ISSUE_DENSITY_DF_DATAMODEL(df=DataFrame(data=data)).df
 
 
-def main(df: DataFrame) -> dict[str, DataFrame]:
+def main(issueDF: DataFrame, vcsDF_locDF: DataFrame) -> dict[str, DataFrame]:
     dayZero: Timestamp
     dayN: Timestamp
-    dayZero, dayN = identifyDayZero_N(df=df)
+    dayZero, dayN = identifyDayZero_N(df=vcsDF_locDF)  # Aligns dates to vcsDF
 
-    df["date_opened"] = df["date_opened"].fillna(value=dayZero)
-    df["date_closed"] = df["date_closed"].fillna(value=dayN)
+    issueDF["date_opened"] = issueDF["date_opened"].fillna(value=dayZero)
+    issueDF["date_closed"] = issueDF["date_closed"].fillna(value=dayN)
 
-    it: IntervalTree = buildIntervalTree(df=df, dayZero=dayZero)
+    issueIT: IntervalTree = buildIssueIntervalTree(df=issueDF, dayZero=dayZero)
 
-    partialCIS = partial(computeIssueSpoilage, it=it, dayZero=dayZero)
+    partialCID = partial(
+        computeIssueDensity,
+        it=issueIT,
+        dayZero=dayZero,
+        locDF=vcsDF_locDF,
+    )
 
-    annualDF: DataFrame = partialCIS(step=365, interval="annual")
-    dailyDF: DataFrame = partialCIS(step=1, interval="daily")
-    monthlyDF: DataFrame = partialCIS(step=30, interval="monthly")
-    sixMonthDF: DataFrame = partialCIS(step=180, interval="six month")
-    threeMonthDF: DataFrame = partialCIS(step=90, interval="three month")
-    twoMonthDF: DataFrame = partialCIS(step=60, interval="two month")
-    twoWeekDF: DataFrame = partialCIS(step=14, interval="two week")
-    weeklyDF: DataFrame = partialCIS(step=7, interval="weekly")
+    annualDF: DataFrame = partialCID(step=365, interval="annual")
+    dailyDF: DataFrame = partialCID(step=1, interval="daily")
+    monthlyDF: DataFrame = partialCID(step=30, interval="monthly")
+    sixMonthDF: DataFrame = partialCID(step=180, interval="six month")
+    threeMonthDF: DataFrame = partialCID(step=90, interval="three month")
+    twoMonthDF: DataFrame = partialCID(step=60, interval="two month")
+    twoWeekDF: DataFrame = partialCID(step=14, interval="two week")
+    weeklyDF: DataFrame = partialCID(step=7, interval="weekly")
+
+    print(annualDF)
 
     return {
         ANNUAL_ISSUE_DENSITY_DB_TABLE_NAME: annualDF,
