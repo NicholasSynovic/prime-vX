@@ -623,6 +623,86 @@ class SQLite(SQLiteHandler_ABC):
             PrimaryKeyConstraint("bucket"),
         )
 
+        dailyIssueDensityTable: Table = Table(
+            DAILY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        weeklyIssueDensityTable: Table = Table(
+            WEEKLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoWeekIssueDensityTable: Table = Table(
+            TWO_WEEK_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        monthlyIssueDensityTable: Table = Table(
+            MONTHLY_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoMonthIssueDensityTable: Table = Table(
+            TWO_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        threeMonthIssueDensityTable: Table = Table(
+            THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        sixMonthIssueDensityTable: Table = Table(
+            SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        annualMonthIssueDensityTable: Table = Table(
+            ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("issue_density", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
         dailyBusFactorTable: Table = Table(
             DAILY_BUS_FACTOR_DB_TABLE_NAME,
             metadata,
