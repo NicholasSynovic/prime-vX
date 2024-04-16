@@ -134,7 +134,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
                 )
 
         case "bus_factor":
-            nodMappingDF: DataFrame = bfMapping(df=vcsDF)
+            bfMappingDF: DataFrame = bfMapping(df=vcsDF)
             dfs: dict[str, DataFrame] = bfMain(df=vcsDF)
 
             # Write number of developers data to database
@@ -146,7 +146,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
 
             # Write number of developers mapping to database
             db.write(
-                df=nodMappingDF,
+                df=bfMappingDF,
                 tableName=COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
                 includeIndex=True,
             )

@@ -48,7 +48,7 @@ THREE_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: str = "three_month_issue_spoilage"
 SIX_MONTH_ISSUE_SPOILAGE_DB_TABLE_NAME: str = "six_month_issue_spoilage"
 ANNUAL_ISSUE_SPOILAGE_DB_TABLE_NAME: str = "annual_issue_spoilage"
 
-ANNUAL_BUS_FACTOR_DB_TABLE_NAME: str = "anuual_bus_factor"
+ANNUAL_BUS_FACTOR_DB_TABLE_NAME: str = "annual_bus_factor"
 DAILY_BUS_FACTOR_DB_TABLE_NAME: str = "daily_bus_factor"
 MONTHLY_BUS_FACTOR_DB_TABLE_NAME: str = "monthly_bus_factor"
 SIX_MONTH_BUS_FACTOR_DB_TABLE_NAME: str = "six_month_bus_factor"
