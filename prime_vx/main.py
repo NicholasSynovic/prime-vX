@@ -85,6 +85,20 @@ class CMDLineParser:
             parserName="github",
         )
 
+        # Bus factor metric subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="metric-bf",
+            help=METRIC_HELP_TEMPLATE.substitute(metric="bus factor"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="metric",
+            parser=self.sccSubparser,
+            parserName="bus_factor",
+        )
+
         # Issue count metric subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="metric-ic",
