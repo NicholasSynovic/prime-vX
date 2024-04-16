@@ -4,7 +4,7 @@ from pandas import DataFrame, Series
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
-from prime_vx.datamodels.metrics.bus_factor import DEVELOPER_COUNT_MAPPING_DF_DATAMODEL
+from prime_vx.datamodels.metrics.bus_factor import BUS_FACTOR_MAPPING_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import *
 from prime_vx.metrics import createGroups
@@ -47,14 +47,14 @@ def commitHashToBucketMapper(df: DataFrame) -> dict[str, BUCKET_STOR]:
 def main(df: DataFrame) -> DataFrame:
     data: dict[str, List[str | int]] = {
         "commit_hash": [],
-        DAILY_DEVELOPER_COUNT_DB_TABLE_NAME: [],
-        WEEKLY_DEVELOPER_COUNT_DB_TABLE_NAME: [],
-        TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME: [],
-        MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME: [],
-        TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME: [],
-        THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME: [],
-        SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME: [],
-        ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME: [],
+        DAILY_BUS_FACTOR_DB_TABLE_NAME: [],
+        WEEKLY_BUS_FACTOR_DB_TABLE_NAME: [],
+        TWO_WEEK_BUS_FACTOR_DB_TABLE_NAME: [],
+        MONTHLY_BUS_FACTOR_DB_TABLE_NAME: [],
+        TWO_MONTH_BUS_FACTOR_DB_TABLE_NAME: [],
+        THREE_MONTH_BUS_FACTOR_DB_TABLE_NAME: [],
+        SIX_MONTH_BUS_FACTOR_DB_TABLE_NAME: [],
+        ANNUAL_BUS_FACTOR_DB_TABLE_NAME: [],
     }
 
     chtbm: dict[str, BUCKET_STOR] = commitHashToBucketMapper(df=df)
@@ -69,4 +69,4 @@ def main(df: DataFrame) -> DataFrame:
         for key in foo.keys():
             data[key].append(foo[key])
 
-    return DEVELOPER_COUNT_MAPPING_DF_DATAMODEL(df=DataFrame(data=data)).df
+    return BUS_FACTOR_MAPPING_DF_DATAMODEL(df=DataFrame(data=data)).df
