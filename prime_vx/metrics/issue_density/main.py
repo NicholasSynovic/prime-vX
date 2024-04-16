@@ -3,7 +3,7 @@ from typing import List, Tuple
 
 from intervaltree import IntervalTree
 from numpy import datetime64
-from pandas import DataFrame, Timedelta, Timestamp
+from pandas import DataFrame, Series, Timedelta, Timestamp
 from progress.bar import Bar
 
 from prime_vx.datamodels.metrics.issue_density import ISSUE_DENSITY_DF_DATAMODEL
@@ -91,22 +91,29 @@ def computeIssueDensity(
                     .to_datetime64()
                 )
 
-            projectSize: float = locDF[
-                locDF["committer_date"]
-                >= Timestamp(bucketStart) & locDF["committer_date"]
-                <= Timestamp(bucketEnd)
-            ]["kloc"][-1]
+            projectSize: Series = locDF[
+                (locDF["committer_date"] >= Timestamp(bucketStart))
+                & (locDF["committer_date"] <= Timestamp(bucketEnd))
+            ]["kloc"]
 
-            density: float = numberOfIssues / projectSize
+            density: float
+            try:
+                density = numberOfIssues / projectSize.iat[-1]
+            except IndexError:
+                density = 0.0
 
             data["issue_density"].append(density)
             data["bucket_start"].append(bucketStart)
             data["bucket_end"].append(bucketEnd)
 
             bucket += 1
+
+            if bar.max < bucket:
+                bar.max = bucket - 1
+                bar.update()
+
             bar.next()
 
-    return DataFrame(data=data)
     return ISSUE_DENSITY_DF_DATAMODEL(df=DataFrame(data=data)).df
 
 
@@ -135,8 +142,6 @@ def main(issueDF: DataFrame, vcsDF_locDF: DataFrame) -> dict[str, DataFrame]:
     twoMonthDF: DataFrame = partialCID(step=60, interval="two month")
     twoWeekDF: DataFrame = partialCID(step=14, interval="two week")
     weeklyDF: DataFrame = partialCID(step=7, interval="weekly")
-
-    print(annualDF)
 
     return {
         ANNUAL_ISSUE_DENSITY_DB_TABLE_NAME: annualDF,

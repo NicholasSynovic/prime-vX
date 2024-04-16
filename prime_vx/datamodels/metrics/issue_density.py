@@ -6,5 +6,5 @@ class ISSUE_DENSITY_DF_DATAMODEL(TypedDataFrame):
         "bucket": int,
         "bucket_start": DATE_TIME_DTYPE,
         "bucket_end": DATE_TIME_DTYPE,
-        "issue_density": int,
+        "issue_density": float,
     }
