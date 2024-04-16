@@ -2,6 +2,7 @@ from argparse import Namespace
 from pathlib import Path
 from typing import List
 
+import pandas
 from pandas import DataFrame
 
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
@@ -50,6 +51,16 @@ def main(namespace: Namespace, db: SQLite) -> None:
     itDF: DataFrame = db.read(
         tdf=IT_DF_DATAMODEL,
         tableName=ISSUE_TRACKER_DB_TABLE_NAME,
+    )
+    locDF: DataFrame = db.read(
+        tdf=LOC_DF_DATAMODEL,
+        tableName=LOC_DB_TABLE_NAME,
+    )
+
+    vcsDF_locDF: DataFrame = vcsDF.merge(
+        right=locDF,
+        how="inner",
+        on="commit_hash",
     )
 
     metricName: str = inputKeySplit[1]
@@ -134,20 +145,22 @@ def main(namespace: Namespace, db: SQLite) -> None:
                 )
 
         case "bus_factor":
-            bfMappingDF: DataFrame = bfMapping(df=vcsDF)
-            dfs: dict[str, DataFrame] = bfMain(df=vcsDF)
+            bfMappingDF: DataFrame = bfMapping(df=vcsDF_locDF)
+            dfs: dict[str, DataFrame] = bfMain(df=vcsDF_locDF)
 
-            # Write number of developers data to database
+            vcsDF_locDF.T.to_json(path_or_buf="test.json", indent=4, index=False)
+
+            # Write bus factor data to database
             for tableName, df in dfs.items():
                 db.write(
                     df=df,
                     tableName=tableName,
                 )
 
-            # Write number of developers mapping to database
+            # Write bus factor mapping to database
             db.write(
                 df=bfMappingDF,
-                tableName=COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
+                tableName=COMMIT_HASH_TO_BUS_FACTOR_BUCKET_MAP_TABLE_NAME,
                 includeIndex=True,
             )
 

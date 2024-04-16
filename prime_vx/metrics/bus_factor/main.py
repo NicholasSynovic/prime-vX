@@ -52,7 +52,25 @@ def countDevelopers(
     with Bar(f"Computing {frequency.replace('_', ' ')}...", max=len(groups)) as bar:
         group: DataFrame
         for _, group in groups:
-            totalCodeChanged: float = data["dkloc"]
+            contributingDevelopers: List[str] = []
+
+            totalCodeChanged: float = group["delta_kloc"].abs().sum()
+
+            developers: List[str] = group["committer_email"].unique().tolist()
+
+            developer: str
+            for developer in developers:
+                codeChangedByDeveloper: float = (
+                    group[group["committer_email"] == developer]["delta_kloc"]
+                    .abs()
+                    .sum()
+                )
+
+                if codeChangedByDeveloper == 0:
+                    break
+
+                if codeChangedByDeveloper / totalCodeChanged >= minimumContribution:
+                    contributingDevelopers.append(developer)
 
             data["bucket"].append(bucket)
             data["bucket_start"].append(
@@ -61,7 +79,7 @@ def countDevelopers(
             data["bucket_end"].append(
                 group["committer_date"].max().to_pydatetime().replace(tzinfo=None)
             )
-            data["bus_factor"].append(group["committer_email"].unique().size)
+            data["bus_factor"].append(len(contributingDevelopers))
 
             hash_: str
             for hash_ in group["commit_hash"]:
