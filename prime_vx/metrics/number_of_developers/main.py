@@ -6,7 +6,9 @@ from pandas import DataFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
-from prime_vx.datamodels.metrics.nod import DEVELOPER_COUNT_DF_DATAMODEL
+from prime_vx.datamodels.metrics.number_of_developers import (
+    DEVELOPER_COUNT_DF_DATAMODEL,
+)
 from prime_vx.db import (
     ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME,
     DAILY_DEVELOPER_COUNT_DB_TABLE_NAME,

@@ -4,13 +4,11 @@ from pandas import DataFrame, Series
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
-from prime_vx.datamodels.metrics.number_of_developers import (
-    DEVELOPER_COUNT_MAPPING_DF_DATAMODEL,
-)
+from prime_vx.datamodels.metrics.bus_factor import DEVELOPER_COUNT_MAPPING_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import *
 from prime_vx.metrics import createGroups
-from prime_vx.metrics.number_of_developers import BUCKET_STOR, INTERVAL_PAIRS
+from prime_vx.metrics.bus_factor import BUCKET_STOR, INTERVAL_PAIRS
 
 
 def commitHashToBucketMapper(df: DataFrame) -> dict[str, BUCKET_STOR]:
