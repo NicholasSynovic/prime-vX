@@ -10,16 +10,18 @@ from prime_vx.datamodels.metrics.loc import LOC_DF_DATAMODEL
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import (
     CLOC_DB_TABLE_NAME,
+    COMMIT_HASH_TO_BUS_FACTOR_BUCKET_MAP_TABLE_NAME,
     COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
     COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME,
     ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME,
-    ISSUE_ID_TO_ISSUE_SPOILAGE_BUCKET_MAP_TABLE_NAME,
     ISSUE_TRACKER_DB_TABLE_NAME,
     LOC_DB_TABLE_NAME,
     VCS_DB_TABLE_NAME,
 )
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import InvalidMetricSubprogram
+from prime_vx.metrics.bus_factor.main import main as bfMain
+from prime_vx.metrics.bus_factor.mapping import main as bfMapping
 from prime_vx.metrics.issue_count.main import main as icMain
 from prime_vx.metrics.issue_count.mapping import main as icMapping
 from prime_vx.metrics.issue_spoilage.main import main as isMain
@@ -130,5 +132,24 @@ def main(namespace: Namespace, db: SQLite) -> None:
                     df=df,
                     tableName=tableName,
                 )
+
+        case "bus_factor":
+            nodMappingDF: DataFrame = bfMapping(df=vcsDF)
+            dfs: dict[str, DataFrame] = bfMain(df=vcsDF)
+
+            # Write number of developers data to database
+            for tableName, df in dfs.items():
+                db.write(
+                    df=df,
+                    tableName=tableName,
+                )
+
+            # Write number of developers mapping to database
+            db.write(
+                df=nodMappingDF,
+                tableName=COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME,
+                includeIndex=True,
+            )
+
         case _:
             raise InvalidMetricSubprogram

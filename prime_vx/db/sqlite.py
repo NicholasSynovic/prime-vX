@@ -623,6 +623,138 @@ class SQLite(SQLiteHandler_ABC):
             PrimaryKeyConstraint("bucket"),
         )
 
+        dailyBusFactorTable: Table = Table(
+            DAILY_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        weeklyBusFactorTable: Table = Table(
+            WEEKLY_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoWeekBusFactorTable: Table = Table(
+            TWO_WEEK_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        monthlyBusFactorTable: Table = Table(
+            MONTHLY_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        twoMonthBusFactorTable: Table = Table(
+            TWO_MONTH_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        threeMonthBusFactorTable: Table = Table(
+            THREE_MONTH_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        sixMonthBusFactorTable: Table = Table(
+            SIX_MONTH_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        annualMonthBusFactorTable: Table = Table(
+            ANNUAL_BUS_FACTOR_DB_TABLE_NAME,
+            metadata,
+            Column("bucket", Integer),
+            Column("bucket_start", DateTime),
+            Column("bucket_end", DateTime),
+            Column("bus_factor", Integer),
+            PrimaryKeyConstraint("bucket"),
+        )
+
+        commitHashToBusFactorBucketMap: Table = Table(
+            COMMIT_HASH_TO_BUS_FACTOR_BUCKET_MAP_TABLE_NAME,
+            metadata,
+            Column("index", Integer),
+            Column("commit_hash", String),
+            Column(DAILY_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            Column(WEEKLY_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            Column(TWO_WEEK_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            Column(MONTHLY_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            Column(TWO_MONTH_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            Column(THREE_MONTH_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            Column(SIX_MONTH_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            Column(ANNUAL_BUS_FACTOR_DB_TABLE_NAME, Integer),
+            PrimaryKeyConstraint("index"),
+            ForeignKeyConstraint(
+                columns=["commit_hash"],
+                refcolumns=[f"{VCS_DB_TABLE_NAME}.commit_hash"],
+            ),
+            ForeignKeyConstraint(
+                columns=[DAILY_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{DAILY_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[WEEKLY_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{WEEKLY_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_WEEK_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_WEEK_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[MONTHLY_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{MONTHLY_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[TWO_MONTH_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{TWO_MONTH_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[THREE_MONTH_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{THREE_MONTH_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[SIX_MONTH_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{SIX_MONTH_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+            ForeignKeyConstraint(
+                columns=[ANNUAL_BUS_FACTOR_DB_TABLE_NAME],
+                refcolumns=[f"{ANNUAL_BUS_FACTOR_DB_TABLE_NAME}.bucket"],
+            ),
+        )
+
         metadata.create_all(bind=self.engine, checkfirst=True)
 
     def write(self, df: DataFrame, tableName: str, includeIndex: bool = False) -> None:
