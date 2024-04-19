@@ -1,5 +1,12 @@
 from typing import List
 
+from prime_vx.cloc.cloc import CLOC
+from prime_vx.cloc.gocloc import GoCLOC
+from prime_vx.cloc.scc import SCC
+from prime_vx.cloc.sloccount import SLOCCount
+
+__all__ = [GoCLOC, SCC, CLOC, SLOCCount]
+
 CLOC_KEY_LIST: List[str] = [
     "index",
     "commit_hash",
