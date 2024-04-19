@@ -5,7 +5,7 @@ from pandas import DataFrame
 from pyfs import resolvePath
 
 from prime_vx.cloc import CLOC_TOOL_DATA
-from prime_vx.cloc._classes._clocTool import CLOCTool, CLOCTool_ABC
+from prime_vx.cloc._classes import CLOCTool, CLOCTool_ABC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
 
 
