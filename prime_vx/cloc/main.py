@@ -15,6 +15,7 @@ from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import *
 from prime_vx.vcs._classes._vcsHandler import VCSHandler_ABC
 from prime_vx.vcs.git import GitHandler
+from prime_vx.vcs.mercurial import MercurialHandler
 
 
 def computeCLOC(
@@ -78,6 +79,8 @@ def main(namespace: Namespace, db: SQLite) -> None:
     match capturedVCS[0]:
         case "git":
             vcsHandler: VCSHandler_ABC = GitHandler(path=repositoryPath)
+        case "mercurial":
+            vcsHandler: VCSHandler_ABC = MercurialHandler(path=repositoryPath)
         case _:
             raise InvalidVersionControl
 
