@@ -44,6 +44,27 @@ class CLOCTool(CLOCTool_Protocol):
     def runTool(self) -> Tuple[dict | List, str]:
         clocToolOutput: str = runCommand(cmd=self.command).stdout.decode().strip()
 
+        match self.toolName:
+            case "sloccount":
+                temp: dict[str, List] = {
+                    "line_count": [],
+                    "language": [],
+                    "file": [],
+                }
+
+                startingIndex: int = clocToolOutput.find("\n\n\n") + 3
+                tsvOutput: str = clocToolOutput[startingIndex:-1]
+                perLineSplit: List[str] = tsvOutput.split(sep="\n")
+
+                line: str
+                for line in perLineSplit:
+                    tsvSplit: List[str] = line.split(sep="\t")
+                    temp["line_count"].append(int(tsvSplit[0]))
+                    temp["language"].append(tsvSplit[1])
+                    temp["file"].append(tsvSplit[2])
+
+                clocToolOutput = temp
+
         outputJSON: List | dict
         try:
             outputJSON = loads(s=clocToolOutput)
@@ -54,6 +75,9 @@ class CLOCTool(CLOCTool_Protocol):
                 string=clocToolOutput,
             )
             outputJSON = loads(s=fixedOutput)
+        except TypeError:
+            if type(clocToolOutput) == dict:
+                outputJSON = clocToolOutput
 
         outputStr: str = dumps(obj=outputJSON)
 

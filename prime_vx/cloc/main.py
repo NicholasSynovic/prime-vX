@@ -9,6 +9,7 @@ from progress.bar import Bar
 from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
 from prime_vx.cloc.cloc import CLOC
 from prime_vx.cloc.scc import SCC
+from prime_vx.cloc.sloccount import SLOCCount
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
 from prime_vx.db.sqlite import SQLite
@@ -72,6 +73,8 @@ def main(namespace: Namespace, db: SQLite) -> None:
             tool: CLOCTool_ABC = SCC(path=repositoryPath)
         case "cloc":
             tool: CLOCTool_ABC = CLOC(path=repositoryPath)
+        case "sloccount":
+            tool: CLOCTool_ABC = SLOCCount(path=repositoryPath)
         case _:
             raise InvalidCLOCTool
 
