@@ -23,8 +23,6 @@ class SCC(CLOCTool, CLOCTool_ABC):
         data["commit_hash"].append(commitHash)
         data["tool"].append(self.toolName)
 
-        data: dict[str, List] = {"commit_hash": [commitHash]}
-
         toolData: Tuple[dict | List, str] = self.runTool()
         jsonDict: dict | List = toolData[0]
         jsonStr: str = toolData[1]
