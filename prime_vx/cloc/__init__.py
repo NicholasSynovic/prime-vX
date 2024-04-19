@@ -2,10 +2,11 @@ from typing import List
 
 from prime_vx.cloc.cloc import CLOC
 from prime_vx.cloc.gocloc import GoCLOC
+from prime_vx.cloc.main import main
 from prime_vx.cloc.scc import SCC
 from prime_vx.cloc.sloccount import SLOCCount
 
-__all__ = [GoCLOC, SCC, CLOC, SLOCCount]
+__all__ = [GoCLOC, SCC, CLOC, SLOCCount, main]
 
 CLOC_KEY_LIST: List[str] = [
     "index",
