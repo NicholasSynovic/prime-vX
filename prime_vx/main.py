@@ -14,7 +14,7 @@ from prime_vx import (
     TOP_LEVEL_DESCRIPTION,
     VCS_HELP_TEMPLATE,
 )
-from prime_vx.cloc.main import main as clocMain
+from prime_vx.cloc import main as clocMain
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import *
 from prime_vx.exceptions import InvalidCommandLineSubprogram
@@ -55,6 +55,20 @@ class CMDLineParser:
             suffix="cloc",
             parser=self.sccSubparser,
             parserName="cloc",
+        )
+
+        # GoCLOC CLOC subparser
+        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
+            name="cloc-gocloc",
+            help=CLOC_HELP_TEMPLATE.substitute(tool="gocloc"),
+            prog=PROG,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
+        self._addArgs(
+            suffix="cloc",
+            parser=self.sccSubparser,
+            parserName="gocloc",
         )
 
         # SLOCcount CLOC subparser
