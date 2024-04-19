@@ -1,9 +1,8 @@
-from json import dumps, loads
 from pathlib import Path
 from typing import List, Tuple
 
 from pandas import DataFrame
-from pyfs import resolvePath, runCommand
+from pyfs import resolvePath
 
 from prime_vx.cloc import CLOC_TOOL_DATA
 from prime_vx.cloc._classes._clocTool import CLOCTool, CLOCTool_ABC
