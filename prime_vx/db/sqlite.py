@@ -114,6 +114,7 @@ class SQLite(SQLiteHandler_ABC):
             Column("state", String),
             Column("date_opened", DateTime),
             Column("date_closed", DateTime),
+            Column("issue_tracker", String),
             Column("url", String),
             Column("json", String),
             PrimaryKeyConstraint("id"),

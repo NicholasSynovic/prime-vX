@@ -19,6 +19,7 @@ from prime_vx.issue_trackers._classes._issueTrackerHandler import ITHandler_ABC
 
 class GitHubHandler(ITHandler_ABC):
     def __init__(self, owner: str, repo: str, token: str) -> None:
+        self.name: str = "github"
         self.token: str = token
 
         foo: str = f"https://api.github.com/repos/{owner}/{repo}/issues?state=all&direction=asc&per_page=100"
@@ -113,6 +114,7 @@ class GitHubHandler(ITHandler_ABC):
             "state": [],
             "date_opened": [],
             "date_closed": [],
+            "issue_tracker": [],
             "url": [],
             "json": [],
         }
@@ -142,6 +144,7 @@ class GitHubHandler(ITHandler_ABC):
                     data["state"].append(datum["state"])
                     data["date_opened"].append(createdAt)
                     data["date_closed"].append(closedAt)
+                    data["issue_tracker"].append(self.name)
                     data["url"].append(resp.url)
                     data["json"].append(dumps(obj=datum))
 

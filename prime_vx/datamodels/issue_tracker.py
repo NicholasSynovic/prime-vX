@@ -8,6 +8,7 @@ class IT_DF_DATAMODEL(TypedDataFrame):
         "state": str,
         "date_opened": DATE_TIME_DTYPE,
         "date_closed": DATE_TIME_DTYPE,
+        "issue_tracker": str,
         "url": str,
         "json": str,
     }
