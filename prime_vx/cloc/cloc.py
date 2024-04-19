@@ -1,44 +1,43 @@
-from json import dumps, loads
+from json import dumps
 from pathlib import Path
-from typing import List
+from typing import List, Tuple
 
 from pandas import DataFrame
-from pyfs import isDirectory, resolvePath, runCommand
+from pyfs import resolvePath
 
-from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
+from prime_vx.cloc import CLOC_TOOL_DATA
+from prime_vx.cloc._classes._clocTool import CLOCTool, CLOCTool_ABC
 from prime_vx.datamodels.cloc import CLOC_DF_DATAMODEL
-from prime_vx.exceptions import InvalidDirectoryPath
 
 
-class CLOC(CLOCTool_ABC):
+class CLOC(CLOCTool, CLOCTool_ABC):
     def __init__(self, path: Path) -> None:
         self.toolName = "cloc"
+        self.command = f"{self.toolName} --by-file-by-lang --use-sloccount --json {resolvePath(path=path).__str__()}"
 
-        resolvedPath: Path = resolvePath(path=path)
-
-        if isDirectory(path=resolvedPath):
-            self.path = resolvedPath
-        else:
-            raise InvalidDirectoryPath
-
-        self.command = f"{self.toolName} --by-file-by-lang --use-sloccount --json {self.path.__str__()}"
+        CLOCTool(toolName=self.toolName, command=self.command, directoryPath=path)
 
     def compute(self, commitHash: str) -> DataFrame:
-        data: dict[str, List] = {"commit_hash": [commitHash]}
+        data: dict[str, List] = CLOC_TOOL_DATA
 
-        output: str = runCommand(cmd=self.command).stdout.decode().strip()
-        jsonData: List = loads(s=output)
+        data["commit_hash"].append(commitHash)
+        data["tool"].append(self.toolName)
 
-        byLangSUM: dict = jsonData["by_lang"]["SUM"]
+        toolData: Tuple[dict | List, str] = self.runTool()
+        jsonDict: dict | List = toolData[0]
+        jsonStr: str = toolData[1]
 
-        data["file_count"] = [byLangSUM["nFiles"]]
-        data["line_count"] = [
-            byLangSUM["blank"] + byLangSUM["comment"] + byLangSUM["code"]
-        ]
-        data["blank_line_count"] = [byLangSUM["blank"]]
-        data["comment_line_count"] = byLangSUM["comment"]
-        data["code_line_count"] = byLangSUM["code"]
-        data["tool"] = [self.toolName]
-        data["json"] = [dumps(obj=jsonData)]
+        data["json"].append(jsonStr)
+
+        relevantData: dict = jsonDict["by_lang"]["SUM"]
+
+        data["file_count"].append(relevantData["nFiles"])
+        data["blank_line_count"].append(relevantData["blank"])
+        data["comment_line_count"].append(relevantData["comment"])
+        data["code_line_count"].append(relevantData["code"])
+
+        data["line_count"].append(
+            relevantData["blank"] + relevantData["comment"] + relevantData["code"]
+        )
 
         return CLOC_DF_DATAMODEL(df=DataFrame(data=data)).df
