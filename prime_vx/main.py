@@ -1,4 +1,5 @@
 from argparse import ArgumentParser, HelpFormatter, Namespace, _SubParsersAction
+from collections import namedtuple
 from operator import attrgetter
 from pathlib import Path
 from typing import Any, List, Literal, Tuple
@@ -22,6 +23,11 @@ from prime_vx.issue_trackers.main import main as itMain
 from prime_vx.metrics.main import main as metricMain
 from prime_vx.vcs.main import main as vcsMain
 
+SUBPARSER_INFO = namedtuple(
+    typename="SubparserInformation",
+    field_names=["name", "description"],
+)
+
 
 class SortingHelpFormatter(HelpFormatter):
     def add_arguments(self, actions):
@@ -43,197 +49,90 @@ class CMDLineParser:
             description=f"{PROG} subprograms",
         )
 
-        # CLOC CLOC subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="cloc-cloc",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="AlDanial/cloc"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="cloc",
-            parser=self.sccSubparser,
-            parserName="cloc",
-        )
+        clocSubParsers: List[SUBPARSER_INFO] = [
+            SUBPARSER_INFO("cloc", "AlDanial/cloc"),
+            SUBPARSER_INFO("gocloc", "hhatto/cloc"),
+            SUBPARSER_INFO("sloccount", "dwheeler/cloc"),
+            SUBPARSER_INFO("scc", "boyter/scc"),
+        ]
 
-        # GoCLOC CLOC subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="cloc-gocloc",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="hhatto/gocloc"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="cloc",
-            parser=self.sccSubparser,
-            parserName="gocloc",
-        )
+        issueTrackerSubParsers: List[SUBPARSER_INFO] = [
+            SUBPARSER_INFO("gh", "GitHub"),
+        ]
 
-        # SLOCcount CLOC subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="cloc-sloccount",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="dwheeler/sloccount"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="cloc",
-            parser=self.sccSubparser,
-            parserName="sloccount",
-        )
+        metricSubParsers: List[SUBPARSER_INFO] = [
+            SUBPARSER_INFO("bf", "bus factor"),
+            SUBPARSER_INFO("ic", "issue count"),
+            SUBPARSER_INFO("id", "issue density"),
+            SUBPARSER_INFO("is", "issue spoilage"),
+            SUBPARSER_INFO("size", "project size"),
+            SUBPARSER_INFO("nod", "number of developers"),
+            SUBPARSER_INFO("prod", "productivity"),
+        ]
 
-        # SCC CLOC subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="cloc-scc",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="boyter/scc"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="cloc",
-            parser=self.sccSubparser,
-            parserName="scc",
-        )
+        vcsSubParsers: List[SUBPARSER_INFO] = [
+            SUBPARSER_INFO("git", "git"),
+            SUBPARSER_INFO("hg", "hg"),
+        ]
 
-        # GitHub issue tracker subparser
-        self.ghitSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="it-gh",
-            help=ISSUE_TRACKER_HELP_TEMPLATE.substitute(tracker="GitHub"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="it",
-            parser=self.ghitSubparser,
-            parserName="github",
-        )
+        subparser: SUBPARSER_INFO
+        for subparser in clocSubParsers:
+            foo: ArgumentParser = self.subparsers.add_parser(
+                name=f"cloc-{subparser.name}",
+                help=CLOC_HELP_TEMPLATE.substitute(tool=subparser.description),
+                prog=PROG,
+                epilog=EPILOG,
+                formatter_class=SortingHelpFormatter,
+            )
+            self._addArgs(
+                suffix="cloc",
+                parser=foo,
+                parserName=subparser.name,
+            )
 
-        # Bus factor metric subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="metric-bf",
-            help=METRIC_HELP_TEMPLATE.substitute(metric="bus factor"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="metric",
-            parser=self.sccSubparser,
-            parserName="bus_factor",
-        )
+        for subparser in issueTrackerSubParsers:
+            foo: ArgumentParser = self.subparsers.add_parser(
+                name=f"it-{subparser.name}",
+                help=ISSUE_TRACKER_HELP_TEMPLATE.substitute(
+                    tracker=subparser.description
+                ),
+                prog=PROG,
+                epilog=EPILOG,
+                formatter_class=SortingHelpFormatter,
+            )
+            self._addArgs(
+                suffix="it",
+                parser=foo,
+                parserName=subparser.description,
+            )
 
-        # Issue count metric subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="metric-ic",
-            help=METRIC_HELP_TEMPLATE.substitute(metric="issue count"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="metric",
-            parser=self.sccSubparser,
-            parserName="issue_count",
-        )
+        for subparser in metricSubParsers:
+            foo: ArgumentParser = self.subparsers.add_parser(
+                name=f"metric-{subparser.name}",
+                help=METRIC_HELP_TEMPLATE.substitute(metric=subparser.description),
+                prog=PROG,
+                epilog=EPILOG,
+                formatter_class=SortingHelpFormatter,
+            )
+            self._addArgs(
+                suffix="metric",
+                parser=foo,
+                parserName=subparser.description,
+            )
 
-        # Issue density metric subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="metric-id",
-            help=METRIC_HELP_TEMPLATE.substitute(metric="issue density"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="metric",
-            parser=self.sccSubparser,
-            parserName="issue_density",
-        )
-
-        # Issue spoilage metric subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="metric-is",
-            help=METRIC_HELP_TEMPLATE.substitute(metric="issue spoilage"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="metric",
-            parser=self.sccSubparser,
-            parserName="issue_spoilage",
-        )
-
-        # LOC metric subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="metric-loc",
-            help=METRIC_HELP_TEMPLATE.substitute(
-                metric="loc, kloc, delta-loc, and delta-kloc"
-            ),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="metric",
-            parser=self.sccSubparser,
-            parserName="project_size",
-        )
-
-        # Number of developers metric subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="metric-nod",
-            help=METRIC_HELP_TEMPLATE.substitute(
-                metric="number of developers",
-            ),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="metric",
-            parser=self.sccSubparser,
-            parserName="number_of_developers",
-        )
-
-        # Productivity metric subparser
-        self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="metric-prod",
-            help=METRIC_HELP_TEMPLATE.substitute(metric="productivity"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(
-            suffix="metric",
-            parser=self.sccSubparser,
-            parserName="productivity",
-        )
-
-        # Git VCS subparser
-        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="vcs-git",
-            help=VCS_HELP_TEMPLATE.substitute(vcs="git"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="git")
-
-        # Mercurial VCS subparser
-        self.gitSubparser: ArgumentParser = self.subparsers.add_parser(
-            name="vcs-hg",
-            help=VCS_HELP_TEMPLATE.substitute(vcs="hg"),
-            prog=PROG,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
-        self._addArgs(suffix="vcs", parser=self.gitSubparser, parserName="hg")
+        for subparser in vcsSubParsers:
+            foo: ArgumentParser = self.subparsers.add_parser(
+                name=f"vcs-{subparser.name}",
+                help=VCS_HELP_TEMPLATE.substitute(vcs=subparser.description),
+                prog=PROG,
+                epilog=EPILOG,
+                formatter_class=SortingHelpFormatter,
+            )
+            self._addArgs(
+                suffix="vcs",
+                parser=foo,
+                parserName=subparser.description,
+            )
 
         # Parse args
         self.namespace: Namespace = self.parser.parse_args()
@@ -244,6 +143,8 @@ class CMDLineParser:
         parser: ArgumentParser,
         parserName: str,
     ) -> None:
+        parserName = parserName.lower().replace(" ", "_")
+
         helpMessage = f"Path to SQLite3 database generated from a {PROG} VCS tool"
         destination: str = ""
 
@@ -294,7 +195,7 @@ class CMDLineParser:
                     dest=f"it.{parserName}.token",
                 )
 
-                destination = f"it.{parserName}.input"
+                destination = f"it.{parserName.lower()}.input"
             case _:
                 pass
 
