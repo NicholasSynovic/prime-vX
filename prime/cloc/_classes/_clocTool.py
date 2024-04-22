@@ -68,7 +68,7 @@ class CLOCTool(CLOCTool_Protocol):
                 temp: dict[str, List[str | int]] = CLOC_TOOL_JSON
 
                 perLineSplit: List[List[str]] = [
-                    line.rsplit()
+                    line.split()
                     for line in clocToolOutput.replace("-", "").split("\n")[3:-2]
                     if len(line) > 0
                 ]
@@ -76,11 +76,17 @@ class CLOCTool(CLOCTool_Protocol):
                 line: List[str]
                 for line in perLineSplit:
                     temp["language"].append(line[0])
-                    temp["file_line_count"].append(int(line[1]))
-                    temp["line_line_count"].append(int(line[2]))
+                    try:
+                        temp["file_count"].append(int(line[1]))
+                    except ValueError:
+                        line[0] = f"{line[0]} {line[1]}"
+                        temp["language"][-1] = line[0]
+                        del line[1]
+
+                    temp["line_count"].append(int(line[2]))
                     temp["blank_line_count"].append(int(line[3]))
                     temp["comment_line_count"].append(int(line[4]))
-                    temp["code_line_line_count"].append(int(line[5]))
+                    temp["code_line_count"].append(int(line[5]))
 
                 clocToolOutput = temp
 

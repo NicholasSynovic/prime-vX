@@ -27,4 +27,18 @@ class LOC(CLOCTool, CLOCTool_ABC):
         jsonDict: dict | List = toolData[0]
         jsonStr: str = toolData[1]
 
+        data["json"].append(jsonStr)
+
+        fileCount: int = len(jsonDict["file"])
+        codeCount: int = sum(jsonDict["code_line_count"])
+        blankCount: int = sum(jsonDict["blank_line_count"])
+        commentCount: int = sum(jsonDict["comment_line_count"])
+        lineCount: int = sum(jsonDict["line_count"])
+
+        data["file_count"].append(fileCount)
+        data["line_count"].append(lineCount)
+        data["blank_line_count"].append(blankCount)
+        data["comment_line_count"].append(commentCount)
+        data["code_line_count"].append(codeCount)
+
         return CLOC_DF_DATAMODEL(df=DataFrame(data=data)).df
