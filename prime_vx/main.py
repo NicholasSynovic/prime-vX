@@ -46,7 +46,7 @@ class CMDLineParser:
         # CLOC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-cloc",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="cloc"),
+            help=CLOC_HELP_TEMPLATE.substitute(tool="AlDanial/cloc"),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
@@ -60,7 +60,7 @@ class CMDLineParser:
         # GoCLOC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-gocloc",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="gocloc"),
+            help=CLOC_HELP_TEMPLATE.substitute(tool="hhatto/gocloc"),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
@@ -74,7 +74,7 @@ class CMDLineParser:
         # SLOCcount CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-sloccount",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="sloccount"),
+            help=CLOC_HELP_TEMPLATE.substitute(tool="dwheeler/sloccount"),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,
@@ -88,7 +88,7 @@ class CMDLineParser:
         # SCC CLOC subparser
         self.sccSubparser: ArgumentParser = self.subparsers.add_parser(
             name="cloc-scc",
-            help=CLOC_HELP_TEMPLATE.substitute(tool="scc"),
+            help=CLOC_HELP_TEMPLATE.substitute(tool="boyter/scc"),
             prog=PROG,
             epilog=EPILOG,
             formatter_class=SortingHelpFormatter,

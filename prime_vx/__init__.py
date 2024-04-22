@@ -10,7 +10,7 @@ VCS_HELP_TEMPLATE: Template = Template(
     template="Extract version control system (VCS) information from a ${vcs} software repository",
 )
 CLOC_HELP_TEMPLATE: Template = Template(
-    template="Compute CLOC metrics of a software repository with ${tool}",
+    template="Count lines of code of a software repository with ${tool}",
 )
 METRIC_HELP_TEMPLATE: Template = Template(
     template="Compute ${metric} metrics",
