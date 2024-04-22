@@ -38,13 +38,12 @@ CLOC_TOOL_DATA: dict[str, List] = {
 }
 
 CLOC_TOOL_JSON: dict[str, List[str | int]] = {
-    "file_count": [],
-    "line_count": [],
     "blank_line_count": [],
-    "comment_line_count": [],
     "code_line_count": [],
-    "language": [],
-    "file": [],
+    "comment_line_count": [],
+    "files": [],
+    "languages": [],
+    "line_count": [],
 }
 
 JSON_SCHEMA: dict = {
@@ -54,9 +53,8 @@ JSON_SCHEMA: dict = {
         "blank_line_count",
         "code_line_count",
         "comment_line_count",
-        "file",
-        "file_count",
-        "language",
+        "files",
+        "languages",
         "line_count",
     ],
     "properties": {
@@ -75,17 +73,12 @@ JSON_SCHEMA: dict = {
             "default": [],
             "items": {"type": "integer", "default": 0},
         },
-        "file": {
+        "files": {
             "type": "array",
             "default": [],
             "items": {"type": "string", "default": "", "pattern": "^.*$"},
         },
-        "file_count": {
-            "type": "array",
-            "default": [],
-            "items": {"type": "integer", "default": 0},
-        },
-        "language": {
+        "languages": {
             "type": "array",
             "default": [],
             "items": {"type": "string", "default": "", "pattern": "^.*$"},

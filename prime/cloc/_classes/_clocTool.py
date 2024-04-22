@@ -5,10 +5,12 @@ from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Protocol, Tuple, runtime_checkable
 
+from jsonschema import Draft202012Validator
+from numpy import array
 from pandas import DataFrame
 from pyfs import isDirectory, resolvePath, runCommand
 
-from prime.datamodels.cloc import CLOC_TOOL_JSON
+from prime.datamodels.cloc import CLOC_TOOL_JSON, JSON_SCHEMA
 from prime.exceptions import InvalidDirectoryPath
 
 
@@ -42,12 +44,43 @@ class CLOCTool(CLOCTool_Protocol):
         else:
             raise InvalidDirectoryPath
 
+    def clocFormatter(self, toolData: str) -> dict:
+        badKeys: List[str] = ["header", "SUM"]
+
+        json: dict[str, List[str | int]] = CLOC_TOOL_JSON
+        data: dict[str, str | int] = loads(s=toolData)
+
+        filesStr: set[str] = set(data.keys()).difference(badKeys)
+
+        blankLines: List[int] = [data[key]["blank"] for key in filesStr]
+        codeLines: List[int] = [data[key]["code"] for key in filesStr]
+        commentLines: List[str] = [data[key]["comment"] for key in filesStr]
+        files: List[str] = [str(resolvePath(path=Path(file))) for file in filesStr]
+        languages: List[str] = [data[key]["language"] for key in filesStr]
+        lines: List[int] = (
+            array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()
+        )
+
+        json["blank_line_count"] = blankLines
+        json["code_line_count"] = codeLines
+        json["comment_line_count"] = commentLines
+        json["files"] = files
+        json["languages"] = languages
+        json["line_count"] = lines
+
+        Draft202012Validator(schema=JSON_SCHEMA).validate(json)
+
+        return json
+
     def runTool(self) -> Tuple[dict | List, str]:
         clocToolOutput: str | dict[str, List[str | int]] = (
             runCommand(cmd=self.command).stdout.decode().strip()
         )
 
+        json: dict[str, str | int]
         match self.toolName:
+            case "cloc":
+                json = self.clocFormatter(toolData=clocToolOutput)
             case "sloccount":
                 temp: dict[str, List[str | int]] = CLOC_TOOL_JSON
 

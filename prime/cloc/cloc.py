@@ -11,7 +11,7 @@ from prime.datamodels.cloc import CLOC_DF_DATAMODEL, CLOC_TOOL_DATA
 class CLOC(CLOCTool, CLOCTool_ABC):
     def __init__(self, path: Path) -> None:
         self.toolName = "cloc"
-        self.command = f"{self.toolName} --by-file-by-lang --use-sloccount --json {resolvePath(path=path).__str__()}"
+        self.command = f"{self.toolName} --by-file --use-sloccount --json {resolvePath(path=path).__str__()}"
 
         CLOCTool(toolName=self.toolName, command=self.command, directoryPath=path)
 
