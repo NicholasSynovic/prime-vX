@@ -44,10 +44,31 @@ class CLOCTool(CLOCTool_Protocol):
         else:
             raise InvalidDirectoryPath
 
-    def clocFormatter(self, toolData: str) -> dict:
+    def _addDataToJSON(
+        self,
+        blankLines: List[int],
+        codeLines: List[int],
+        commentLines: List[int],
+        files: List[str],
+        languages: List[str],
+        lines: List[int],
+    ) -> dict[str, str | int]:
+        json: dict[str, List[str | int]] = CLOC_TOOL_JSON
+
+        json["blank_line_count"] = blankLines
+        json["code_line_count"] = codeLines
+        json["comment_line_count"] = commentLines
+        json["files"] = files
+        json["languages"] = languages
+        json["line_count"] = lines
+
+        Draft202012Validator(schema=JSON_SCHEMA).validate(json)
+
+        return json
+
+    def clocFormatter(self, toolData: str) -> dict[str, str | int]:
         badKeys: List[str] = ["header", "SUM"]
 
-        json: dict[str, List[str | int]] = CLOC_TOOL_JSON
         data: dict[str, str | int] = loads(s=toolData)
 
         filesStr: set[str] = set(data.keys()).difference(badKeys)
@@ -61,16 +82,39 @@ class CLOCTool(CLOCTool_Protocol):
             array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()
         )
 
-        json["blank_line_count"] = blankLines
-        json["code_line_count"] = codeLines
-        json["comment_line_count"] = commentLines
-        json["files"] = files
-        json["languages"] = languages
-        json["line_count"] = lines
+        return self._addDataToJSON(
+            blankLines=blankLines,
+            codeLines=codeLines,
+            commentLines=commentLines,
+            files=files,
+            languages=languages,
+            lines=lines,
+        )
 
-        Draft202012Validator(schema=JSON_SCHEMA).validate(json)
+    def goclocFormatter(self, toolData: str) -> dict[str, str | int]:
+        json: dict[str, List[str | int]] = CLOC_TOOL_JSON
 
-        return json
+        data: dict[str, str | int] = loads(s=toolData)["files"]
+
+        blankLines: List[int] = [datum["blank"] for datum in data]
+        codeLines: List[int] = [datum["code"] for datum in data]
+        commentLines: List[str] = [datum["comment"] for datum in data]
+        files: List[str] = [
+            str(resolvePath(path=Path(datum["name"]))) for datum in data
+        ]
+        languages: List[str] = [datum["language"] for datum in data]
+        lines: List[int] = (
+            array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()
+        )
+
+        return self._addDataToJSON(
+            blankLines=blankLines,
+            codeLines=codeLines,
+            commentLines=commentLines,
+            files=files,
+            languages=languages,
+            lines=lines,
+        )
 
     def runTool(self) -> Tuple[dict | List, str]:
         clocToolOutput: str | dict[str, List[str | int]] = (
@@ -81,6 +125,10 @@ class CLOCTool(CLOCTool_Protocol):
         match self.toolName:
             case "cloc":
                 json = self.clocFormatter(toolData=clocToolOutput)
+
+            case "gocloc":
+                json = self.goclocFormatter(toolData=clocToolOutput)
+
             case "sloccount":
                 temp: dict[str, List[str | int]] = CLOC_TOOL_JSON
 
