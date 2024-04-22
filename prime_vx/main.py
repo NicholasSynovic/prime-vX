@@ -1,5 +1,6 @@
 from argparse import ArgumentParser, HelpFormatter, Namespace, _SubParsersAction
 from collections import namedtuple
+from functools import partial
 from operator import attrgetter
 from pathlib import Path
 from typing import Any, List, Literal, Tuple
@@ -37,17 +38,52 @@ class SortingHelpFormatter(HelpFormatter):
 
 class CMDLineParser:
     def __init__(self) -> None:
-        self.parser: ArgumentParser = ArgumentParser(
-            prog=PROG,
-            description=TOP_LEVEL_DESCRIPTION,
-            epilog=EPILOG,
-            formatter_class=SortingHelpFormatter,
-        )
+        def _build(
+            subparsers: List,
+            suffix: Literal["cloc", "it", "metric", "vcs"],
+        ) -> None:
+            subparser: SUBPARSER_INFO
+            for subparser in subparsers:
+                parserPartial: partial = partial(
+                    self.subparsers.add_parser,
+                    name=f"{suffix}-{subparser.name}",
+                    prog=PROG,
+                    epilog=EPILOG,
+                    formatter_class=SortingHelpFormatter,
+                )
+                match suffix:
+                    case "cloc":
+                        parser: ArgumentParser = parserPartial(
+                            help=CLOC_HELP_TEMPLATE.substitute(
+                                tool=subparser.description
+                            ),
+                        )
+                    case "it":
+                        parser: ArgumentParser = parserPartial(
+                            help=ISSUE_TRACKER_HELP_TEMPLATE.substitute(
+                                tracker=subparser.description
+                            ),
+                        )
+                    case "metric":
+                        parser: ArgumentParser = parserPartial(
+                            help=METRIC_HELP_TEMPLATE.substitute(
+                                metric=subparser.description
+                            ),
+                        )
+                    case "vcs":
+                        parser: ArgumentParser = parserPartial(
+                            help=METRIC_HELP_TEMPLATE.substitute(
+                                metric=subparser.description
+                            ),
+                        )
+                    case _:
+                        pass
 
-        self.subparsers: _SubParsersAction[ArgumentParser] = self.parser.add_subparsers(
-            title="Subprograms",
-            description=f"{PROG} subprograms",
-        )
+                self._addArgs(
+                    suffix=suffix,
+                    parser=parser,
+                    parserName=subparser.name,
+                )
 
         clocSubParsers: List[SUBPARSER_INFO] = [
             SUBPARSER_INFO("cloc", "AlDanial/cloc"),
@@ -75,71 +111,27 @@ class CMDLineParser:
             SUBPARSER_INFO("hg", "hg"),
         ]
 
-        subparser: SUBPARSER_INFO
-        for subparser in clocSubParsers:
-            foo: ArgumentParser = self.subparsers.add_parser(
-                name=f"cloc-{subparser.name}",
-                help=CLOC_HELP_TEMPLATE.substitute(tool=subparser.description),
-                prog=PROG,
-                epilog=EPILOG,
-                formatter_class=SortingHelpFormatter,
-            )
-            self._addArgs(
-                suffix="cloc",
-                parser=foo,
-                parserName=subparser.name,
-            )
+        self.parser: ArgumentParser = ArgumentParser(
+            prog=PROG,
+            description=TOP_LEVEL_DESCRIPTION,
+            epilog=EPILOG,
+            formatter_class=SortingHelpFormatter,
+        )
 
-        for subparser in issueTrackerSubParsers:
-            foo: ArgumentParser = self.subparsers.add_parser(
-                name=f"it-{subparser.name}",
-                help=ISSUE_TRACKER_HELP_TEMPLATE.substitute(
-                    tracker=subparser.description
-                ),
-                prog=PROG,
-                epilog=EPILOG,
-                formatter_class=SortingHelpFormatter,
-            )
-            self._addArgs(
-                suffix="it",
-                parser=foo,
-                parserName=subparser.description,
-            )
+        self.subparsers: _SubParsersAction[ArgumentParser] = self.parser.add_subparsers(
+            title="Subprograms",
+            description=f"{PROG} subprograms",
+        )
 
-        for subparser in metricSubParsers:
-            foo: ArgumentParser = self.subparsers.add_parser(
-                name=f"metric-{subparser.name}",
-                help=METRIC_HELP_TEMPLATE.substitute(metric=subparser.description),
-                prog=PROG,
-                epilog=EPILOG,
-                formatter_class=SortingHelpFormatter,
-            )
-            self._addArgs(
-                suffix="metric",
-                parser=foo,
-                parserName=subparser.description,
-            )
-
-        for subparser in vcsSubParsers:
-            foo: ArgumentParser = self.subparsers.add_parser(
-                name=f"vcs-{subparser.name}",
-                help=VCS_HELP_TEMPLATE.substitute(vcs=subparser.description),
-                prog=PROG,
-                epilog=EPILOG,
-                formatter_class=SortingHelpFormatter,
-            )
-            self._addArgs(
-                suffix="vcs",
-                parser=foo,
-                parserName=subparser.description,
-            )
-
-        # Parse args
+        _build(subparsers=clocSubParsers, suffix="cloc")
+        _build(subparsers=issueTrackerSubParsers, suffix="it")
+        _build(subparsers=metricSubParsers, suffix="metric")
+        _build(subparsers=vcsSubParsers, suffix="vcs")
         self.namespace: Namespace = self.parser.parse_args()
 
     def _addArgs(
         self,
-        suffix: Literal["vcs", "cloc", "metric", "it"],
+        suffix: Literal["cloc", "it", "metric", "vcs"],
         parser: ArgumentParser,
         parserName: str,
     ) -> None:
