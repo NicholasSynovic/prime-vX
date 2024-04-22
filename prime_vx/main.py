@@ -44,6 +44,12 @@ class CMDLineParser:
         ) -> None:
             subparser: SUBPARSER_INFO
             for subparser in subparsers:
+                helpMessage: str = (
+                    f"Path to SQLite3 database generated from a {PROG} VCS tool"
+                )
+                parserName: str = subparser.name.lower().replace(" ", "_")
+                destination: str = f"{suffix}.{parserName}.input"
+
                 parserPartial: partial = partial(
                     self.subparsers.add_parser,
                     name=f"{suffix}-{subparser.name}",
@@ -64,6 +70,34 @@ class CMDLineParser:
                                 tracker=subparser.description
                             ),
                         )
+                        parser.add_argument(
+                            "-o",
+                            "--owner",
+                            nargs=1,
+                            type=str,
+                            required=True,
+                            help=f"GitHub repository owner account name",
+                            dest=f"it.{parserName}.owner",
+                        )
+                        parser.add_argument(
+                            "-r",
+                            "--repo",
+                            nargs=1,
+                            type=str,
+                            required=True,
+                            help=f"GitHub repository name",
+                            dest=f"it.{parserName}.repo",
+                        )
+                        parser.add_argument(
+                            "-t",
+                            "--token",
+                            nargs=1,
+                            type=str,
+                            required=True,
+                            help=f"GitHub personal access token (PAT)",
+                            dest=f"it.{parserName}.token",
+                        )
+
                     case "metric":
                         parser: ArgumentParser = parserPartial(
                             help=METRIC_HELP_TEMPLATE.substitute(
@@ -71,18 +105,32 @@ class CMDLineParser:
                             ),
                         )
                     case "vcs":
+                        helpMessage = f"Path to {parserName} software repository"
                         parser: ArgumentParser = parserPartial(
                             help=METRIC_HELP_TEMPLATE.substitute(
                                 metric=subparser.description
                             ),
                         )
+                        parser.add_argument(
+                            "-o",
+                            "--output",
+                            nargs=1,
+                            type=Path,
+                            required=True,
+                            help=f"Path to output SQLite3 database",
+                            dest=f"vcs.{parserName}.output",
+                        )
                     case _:
                         pass
 
-                self._addArgs(
-                    suffix=suffix,
-                    parser=parser,
-                    parserName=subparser.name,
+                parser.add_argument(
+                    "-i",
+                    "--input",
+                    nargs=1,
+                    type=Path,
+                    required=True,
+                    help=helpMessage,
+                    dest=destination,
                 )
 
         clocSubParsers: List[SUBPARSER_INFO] = [
@@ -128,78 +176,6 @@ class CMDLineParser:
         _build(subparsers=metricSubParsers, suffix="metric")
         _build(subparsers=vcsSubParsers, suffix="vcs")
         self.namespace: Namespace = self.parser.parse_args()
-
-    def _addArgs(
-        self,
-        suffix: Literal["cloc", "it", "metric", "vcs"],
-        parser: ArgumentParser,
-        parserName: str,
-    ) -> None:
-        parserName = parserName.lower().replace(" ", "_")
-
-        helpMessage = f"Path to SQLite3 database generated from a {PROG} VCS tool"
-        destination: str = ""
-
-        match suffix:
-            case "vcs":
-                helpMessage = f"Path to {parserName} software repository"
-                destination = f"vcs.{parserName}.input"
-
-                parser.add_argument(
-                    "-o",
-                    "--output",
-                    nargs=1,
-                    type=Path,
-                    required=True,
-                    help=f"Path to output SQLite3 database",
-                    dest=f"vcs.{parserName}.output",
-                )
-            case "cloc":
-                destination = f"cloc.{parserName}.input"
-            case "metric":
-                destination = f"metric.{parserName}.input"
-            case "it":
-                parser.add_argument(
-                    "-o",
-                    "--owner",
-                    nargs=1,
-                    type=str,
-                    required=True,
-                    help=f"GitHub repository owner account name",
-                    dest=f"it.{parserName}.owner",
-                )
-                parser.add_argument(
-                    "-r",
-                    "--repo",
-                    nargs=1,
-                    type=str,
-                    required=True,
-                    help=f"GitHub repository name",
-                    dest=f"it.{parserName}.repo",
-                )
-                parser.add_argument(
-                    "-t",
-                    "--token",
-                    nargs=1,
-                    type=str,
-                    required=True,
-                    help=f"GitHub personal access token (PAT)",
-                    dest=f"it.{parserName}.token",
-                )
-
-                destination = f"it.{parserName.lower()}.input"
-            case _:
-                pass
-
-        parser.add_argument(
-            "-i",
-            "--input",
-            nargs=1,
-            type=Path,
-            required=True,
-            help=helpMessage,
-            dest=destination,
-        )
 
 
 def getDB(namespace: Namespace, searchTerm: str = "input") -> SQLite:
