@@ -13,6 +13,7 @@ sqlalchemy = "^2.0.27"
 typedframe = "^0.11.0"
 pyfs = {git = "https://github.com/NicholasSynovic/python-fs-utils"}
 intervaltree = "^3.1.0"
+jsonschema = "^4.21.1"
 
 
 [build-system]

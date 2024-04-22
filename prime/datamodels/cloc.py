@@ -46,3 +46,54 @@ CLOC_TOOL_JSON: dict[str, List[str | int]] = {
     "language": [],
     "file": [],
 }
+
+JSON_SCHEMA: dict = {
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "type": "object",
+    "required": [
+        "blank_line_count",
+        "code_line_count",
+        "comment_line_count",
+        "file",
+        "file_count",
+        "language",
+        "line_count",
+    ],
+    "properties": {
+        "blank_line_count": {
+            "type": "array",
+            "default": [],
+            "items": {"type": "integer", "default": 0},
+        },
+        "code_line_count": {
+            "type": "array",
+            "default": [],
+            "items": {"type": "integer", "default": 0},
+        },
+        "comment_line_count": {
+            "type": "array",
+            "default": [],
+            "items": {"type": "integer", "default": 0},
+        },
+        "file": {
+            "type": "array",
+            "default": [],
+            "items": {"type": "string", "default": "", "pattern": "^.*$"},
+        },
+        "file_count": {
+            "type": "array",
+            "default": [],
+            "items": {"type": "integer", "default": 0},
+        },
+        "language": {
+            "type": "array",
+            "default": [],
+            "items": {"type": "string", "default": "", "pattern": "^.*$"},
+        },
+        "line_count": {
+            "type": "array",
+            "default": [],
+            "items": {"type": "integer", "default": 0},
+        },
+    },
+}
