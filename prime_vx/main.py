@@ -107,8 +107,8 @@ class CMDLineParser:
                     case "vcs":
                         helpMessage = f"Path to {parserName} software repository"
                         parser: ArgumentParser = parserPartial(
-                            help=METRIC_HELP_TEMPLATE.substitute(
-                                metric=subparser.description
+                            help=VCS_HELP_TEMPLATE.substitute(
+                                vcs=subparser.description
                             ),
                         )
                         parser.add_argument(
