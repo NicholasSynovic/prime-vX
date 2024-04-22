@@ -7,15 +7,7 @@ from typing import Any, List, Literal, Tuple
 
 from pyfs import isDirectory, isFile, resolvePath
 
-from prime_vx import (
-    CLOC_HELP_TEMPLATE,
-    EPILOG,
-    ISSUE_TRACKER_HELP_TEMPLATE,
-    METRIC_HELP_TEMPLATE,
-    PROG,
-    TOP_LEVEL_DESCRIPTION,
-    VCS_HELP_TEMPLATE,
-)
+from prime_vx import *
 from prime_vx.cloc.main import main as clocMain
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import *
