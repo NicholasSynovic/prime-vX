@@ -36,3 +36,13 @@ CLOC_TOOL_DATA: dict[str, List] = {
     "tool": [],
     "json": [],
 }
+
+CLOC_TOOL_JSON: dict[str, List[str | int]] = {
+    "file_count": [],
+    "line_count": [],
+    "blank_line_count": [],
+    "comment_line_count": [],
+    "code_line_count": [],
+    "language": [],
+    "file": [],
+}

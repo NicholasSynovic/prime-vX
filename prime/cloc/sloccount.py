@@ -22,9 +22,9 @@ class SLOCCount(CLOCTool, CLOCTool_ABC):
 
         data["commit_hash"].append(commitHash)
         data["tool"].append(self.toolName)
-        data["blank_line_count"].append(-1)
-        data["comment_line_count"].append(-1)
-        data["code_line_count"].append(-1)
+        data["blank_line_count"].append(0)
+        data["comment_line_count"].append(0)
+        data["line_count"].append(0)
 
         toolData: Tuple[dict | List, str] = self.runTool()
         jsonDict: dict | List = toolData[0]
@@ -33,9 +33,9 @@ class SLOCCount(CLOCTool, CLOCTool_ABC):
         data["json"].append(jsonStr)
 
         fileCount: int = len(jsonDict["file"])
-        lineCount: int = sum(jsonDict["line_count"])
+        codeCount: int = sum(jsonDict["code_line_count"])
 
         data["file_count"].append(fileCount)
-        data["line_count"].append(lineCount)
+        data["code_line_count"].append(codeCount)
 
         return CLOC_DF_DATAMODEL(df=DataFrame(data=data)).df
