@@ -13,11 +13,18 @@ from prime.datamodels.cloc import CLOC_DF_DATAMODEL, CLOC_TOOL_DATA
 class LOC(CLOCTool, CLOCTool_ABC):
     def __init__(self, path: Path) -> None:
         self.toolName = "loc"
-        self.command = f"{self.toolName} --files {resolvePath(path=path).__str__()}"
+        self.command = f"{self.toolName} {resolvePath(path=path).__str__()}"
 
         CLOCTool(toolName=self.toolName, command=self.command, directoryPath=path)
 
     def compute(self, commitHash: str) -> DataFrame:
-        # TODO: Implement this
         data: dict[str, List] = CLOC_TOOL_DATA
+
+        data["commit_hash"].append(commitHash)
+        data["tool"].append(self.toolName)
+
+        toolData: Tuple[dict | List, str] = self.runTool()
+        jsonDict: dict | List = toolData[0]
+        jsonStr: str = toolData[1]
+
         return CLOC_DF_DATAMODEL(df=DataFrame(data=data)).df

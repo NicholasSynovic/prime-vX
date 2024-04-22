@@ -42,16 +42,20 @@ class CLOCTool(CLOCTool_Protocol):
             raise InvalidDirectoryPath
 
     def runTool(self) -> Tuple[dict | List, str]:
+        temp: dict[str, List] = {
+            "language": [],
+            "file_count": [],
+            "line_count": [],
+            "blank_count": [],
+            "comment_count": [],
+            "code_count": [],
+            "file": [],
+        }
+
         clocToolOutput: str = runCommand(cmd=self.command).stdout.decode().strip()
 
         match self.toolName:
             case "sloccount":
-                temp: dict[str, List] = {
-                    "line_count": [],
-                    "language": [],
-                    "file": [],
-                }
-
                 startingIndex: int = clocToolOutput.find("\n\n\n") + 3
                 tsvOutput: str = clocToolOutput[startingIndex:-1]
                 perLineSplit: List[str] = tsvOutput.split(sep="\n")
@@ -64,6 +68,15 @@ class CLOCTool(CLOCTool_Protocol):
                     temp["file"].append(tsvSplit[2])
 
                 clocToolOutput = temp
+
+            case "loc":
+                perLineSplit: List[str] = clocToolOutput.split("\n")
+                from pprint import pprint
+
+                pprint(perLineSplit)
+                quit()
+            case _:
+                pass
 
         outputJSON: List | dict
         try:

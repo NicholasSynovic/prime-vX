@@ -31,8 +31,9 @@ SUBPARSER_INFO = namedtuple(
 clocSubParsers: List[SUBPARSER_INFO] = [
     SUBPARSER_INFO("cloc", "AlDanial/cloc"),
     SUBPARSER_INFO("gocloc", "hhatto/cloc"),
-    SUBPARSER_INFO("sloccount", "dwheeler/cloc"),
+    SUBPARSER_INFO("loc", "cgag/loc"),
     SUBPARSER_INFO("scc", "boyter/scc"),
+    SUBPARSER_INFO("sloccount", "dwheeler/cloc"),
 ]
 
 issueTrackerSubParsers: List[SUBPARSER_INFO] = [
