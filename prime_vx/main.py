@@ -1,5 +1,4 @@
 from argparse import ArgumentParser, HelpFormatter, Namespace, _SubParsersAction
-from collections import namedtuple
 from functools import partial
 from operator import attrgetter
 from pathlib import Path
@@ -15,11 +14,6 @@ from prime_vx.exceptions import InvalidCommandLineSubprogram
 from prime_vx.issue_trackers.main import main as itMain
 from prime_vx.metrics.main import main as metricMain
 from prime_vx.vcs.main import main as vcsMain
-
-SUBPARSER_INFO = namedtuple(
-    typename="SubparserInformation",
-    field_names=["name", "description"],
-)
 
 
 class SortingHelpFormatter(HelpFormatter):
@@ -124,32 +118,6 @@ class CMDLineParser:
                     help=helpMessage,
                     dest=destination,
                 )
-
-        clocSubParsers: List[SUBPARSER_INFO] = [
-            SUBPARSER_INFO("cloc", "AlDanial/cloc"),
-            SUBPARSER_INFO("gocloc", "hhatto/cloc"),
-            SUBPARSER_INFO("sloccount", "dwheeler/cloc"),
-            SUBPARSER_INFO("scc", "boyter/scc"),
-        ]
-
-        issueTrackerSubParsers: List[SUBPARSER_INFO] = [
-            SUBPARSER_INFO("gh", "GitHub"),
-        ]
-
-        metricSubParsers: List[SUBPARSER_INFO] = [
-            SUBPARSER_INFO("bf", "bus factor"),
-            SUBPARSER_INFO("ic", "issue count"),
-            SUBPARSER_INFO("id", "issue density"),
-            SUBPARSER_INFO("is", "issue spoilage"),
-            SUBPARSER_INFO("size", "project size"),
-            SUBPARSER_INFO("nod", "number of developers"),
-            SUBPARSER_INFO("prod", "productivity"),
-        ]
-
-        vcsSubParsers: List[SUBPARSER_INFO] = [
-            SUBPARSER_INFO("git", "git"),
-            SUBPARSER_INFO("hg", "hg"),
-        ]
 
         self.parser: ArgumentParser = ArgumentParser(
             prog=PROG,
