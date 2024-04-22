@@ -52,7 +52,9 @@ class CLOCTool(CLOCTool_Protocol):
             "file": [],
         }
 
-        clocToolOutput: str = runCommand(cmd=self.command).stdout.decode().strip()
+        clocToolOutput: str | dict = (
+            runCommand(cmd=self.command).stdout.decode().strip()
+        )
 
         match self.toolName:
             case "sloccount":
@@ -70,11 +72,27 @@ class CLOCTool(CLOCTool_Protocol):
                 clocToolOutput = temp
 
             case "loc":
-                perLineSplit: List[str] = clocToolOutput.split("\n")
+                perLineSplit: List[List[str]] = [
+                    line.rsplit()
+                    for line in clocToolOutput.replace("-", "").split("\n")[3:-2]
+                    if len(line) > 0
+                ]
+
+                line: List[str]
+                for line in perLineSplit:
+                    temp["language"].append(line[0])
+                    temp["file_count"].append(int(line[1]))
+                    temp["line_count"].append(int(line[2]))
+                    temp["blank_count"].append(int(line[3]))
+                    temp["comment_count"].append(int(line[4]))
+                    temp["code_count"].append(int(line[5]))
+                    temp["file"].append("")
+                clocToolOutput = temp
+
                 from pprint import pprint
 
-                pprint(perLineSplit)
-                quit()
+                pprint(clocToolOutput)
+
             case _:
                 pass
 
