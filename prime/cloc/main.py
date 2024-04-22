@@ -9,7 +9,6 @@ from progress.bar import Bar
 from prime.cloc._classes._clocTool import CLOCTool_ABC
 from prime.cloc.cloc import CLOC
 from prime.cloc.gocloc import GoCLOC
-from prime.cloc.loc import LOC
 from prime.cloc.scc import SCC
 from prime.cloc.sloccount import SLOCCount
 from prime.datamodels.vcs import VCS_DF_DATAMODEL
@@ -79,8 +78,6 @@ def main(namespace: Namespace, db: SQLite) -> None:
             tool: CLOCTool_ABC = SLOCCount(path=repositoryPath)
         case "gocloc":
             tool: CLOCTool_ABC = GoCLOC(path=repositoryPath)
-        case "loc":
-            tool: CLOCTool_ABC = LOC(path=repositoryPath)
         case _:
             raise InvalidCLOCTool
 
