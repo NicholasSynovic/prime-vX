@@ -20,19 +20,22 @@ class GoCLOC(CLOCTool, CLOCTool_ABC):
 
         data["commit_hash"].append(commitHash)
         data["tool"].append(self.toolName)
-        data["blank_line_count"].append(-1)
-        data["comment_line_count"].append(-1)
-        data["code_line_count"].append(-1)
 
         toolData: Tuple[dict | List, str] = self.runTool()
-        jsonDict: dict | List = toolData[0]
+        jsonDict: dict | List = toolData[0]["total"]
         jsonStr: str = toolData[1]
 
         data["json"].append(jsonStr)
 
-        fileCount: int = len(jsonDict["file"])
-        lineCount: int = sum(jsonDict["line_count"])
+        fileCount: int = jsonDict["files"]
+        codeCount: int = jsonDict["code"]
+        blankCount: int = jsonDict["blank"]
+        commentCount: int = jsonDict["comment"]
+        lineCount: int = codeCount + blankCount + commentCount
 
+        data["blank_line_count"].append(blankCount)
+        data["comment_line_count"].append(commentCount)
+        data["code_line_count"].append(codeCount)
         data["file_count"].append(fileCount)
         data["line_count"].append(lineCount)
 
