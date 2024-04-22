@@ -89,10 +89,6 @@ class CLOCTool(CLOCTool_Protocol):
                     temp["file"].append("")
                 clocToolOutput = temp
 
-                from pprint import pprint
-
-                pprint(clocToolOutput)
-
             case _:
                 pass
 
