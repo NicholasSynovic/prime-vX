@@ -35,7 +35,7 @@ class GitHandler(VCSHandler_ABC):
     def getCommitHashes(self) -> List[str]:
         hashes: str = runCommand(
             cmd=f"{self.cmdPrefix} log --all --reverse --format='%H'"
-        ).stdout.decode()
+        ).stdout.decode(errors="ignore")
         hashList: List[str] = hashes.strip().replace("'", "").split(sep="\n")
         return hashList
 
@@ -54,7 +54,7 @@ class GitHandler(VCSHandler_ABC):
             runCommand(
                 cmd=f"{self.cmdPrefix} log {commitHash} -n 1 --format='%H,,%T,,%P,,%an,,%ae,,%at,,%cn,,%ce,,%ct,,%d,,%S,,%G?'"
             )
-            .stdout.decode()
+            .stdout.decode(errors="ignore")
             .strip()
             .replace("'", "")
             .split(sep=",,")

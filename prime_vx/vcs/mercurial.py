@@ -33,7 +33,7 @@ class MercurialHandler(VCSHandler_ABC):
     def getCommitHashes(self) -> List[str]:
         hashes: str = runCommand(
             cmd=f"{self.cmdPrefix} log --template '{{node}}\n'"
-        ).stdout.decode()
+        ).stdout.decode(errors="ignore")
         hashList: List[str] = hashes.strip().replace("'", "").split(sep="\n")
         return hashList
 
@@ -52,7 +52,7 @@ class MercurialHandler(VCSHandler_ABC):
             runCommand(
                 cmd=f"{self.cmdPrefix} log -r {commitHash} -T '{{node}},,'',,{{parents}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{rev}},,{{branch}},,''\n'"
             )
-            .stdout.decode()
+            .stdout.decode(errors="ignore")
             .strip()
             .replace("'", "")
             .split(sep=",,")
