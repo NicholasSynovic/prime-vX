@@ -1,4 +1,4 @@
-from prime_vx.cloc import CLOC_KEY_LIST
+from prime_vx.datamodels.cloc import CLOC_KEY_LIST
 from prime_vx.vcs import VCS_METADATA_KEY_LIST
 
 

@@ -6,8 +6,11 @@ import pandas
 from pandas import DataFrame
 from progress.bar import Bar
 
-from prime_vx.cloc import CLOC, SCC, GoCLOC, SLOCCount
-from prime_vx.cloc._classes import CLOCTool_ABC
+from prime_vx.cloc._classes._clocTool import CLOCTool_ABC
+from prime_vx.cloc.cloc import CLOC
+from prime_vx.cloc.gocloc import GoCLOC
+from prime_vx.cloc.scc import SCC
+from prime_vx.cloc.sloccount import SLOCCount
 from prime_vx.datamodels.vcs import VCS_DF_DATAMODEL
 from prime_vx.db import CLOC_DB_TABLE_NAME, VCS_DB_TABLE_NAME
 from prime_vx.db.sqlite import SQLite
