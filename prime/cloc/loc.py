@@ -1,5 +1,3 @@
-# https://github.com/cgag/loc/
-
 from pathlib import Path
 from typing import List, Tuple
 
