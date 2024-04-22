@@ -92,8 +92,6 @@ class CLOCTool(CLOCTool_Protocol):
         )
 
     def goclocFormatter(self, toolData: str) -> dict[str, str | int]:
-        json: dict[str, List[str | int]] = CLOC_TOOL_JSON
-
         data: dict[str, str | int] = loads(s=toolData)["files"]
 
         blankLines: List[int] = [datum["blank"] for datum in data]
