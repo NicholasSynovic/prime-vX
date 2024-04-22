@@ -15,7 +15,7 @@ from prime_vx import (
     TOP_LEVEL_DESCRIPTION,
     VCS_HELP_TEMPLATE,
 )
-from prime_vx.cloc import main as clocMain
+from prime_vx.cloc.main import main as clocMain
 from prime_vx.db.sqlite import SQLite
 from prime_vx.exceptions import *
 from prime_vx.exceptions import InvalidCommandLineSubprogram
