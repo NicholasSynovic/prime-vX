@@ -156,6 +156,29 @@ class CLOCTool(CLOCTool_Protocol):
 
         return outputJSON
 
+    def sloccountFormatter(self, toolData: str) -> dict[str, str | int]:
+        startingIndex: int = toolData.find("\n\n\n") + 3
+        tsvOutput: str = toolData[startingIndex:-1]
+        data: List[str] = [line.split(sep="\t") for line in tsvOutput.split(sep="\n")]
+
+        blankLines: List[int] = [0] * len(data)
+        codeLines: List[int] = [int(datum[0]) for datum in data]
+        commentLines: List[str] = [0] * len(data)
+        files: List[str] = [str(resolvePath(path=Path(datum[3]))) for datum in data]
+        languages: List[str] = [datum[1] for datum in data]
+        lines: List[int] = (
+            array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()
+        )
+
+        return self._addDataToJSON(
+            blankLines=blankLines,
+            codeLines=codeLines,
+            commentLines=commentLines,
+            files=files,
+            languages=languages,
+            lines=lines,
+        )
+
     def runTool(self) -> Tuple[dict | List, str]:
         clocToolOutput: str | dict[str, List[str | int]] = (
             runCommand(cmd=self.command).stdout.decode().strip()
@@ -173,38 +196,11 @@ class CLOCTool(CLOCTool_Protocol):
                 json = self.sccFormatter(toolData=clocToolOutput)
 
             case "sloccount":
-                temp: dict[str, List[str | int]] = CLOC_TOOL_JSON
-
-                startingIndex: int = clocToolOutput.find("\n\n\n") + 3
-                tsvOutput: str = clocToolOutput[startingIndex:-1]
-                perLineSplit: List[str] = tsvOutput.split(sep="\n")
-
-                line: str
-                for line in perLineSplit:
-                    tsvSplit: List[str] = line.split(sep="\t")
-                    temp["code_line_count"].append(int(tsvSplit[0]))
-                    temp["language"].append(tsvSplit[1])
-                    temp["file"].append(tsvSplit[3])
-
-                clocToolOutput = temp
+                json = self.sloccountFormatter(toolData=clocToolOutput)
 
             case _:
                 pass
 
-        outputJSON: List | dict
-        try:
-            outputJSON = loads(s=clocToolOutput)
-        except JSONDecodeError:
-            fixedOutput: str = re.sub(
-                pattern=": ,",
-                repl=": 0,",
-                string=clocToolOutput,
-            )
-            outputJSON = loads(s=fixedOutput)
-        except TypeError:
-            if type(clocToolOutput) == dict:
-                outputJSON = clocToolOutput
+        jsonStr: str = dumps(obj=json)
 
-        outputStr: str = dumps(obj=outputJSON)
-
-        return (outputJSON, outputStr)
+        return (json, jsonStr)
