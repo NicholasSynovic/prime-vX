@@ -114,6 +114,48 @@ class CLOCTool(CLOCTool_Protocol):
             lines=lines,
         )
 
+    def sccFormatter(self, toolData: str) -> dict[str, str | int]:
+        outputJSON: dict = CLOC_TOOL_JSON
+        jsonStor: List[dict] = []
+        data: dict[str, str | int] = loads(s=toolData)
+
+        fileData: List[List[dict]] = [data[idx]["Files"] for idx in range(len(data))]
+
+        fileDatum: List[dict]
+        for fileDatum in fileData:
+            blankLines: List[int] = [int(datum["Blank"]) for datum in fileDatum]
+
+            codeLines: List[int] = [int(datum["Code"]) for datum in fileDatum]
+            commentLines: List[str] = [int(datum["Comment"]) for datum in fileDatum]
+            files: List[str] = [
+                str(resolvePath(path=Path(datum["Location"]))) for datum in fileDatum
+            ]
+            languages: List[str] = [datum["Language"] for datum in fileDatum]
+            lines: List[int] = (
+                array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()
+            )
+
+            jsonStor.append(
+                self._addDataToJSON(
+                    blankLines=blankLines,
+                    codeLines=codeLines,
+                    commentLines=commentLines,
+                    files=files,
+                    languages=languages,
+                    lines=lines,
+                )
+            )
+
+        # TODO: Really slow code... needs to be updated
+        data: dict
+        for data in jsonStor:
+            for key in data.keys():
+                outputJSON[key].extend(data[key])
+
+        Draft202012Validator(schema=JSON_SCHEMA).validate(outputJSON)
+
+        return outputJSON
+
     def runTool(self) -> Tuple[dict | List, str]:
         clocToolOutput: str | dict[str, List[str | int]] = (
             runCommand(cmd=self.command).stdout.decode().strip()
@@ -126,6 +168,9 @@ class CLOCTool(CLOCTool_Protocol):
 
             case "gocloc":
                 json = self.goclocFormatter(toolData=clocToolOutput)
+
+            case "scc":
+                json = self.sccFormatter(toolData=clocToolOutput)
 
             case "sloccount":
                 temp: dict[str, List[str | int]] = CLOC_TOOL_JSON

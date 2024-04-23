@@ -1,6 +1,6 @@
 build:
 	poetry build
-	pip install dist/*.tar.gz
+	pip install --no-deps dist/*.tar.gz
 
 pipeline:
 	python prime_vx/main.py vcs-git -i ../../../scratch/coc-pyright -o test.db
