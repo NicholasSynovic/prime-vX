@@ -119,46 +119,36 @@ class CLOCTool(CLOCTool_Protocol):
         )
 
     def sccFormatter(self, toolData: str) -> dict[str, str | int]:
-        outputJSON: dict = CLOC_TOOL_JSON
-        jsonStor: List[dict] = []
+        blankLines: List[int] = []
+        codeLines: List[int] = []
+        commentLines: List[int] = []
+        files: List[str] = []
+        languages: List[str] = []
+        lines: List[int] = []
+
         data: dict[str, str | int] = loads(s=toolData)
 
         fileData: List[List[dict]] = [data[idx]["Files"] for idx in range(len(data))]
 
         fileDatum: List[dict]
         for fileDatum in fileData:
-            blankLines: List[int] = [int(datum["Blank"]) for datum in fileDatum]
+            datum: dict
+            for datum in fileDatum:
+                blankLines.append(datum["Blank"])
+                codeLines.append(datum["Code"])
+                commentLines.append(datum["Comment"])
+                files.append(resolvePath(path=Path(datum["Location"])).__str__())
+                languages.append(datum["Language"])
+                lines.append(datum["Lines"])
 
-            codeLines: List[int] = [int(datum["Code"]) for datum in fileDatum]
-            commentLines: List[str] = [int(datum["Comment"]) for datum in fileDatum]
-            files: List[str] = [
-                str(resolvePath(path=Path(datum["Location"]))) for datum in fileDatum
-            ]
-            languages: List[str] = [datum["Language"] for datum in fileDatum]
-            lines: List[int] = (
-                array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()
-            )
-
-            jsonStor.append(
-                self._addDataToJSON(
-                    blankLines=blankLines,
-                    codeLines=codeLines,
-                    commentLines=commentLines,
-                    files=files,
-                    languages=languages,
-                    lines=lines,
-                )
-            )
-
-        # TODO: Really slow code... needs to be updated
-        data: dict
-        for data in jsonStor:
-            for key in data.keys():
-                outputJSON[key].extend(data[key])
-
-        Draft202012Validator(schema=JSON_SCHEMA).validate(outputJSON)
-
-        return outputJSON
+        return self._addDataToJSON(
+            blankLines=blankLines,
+            codeLines=codeLines,
+            commentLines=commentLines,
+            files=files,
+            languages=languages,
+            lines=lines,
+        )
 
     def sloccountFormatter(self, toolData: str) -> dict[str, str | int]:
         startingIndex: int = toolData.find("\n\n\n") + 3
