@@ -16,26 +16,3 @@ class SLOCCount(CLOCTool, CLOCTool_ABC):
         )
 
         CLOCTool(toolName=self.toolName, command=self.command, directoryPath=path)
-
-    def compute(self, commitHash: str) -> DataFrame:
-        data: dict[str, List] = CLOC_TOOL_DATA
-
-        data["commit_hash"].append(commitHash)
-        data["tool"].append(self.toolName)
-        data["blank_line_count"].append(0)
-        data["comment_line_count"].append(0)
-        data["line_count"].append(0)
-
-        toolData: Tuple[dict | List, str] = self.runTool()
-        jsonDict: dict | List = toolData[0]
-        jsonStr: str = toolData[1]
-
-        data["json"].append(jsonStr)
-
-        fileCount: int = len(jsonDict["file"])
-        codeCount: int = sum(jsonDict["code_line_count"])
-
-        data["file_count"].append(fileCount)
-        data["code_line_count"].append(codeCount)
-
-        return CLOC_DF_DATAMODEL(df=DataFrame(data=data)).df

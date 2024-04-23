@@ -1,7 +1,6 @@
 import re
 from abc import ABCMeta, abstractmethod
 from json import dumps, loads
-from json.decoder import JSONDecodeError
 from pathlib import Path
 from typing import List, Protocol, Tuple, runtime_checkable
 
@@ -10,7 +9,12 @@ from numpy import array
 from pandas import DataFrame
 from pyfs import isDirectory, resolvePath, runCommand
 
-from prime.datamodels.cloc import CLOC_TOOL_JSON, JSON_SCHEMA
+from prime.datamodels.cloc import (
+    CLOC_DF_DATAMODEL,
+    CLOC_TOOL_DATA,
+    CLOC_TOOL_JSON,
+    JSON_SCHEMA,
+)
 from prime.exceptions import InvalidDirectoryPath
 
 
@@ -204,3 +208,23 @@ class CLOCTool(CLOCTool_Protocol):
         jsonStr: str = dumps(obj=json)
 
         return (json, jsonStr)
+
+    def compute(self, commitHash: str) -> DataFrame:
+        data: dict[str, List] = CLOC_TOOL_DATA
+
+        data["commit_hash"].append(commitHash)
+        data["tool"].append(self.toolName)
+
+        toolData: Tuple[dict | List, str] = self.runTool()
+        json: dict | List = toolData[0]
+        jsonStr: str = toolData[1]
+
+        data["json"].append(jsonStr)
+
+        data["file_count"].append(len(json["files"]))
+        data["blank_line_count"].append(sum(json["blank_line_count"]))
+        data["comment_line_count"].append(sum(json["comment_line_count"]))
+        data["code_line_count"].append(sum(json["code_line_count"]))
+        data["line_count"].append(sum(json["line_count"]))
+
+        return CLOC_DF_DATAMODEL(df=DataFrame(data=data)).df
