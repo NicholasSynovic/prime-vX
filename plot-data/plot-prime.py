@@ -24,12 +24,12 @@ def plot_table(tableName,x,y):
     graph.set_ylabel("Bus Factor")
     plt.title("Annual Bus Factor of "+projectName)
 
-    spacing = math.floor(math.log(df[x].max()))
+    spacing = math.floor(math.log(df[x].max(),10))
     print (tableName+str(spacing))
     print ("xmax: "+str(df[x].max()))
 
     for ind, label in enumerate(graph.get_xticklabels()):
-        if ind % (10**(spacing-2)) == 10**(spacing-2)-1:
+        if ind % (10**(spacing)) == 10**(spacing)-1:
             label.set_visible(True)
         else:
             label.set_visible(False)
