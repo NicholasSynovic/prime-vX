@@ -66,11 +66,13 @@ def main(namespace: Namespace, db: SQLite) -> None:
 
     metricName: str = inputKeySplit[1]
 
+    print(metricName)
+
     match metricName:
-        case "project_size":
+        case "size":
             df: DataFrame = locMain(df=clocDF)
             db.write(df=df, tableName=LOC_DB_TABLE_NAME, includeIndex=True)
-        case "productivity":
+        case "prod":
             locDF: DataFrame = db.read(
                 tdf=LOC_DF_DATAMODEL,
                 tableName=LOC_DB_TABLE_NAME,
@@ -99,7 +101,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
                 includeIndex=True,
             )
 
-        case "number_of_developers":
+        case "nod":
             nodMappingDF: DataFrame = nodMapping(df=vcsDF)
             dfs: dict[str, DataFrame] = nodMain(df=vcsDF)
 
@@ -117,7 +119,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
                 includeIndex=True,
             )
 
-        case "issue_count":
+        case "ic":
             icMappingDF: DataFrame = icMapping(df=itDF)
             dfs: dict[str, DataFrame] = icMain(df=itDF)
 
@@ -135,7 +137,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
                 includeIndex=True,
             )
 
-        case "issue_spoilage":
+        case "is":
             dfs: dict[str, DataFrame] = isMain(df=itDF)
 
             # Write issue spoilage data to database
@@ -145,7 +147,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
                     tableName=tableName,
                 )
 
-        case "issue_density":
+        case "id":
             dfs: dict[str, DataFrame] = idMain(
                 vcsDF_locDF=vcsDF_locDF,
                 issueDF=itDF,
@@ -158,7 +160,7 @@ def main(namespace: Namespace, db: SQLite) -> None:
                     tableName=tableName,
                 )
 
-        case "bus_factor":
+        case "bf":
             bfMappingDF: DataFrame = bfMapping(df=vcsDF_locDF)
             dfs: dict[str, DataFrame] = bfMain(df=vcsDF_locDF)
 
