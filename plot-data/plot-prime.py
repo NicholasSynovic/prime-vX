@@ -6,6 +6,7 @@ import seaborn as sns
 
 # Path to .db file
 sql_file_path = "prime.db"
+projectName="My Project"
 
 def plot_table(tableName,x,y):
     # Connect to the SQLite database
@@ -17,8 +18,10 @@ def plot_table(tableName,x,y):
 
     # plot stats
     sns.set_theme()
-    sns.relplot(kind="line", x=x, y=y, data=df)
-    plt.title(x+" and "+y)
+    graph = sns.barplot(x=x, y=y, data=df)
+    graph.set_xlabel("Bucket")
+    graph.set_ylabel("Bus Factor")
+    plt.title("Annua Bus Factor of "+projectName)
     plt.tight_layout()
     plt.savefig(tableName+".png")
 
