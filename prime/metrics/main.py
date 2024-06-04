@@ -66,8 +66,6 @@ def main(namespace: Namespace, db: SQLite) -> None:
 
     metricName: str = inputKeySplit[1]
 
-    print(metricName)
-
     match metricName:
         case "size":
             df: DataFrame = locMain(df=clocDF)
