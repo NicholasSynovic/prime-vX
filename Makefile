@@ -2,8 +2,12 @@ build:
 	poetry build
 	pip install --no-deps dist/*.tar.gz
 
-pipeline:
-	python prime_vx/main.py vcs-git -i ../../../scratch/coc-pyright -o test.db
-	python prime_vx/main.py cloc-scc -i test.db
-	python prime_vx/main.py metric-loc -i test.db
-	python prime_vx/main.py metric-prod -i test.db
+create-dev:
+	rm -rf env
+	python3.10 -m venv env
+	( \
+		. env/bin/activate; \
+		pip install -r requirements.txt; \
+		poetry install; \
+		deactivate; \
+	)
