@@ -61,6 +61,7 @@ class GitHubHandler(ITHandler_ABC):
                 resp: Response = get(
                     url=self.endpoint.substitute(page=page),
                     headers=headers,
+                    timeout=60,
                 )
                 data.append(resp)
 
