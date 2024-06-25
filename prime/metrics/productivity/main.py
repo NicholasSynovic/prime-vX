@@ -50,7 +50,9 @@ def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
 
     bucket: int = 1
 
-    with Bar(f"Computing {frequency.replace('_', ' ')}...", max=len(groups)) as bar:
+    with Bar(
+        f"Computing {frequency.replace('_', ' ')}...", max=len(groups)
+    ) as bar:
         group: DataFrame
         for _, group in groups:
             effortLOC: int = group["delta_loc"].abs().sum()
@@ -60,10 +62,16 @@ def computeProductivity(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
 
             data["bucket"].append(bucket)
             data["bucket_start"].append(
-                group["committer_date"].min().to_pydatetime().replace(tzinfo=None)
+                group["committer_date"]
+                .min()
+                .to_pydatetime()
+                .replace(tzinfo=None)
             )
             data["bucket_end"].append(
-                group["committer_date"].max().to_pydatetime().replace(tzinfo=None)
+                group["committer_date"]
+                .max()
+                .to_pydatetime()
+                .replace(tzinfo=None)
             )
             data["effort_KLOC"].append(effortKLOC)
             data["effort_LOC"].append(effortLOC)

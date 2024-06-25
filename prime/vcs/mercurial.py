@@ -23,7 +23,9 @@ class MercurialHandler(VCSHandler_ABC):
         self.cmdPrefix: str = f"hg --pager never -R {self.path}"
 
     def isRepository(self) -> bool:
-        code: int = runCommand(cmd=f"{self.cmdPrefix} --cwd {self.path}").returncode
+        code: int = runCommand(
+            cmd=f"{self.cmdPrefix} --cwd {self.path}"
+        ).returncode
 
         if code == 0:
             return True
@@ -50,7 +52,9 @@ class MercurialHandler(VCSHandler_ABC):
     def getCommitMetadata(self, commitHash: str) -> DataFrame | None:
         values: List[str] = (
             runCommand(
-                cmd=f"{self.cmdPrefix} log -r {commitHash} -T '{{node}},,'',,{{parents}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{author|user}},,{{author|email}},,{{date|hgdate}},,{{rev}},,{{branch}},,''\n'"
+                cmd=f"{self.cmdPrefix} log -r {commitHash} -T '{{node}},,'',,\
+                    {{parents}},,{{author|user}},,{{author|email}},,\
+                        {{date|hgdate}},,{{author|user}},,{{author|email}},,\{{date|hgdate}},,{{rev}},,{{branch}},,''\n'"
             )
             .stdout.decode(errors="ignore")
             .strip()

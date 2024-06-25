@@ -5,7 +5,9 @@ from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
 from prime.datamodels.issue_tracker import IT_DF_DATAMODEL
-from prime.datamodels.metrics.issue_count import ISSUE_COUNT_MAPPING_DF_DATAMODEL
+from prime.datamodels.metrics.issue_count import (
+    ISSUE_COUNT_MAPPING_DF_DATAMODEL,
+)
 from prime.db import *
 from prime.metrics import createGroups
 from prime.metrics.issue_count import BUCKET_STOR, INTERVAL_PAIRS

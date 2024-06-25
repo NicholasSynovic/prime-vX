@@ -61,7 +61,9 @@ def computeIssueSpoilage(
 
     itSize: int = len(it)
 
-    with Bar(f"Computing {interval} issue spoilage...", max=itSize // step) as bar:
+    with Bar(
+        f"Computing {interval} issue spoilage...", max=itSize // step
+    ) as bar:
         for i in range(0, itSize, step):
             data["bucket"].append(bucket)
 

@@ -62,7 +62,9 @@ def computeIssueDensity(
 
     itSize: int = len(it)
 
-    with Bar(f"Computing {interval} issue density...", max=itSize // step) as bar:
+    with Bar(
+        f"Computing {interval} issue density...", max=itSize // step
+    ) as bar:
         for i in range(0, itSize, step):
             data["bucket"].append(bucket)
 

@@ -386,7 +386,9 @@ class SQLite(SQLiteHandler_ABC):
             ),
             ForeignKeyConstraint(
                 columns=[TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME],
-                refcolumns=[f"{TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+                refcolumns=[
+                    f"{TWO_WEEK_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"
+                ],
             ),
             ForeignKeyConstraint(
                 columns=[MONTHLY_DEVELOPER_COUNT_DB_TABLE_NAME],
@@ -394,15 +396,21 @@ class SQLite(SQLiteHandler_ABC):
             ),
             ForeignKeyConstraint(
                 columns=[TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],
-                refcolumns=[f"{TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+                refcolumns=[
+                    f"{TWO_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"
+                ],
             ),
             ForeignKeyConstraint(
                 columns=[THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],
-                refcolumns=[f"{THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+                refcolumns=[
+                    f"{THREE_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"
+                ],
             ),
             ForeignKeyConstraint(
                 columns=[SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME],
-                refcolumns=[f"{SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"],
+                refcolumns=[
+                    f"{SIX_MONTH_DEVELOPER_COUNT_DB_TABLE_NAME}.bucket"
+                ],
             ),
             ForeignKeyConstraint(
                 columns=[ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME],
@@ -838,7 +846,9 @@ class SQLite(SQLiteHandler_ABC):
 
         metadata.create_all(bind=self.engine, checkfirst=True)
 
-    def write(self, df: DataFrame, tableName: str, includeIndex: bool = False) -> None:
+    def write(
+        self, df: DataFrame, tableName: str, includeIndex: bool = False
+    ) -> None:
         try:
             df.to_sql(
                 name=tableName,

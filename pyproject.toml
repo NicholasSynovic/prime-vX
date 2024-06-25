@@ -14,10 +14,12 @@ typedframe = "^0.11.0"
 pyfs = {git = "https://github.com/NicholasSynovic/python-fs-utils"}
 intervaltree = "^3.1.0"
 jsonschema = "^4.21.1"
-
-
 matplotlib = "^3.9.0"
 seaborn = "^0.13.2"
+
+[tool.black]
+line-length = 79
+
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"

@@ -22,7 +22,9 @@ class GitHubHandler(ITHandler_ABC):
         self.name: str = "github"
         self.token: str = token
 
-        foo: str = f"https://api.github.com/repos/{owner}/{repo}/issues?state=all&direction=asc&per_page=100"
+        foo: str = (
+            f"https://api.github.com/repos/{owner}/{repo}/issues?state=all&direction=asc&per_page=100"
+        )
         self.endpoint: Template = Template(template=foo + "&page=${page}")
 
     def parseResponseHeader(self, headers: CaseInsensitiveDict) -> None:
@@ -35,15 +37,23 @@ class GitHubHandler(ITHandler_ABC):
         else:
             lastPageLink = splitLink[2]
 
-        lastPageMatch: Match[str] | None = re.search(r"[?&]page=(\d+)", lastPageLink)
-        lastPage: int | None = int(lastPageMatch.group(1)) if lastPageMatch else None
+        lastPageMatch: Match[str] | None = re.search(
+            r"[?&]page=(\d+)", lastPageLink
+        )
+        lastPage: int | None = (
+            int(lastPageMatch.group(1)) if lastPageMatch else None
+        )
 
         RESPONSE_HEADERS_HANDLER["lastPage"] = lastPage
-        RESPONSE_HEADERS_HANDLER["tokenLimit"] = int(headers["x-ratelimit-limit"])
+        RESPONSE_HEADERS_HANDLER["tokenLimit"] = int(
+            headers["x-ratelimit-limit"]
+        )
         RESPONSE_HEADERS_HANDLER["tokenRemaining"] = int(
             headers["x-ratelimit-remaining"]
         )
-        RESPONSE_HEADERS_HANDLER["tokenReset"] = int(headers["x-ratelimit-reset"]) + 10
+        RESPONSE_HEADERS_HANDLER["tokenReset"] = (
+            int(headers["x-ratelimit-reset"]) + 10
+        )
 
     def getResponses(self) -> List[Response]:
         data: List[Response] = []
@@ -120,7 +130,9 @@ class GitHubHandler(ITHandler_ABC):
             "json": [],
         }
 
-        with Bar("Extracting issues from HTTP responses...", max=len(resps)) as bar:
+        with Bar(
+            "Extracting issues from HTTP responses...", max=len(resps)
+        ) as bar:
             resp: Response
             for resp in resps:
                 json: List[dict] = resp.json()

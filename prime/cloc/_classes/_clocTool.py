@@ -27,8 +27,7 @@ class CLOCTool_Protocol(Protocol):
 
 class CLOCTool_ABC(CLOCTool_Protocol, metaclass=ABCMeta):
     @abstractmethod
-    def compute(self, commitHash: str) -> DataFrame:
-        ...
+    def compute(self, commitHash: str) -> DataFrame: ...
 
 
 class CLOCTool(CLOCTool_Protocol):
@@ -80,7 +79,9 @@ class CLOCTool(CLOCTool_Protocol):
         blankLines: List[int] = [data[key]["blank"] for key in filesStr]
         codeLines: List[int] = [data[key]["code"] for key in filesStr]
         commentLines: List[str] = [data[key]["comment"] for key in filesStr]
-        files: List[str] = [str(resolvePath(path=Path(file))) for file in filesStr]
+        files: List[str] = [
+            str(resolvePath(path=Path(file))) for file in filesStr
+        ]
         languages: List[str] = [data[key]["language"] for key in filesStr]
         lines: List[int] = (
             array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()
@@ -128,7 +129,9 @@ class CLOCTool(CLOCTool_Protocol):
 
         data: dict[str, str | int] = loads(s=toolData)
 
-        fileData: List[List[dict]] = [data[idx]["Files"] for idx in range(len(data))]
+        fileData: List[List[dict]] = [
+            data[idx]["Files"] for idx in range(len(data))
+        ]
 
         fileDatum: List[dict]
         for fileDatum in fileData:
@@ -137,7 +140,9 @@ class CLOCTool(CLOCTool_Protocol):
                 blankLines.append(datum["Blank"])
                 codeLines.append(datum["Code"])
                 commentLines.append(datum["Comment"])
-                files.append(resolvePath(path=Path(datum["Location"])).__str__())
+                files.append(
+                    resolvePath(path=Path(datum["Location"])).__str__()
+                )
                 languages.append(datum["Language"])
                 lines.append(datum["Lines"])
 
@@ -153,12 +158,16 @@ class CLOCTool(CLOCTool_Protocol):
     def sloccountFormatter(self, toolData: str) -> dict[str, str | int]:
         startingIndex: int = toolData.find("\n\n\n") + 3
         tsvOutput: str = toolData[startingIndex:-1]
-        data: List[str] = [line.split(sep="\t") for line in tsvOutput.split(sep="\n")]
+        data: List[str] = [
+            line.split(sep="\t") for line in tsvOutput.split(sep="\n")
+        ]
 
         blankLines: List[int] = [0] * len(data)
         codeLines: List[int] = [int(datum[0]) for datum in data]
         commentLines: List[str] = [0] * len(data)
-        files: List[str] = [str(resolvePath(path=Path(datum[3]))) for datum in data]
+        files: List[str] = [
+            str(resolvePath(path=Path(datum[3]))) for datum in data
+        ]
         languages: List[str] = [datum[1] for datum in data]
         lines: List[int] = (
             array([blankLines, codeLines, commentLines]).sum(axis=0).tolist()

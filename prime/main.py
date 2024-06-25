@@ -1,4 +1,9 @@
-from argparse import ArgumentParser, HelpFormatter, Namespace, _SubParsersAction
+from argparse import (
+    ArgumentParser,
+    HelpFormatter,
+    Namespace,
+    _SubParsersAction,
+)
 from functools import partial
 from operator import attrgetter
 from pathlib import Path
@@ -91,7 +96,9 @@ class CMDLineParser:
                             ),
                         )
                     case "vcs":
-                        helpMessage = f"Path to {parserName} software repository"
+                        helpMessage = (
+                            f"Path to {parserName} software repository"
+                        )
                         parser: ArgumentParser = parserPartial(
                             help=VCS_HELP_TEMPLATE.substitute(
                                 vcs=subparser.description
@@ -126,9 +133,11 @@ class CMDLineParser:
             formatter_class=SortingHelpFormatter,
         )
 
-        self.subparsers: _SubParsersAction[ArgumentParser] = self.parser.add_subparsers(
-            title="Subprograms",
-            description=f"{PROG} subprograms",
+        self.subparsers: _SubParsersAction[ArgumentParser] = (
+            self.parser.add_subparsers(
+                title="Subprograms",
+                description=f"{PROG} subprograms",
+            )
         )
 
         _build(subparsers=clocSubParsers, suffix="cloc")

@@ -162,7 +162,9 @@ def main(namespace: Namespace, db: SQLite) -> None:
             bfMappingDF: DataFrame = bfMapping(df=vcsDF_locDF)
             dfs: dict[str, DataFrame] = bfMain(df=vcsDF_locDF)
 
-            vcsDF_locDF.T.to_json(path_or_buf="test.json", indent=4, index=False)
+            vcsDF_locDF.T.to_json(
+                path_or_buf="test.json", indent=4, index=False
+            )
 
             # Write bus factor data to database
             for tableName, df in dfs.items():

@@ -7,9 +7,15 @@ COMMIT_HASH_TO_PRODUCTIVITY_BUCKET_MAP_TABLE_NAME: str = (
 COMMIT_HASH_TO_DEVELOPER_COUNT_BUCKET_MAP_TABLE_NAME: str = (
     "commit_hash_to_developer_count_map"
 )
-COMMIT_HASH_TO_BUS_FACTOR_BUCKET_MAP_TABLE_NAME: str = "commit_hash_to_bus_factor_map"
-ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME: str = "issue_id_to_issue_count_map"
-ISSUE_ID_TO_ISSUE_SPOILAGE_BUCKET_MAP_TABLE_NAME: str = "issue_id_to_issue_spoilage_map"
+COMMIT_HASH_TO_BUS_FACTOR_BUCKET_MAP_TABLE_NAME: str = (
+    "commit_hash_to_bus_factor_map"
+)
+ISSUE_ID_TO_ISSUE_COUNT_BUCKET_MAP_TABLE_NAME: str = (
+    "issue_id_to_issue_count_map"
+)
+ISSUE_ID_TO_ISSUE_SPOILAGE_BUCKET_MAP_TABLE_NAME: str = (
+    "issue_id_to_issue_spoilage_map"
+)
 ISSUE_TRACKER_DB_TABLE_NAME: str = "issue_tracker"
 
 DAILY_PRODUCTIVITY_DB_TABLE_NAME: str = "daily_productivity"

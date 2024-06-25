@@ -13,4 +13,6 @@ class SCC(CLOCTool, CLOCTool_ABC):
         self.toolName = "scc"
         self.command = f"{self.toolName} --by-file --min-gen --no-complexity --no-duplicates --format json {resolvePath(path=path).__str__()}"
 
-        CLOCTool(toolName=self.toolName, command=self.command, directoryPath=path)
+        CLOCTool(
+            toolName=self.toolName, command=self.command, directoryPath=path
+        )

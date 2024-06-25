@@ -6,7 +6,9 @@ from pandas import DataFrame
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
-from prime.datamodels.metrics.number_of_developers import DEVELOPER_COUNT_DF_DATAMODEL
+from prime.datamodels.metrics.number_of_developers import (
+    DEVELOPER_COUNT_DF_DATAMODEL,
+)
 from prime.db import (
     ANNUAL_DEVELOPER_COUNT_DB_TABLE_NAME,
     DAILY_DEVELOPER_COUNT_DB_TABLE_NAME,
@@ -47,17 +49,27 @@ def countDevelopers(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
 
     bucket: int = 1
 
-    with Bar(f"Computing {frequency.replace('_', ' ')}...", max=len(groups)) as bar:
+    with Bar(
+        f"Computing {frequency.replace('_', ' ')}...", max=len(groups)
+    ) as bar:
         group: DataFrame
         for _, group in groups:
             data["bucket"].append(bucket)
             data["bucket_start"].append(
-                group["committer_date"].min().to_pydatetime().replace(tzinfo=None)
+                group["committer_date"]
+                .min()
+                .to_pydatetime()
+                .replace(tzinfo=None)
             )
             data["bucket_end"].append(
-                group["committer_date"].max().to_pydatetime().replace(tzinfo=None)
+                group["committer_date"]
+                .max()
+                .to_pydatetime()
+                .replace(tzinfo=None)
             )
-            data["developer_count"].append(group["committer_email"].unique().size)
+            data["developer_count"].append(
+                group["committer_email"].unique().size
+            )
 
             hash_: str
             for hash_ in group["commit_hash"]:

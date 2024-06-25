@@ -12,7 +12,9 @@ def createGroups(
 ) -> List[Tuple[str, DataFrameGroupBy]]:
     dfs: List[Tuple[str, DataFrameGroupBy]] = []
 
-    with Bar("Computing groups by time interval...", max=len(intervalPairs)) as bar:
+    with Bar(
+        "Computing groups by time interval...", max=len(intervalPairs)
+    ) as bar:
         pair: Tuple[str, str]
         for pair in intervalPairs:
             group: DataFrameGroupBy = df.groupby(

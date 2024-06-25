@@ -47,7 +47,9 @@ def countIssues(groups: DataFrameGroupBy, frequency: str) -> DataFrame:
 
     bucket: int = 1
 
-    with Bar(f"Computing {frequency.replace('_', ' ')}...", max=len(groups)) as bar:
+    with Bar(
+        f"Computing {frequency.replace('_', ' ')}...", max=len(groups)
+    ) as bar:
         group: DataFrame
         for _, group in groups:
             data["bucket"].append(bucket)

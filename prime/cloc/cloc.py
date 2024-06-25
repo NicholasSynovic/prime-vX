@@ -10,4 +10,6 @@ class CLOC(CLOCTool):
         self.toolName = "cloc"
         self.command = f"{self.toolName} --by-file --use-sloccount --json {resolvePath(path=path).__str__()}"
 
-        CLOCTool(toolName=self.toolName, command=self.command, directoryPath=path)
+        CLOCTool(
+            toolName=self.toolName, command=self.command, directoryPath=path
+        )

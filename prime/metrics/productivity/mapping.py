@@ -4,7 +4,9 @@ from pandas import DataFrame, Series
 from pandas.core.groupby.generic import DataFrameGroupBy
 from progress.bar import Bar
 
-from prime.datamodels.metrics.productivity import PRODUCTIVITY_MAPPING_DF_DATAMODEL
+from prime.datamodels.metrics.productivity import (
+    PRODUCTIVITY_MAPPING_DF_DATAMODEL,
+)
 from prime.datamodels.vcs import VCS_DF_DATAMODEL
 from prime.db import *
 from prime.metrics import createGroups

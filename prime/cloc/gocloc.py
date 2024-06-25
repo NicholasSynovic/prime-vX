@@ -13,4 +13,6 @@ class GoCLOC(CLOCTool, CLOCTool_ABC):
         self.toolName = "gocloc"
         self.command = f"{self.toolName} --by-file --output-type json {resolvePath(path=path).__str__()}"
 
-        CLOCTool(toolName=self.toolName, command=self.command, directoryPath=path)
+        CLOCTool(
+            toolName=self.toolName, command=self.command, directoryPath=path
+        )
